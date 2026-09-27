@@ -54,7 +54,7 @@ export function CitySelect({ className = "", fullWidth = false }: { className?: 
         className={
           fullWidth
             ? "chip !h-11 w-full !justify-start gap-2"
-            : "ghost-btn btn-sm shrink-0 gap-1.5 !px-3 text-[15px]"
+            : "bar-btn shrink-0"
         }
       >
         <IconMapPin className="h-4 w-4 shrink-0" />

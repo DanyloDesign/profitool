@@ -133,15 +133,15 @@
   :root {
     --gutter: 40px;
     /* Планшет: той самий двошаровий каркас, стиснутий (підписи ховаються в компонентах).
-       Ряд 1 навмисно вищий за самі пілюлі (44px): ≥8px повітря зверху й знизу (owner note,
-       006 round 2 — раніше було 48px, лишало тільки 2px). */
-    --header-l1: 60px;
+       Ряд 1 — 48px (2026-09-27, владелец: «верхній шар меншим»). Кнопки в ньому без обведення
+       (bar-btn), тому 2px повітря навколо 44px зони натискання не видно. */
+    --header-l1: 48px;
     --header-l2: 64px;
   }
 }
 @media (min-width: 1024px) {
   :root {
-    --header-l1: 60px;
+    --header-l1: 48px;
     --header-l2: 72px;
   }
 }
@@ -508,6 +508,33 @@
 }
 
 /* Круглая кнопка-иконка 44px: минимальная тап-цель. */
+/* Кнопка верхнего ряда шапки (город, поддержка, язык, тема): без обведения по просьбе владельца
+   2026-09-27, ряд служебный и не должен спорить со вторым. Зона нажатия 44px сохраняется. */
+@utility bar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  height: 44px;
+  min-width: 44px;
+  padding-inline: 10px;
+  border-radius: 999px;
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.2s var(--ease-cut);
+
+  &:hover {
+    color: var(--color-signal-text);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
 @utility icon-btn {
   display: inline-grid;
   place-items: center;

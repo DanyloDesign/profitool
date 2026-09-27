@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { swapLocale, type Locale } from "@/i18n";
+import { asset } from "@/lib/asset";
 import { useI18n } from "@/i18n/context";
 import { brands, categories, platforms } from "@/data/taxonomy";
 import {
@@ -71,8 +72,8 @@ export function Header() {
           референсу (006). На мобільному (<768) ці елементи живуть у MobileMenu, тут їх немає. */}
       <div className="relative hidden border-b border-[var(--hair)] md:block">
         <div className="shell relative flex h-[var(--header-l1)] items-center justify-between gap-4">
-          <Logo href={href(locale)} />
-          <div className="flex shrink-0 items-center gap-1.5">
+          <Logo href={href(locale)} compact />
+          <div className="flex shrink-0 items-center gap-1">
             <CitySelect />
             <SupportMenu />
             <LangSwitch locale={locale} pathname={pathname} />
@@ -259,10 +260,10 @@ function LangSwitch({ locale, pathname }: { locale: Locale; pathname: string }) 
 
   return (
     <a
-      href={swapLocale(pathname, other)}
+      href={asset(swapLocale(pathname, other))}
       hrefLang={other === "ua" ? "uk" : "ru"}
       aria-label={`${dict.nav.language}: ${currentLabel}`}
-      className="ghost-btn btn-sm shrink-0 !px-3"
+      className="bar-btn shrink-0"
     >
       {currentLabel}
     </a>
@@ -539,7 +540,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
         <div className="mt-6 flex items-center gap-3 md:hidden">
           <span className="text-[15px] text-bone-dim">{dict.nav.language}</span>
           {/* Полная загрузка, как в LangSwitch. */}
-          <a href={swapLocale(pathname, other)} hrefLang={other === "ua" ? "uk" : "ru"} className="chip">
+          <a href={asset(swapLocale(pathname, other))} hrefLang={other === "ua" ? "uk" : "ru"} className="chip">
             {other === "ua" ? "Українська" : "Русский"}
           </a>
         </div>

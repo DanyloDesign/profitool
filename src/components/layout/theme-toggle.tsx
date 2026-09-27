@@ -49,7 +49,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={label}
       title={label}
-      className={`ghost-btn btn-sm w-11 shrink-0 !px-0 ${className}`}
+      className={`bar-btn w-11 shrink-0 !px-0 ${className}`}
     >
       {theme === "light" ? <IconMoon className="h-[22px] w-[22px]" /> : <IconSun className="h-[22px] w-[22px]" />}
     </button>

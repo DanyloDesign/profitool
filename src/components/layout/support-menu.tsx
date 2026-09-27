@@ -37,7 +37,7 @@ export function SupportMenu({
         aria-label={dict.nav.support}
         title={dict.nav.support}
         onClick={() => setOpen((value) => !value)}
-        className={full ? "chip !h-11 w-full !justify-start gap-2" : "ghost-btn btn-sm shrink-0 gap-1.5 !px-3"}
+        className={full ? "chip !h-11 w-full !justify-start gap-2" : "bar-btn shrink-0"}
       >
         <IconPhone className="h-4 w-4 shrink-0" />
         <span className={full ? "" : "hidden lg:inline"}>{dict.nav.support}</span>

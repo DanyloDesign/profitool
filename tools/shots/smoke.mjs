@@ -41,6 +41,11 @@ async function clickByText(page, selector, text) {
   await sleep(400);
   const cart = await page.$eval('header a[href$="/cart"]', (a) => a.getAttribute("aria-label"));
   check("шапка: корзина после добавления", /Кошик, 1/.test(cart), cart);
+  check("кошик: панель відкрилась після додавання", !!(await page.$('[role="dialog"]')));
+  // 015: the cart drawer is modal, close it before touching the page again.
+  await page.keyboard.press("Escape");
+  await sleep(400);
+  check("кошик: Esc закриває панель", !(await page.$('[role="dialog"]')));
 
   await page.click('article button[aria-label^="Додати"]');
   await page.click('article button[aria-label^="Порівняти"]');

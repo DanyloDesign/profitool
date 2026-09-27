@@ -7,10 +7,18 @@ import { create } from "zustand";
 import { useI18n } from "@/i18n/context";
 import { brands, platforms, specLabels } from "@/data/taxonomy";
 import { products } from "@/data/products";
-import { parseQuery, queryToParams, specFacets, type CatalogQuery, type SpecFacet } from "@/lib/shop";
+import {
+  applyQuery,
+  parseQuery,
+  price,
+  queryToParams,
+  specFacets,
+  type CatalogQuery,
+  type SpecFacet,
+} from "@/lib/shop";
 import { usePlatform } from "@/store/shop";
-import { IconBattery, IconClose, IconFilter } from "@/components/ui/icons";
-import { computeQuickChips } from "./quick-chips";
+import { IconChevron, IconClose, IconFilter, IconPlus } from "@/components/ui/icons";
+import { TASK_CATEGORY, computeQuickChips } from "./quick-chips";
 
 /** Фильтры пишут в адресную строку: ссылку можно переслать, «назад» работает. */
 export function useCatalogQuery() {
@@ -36,6 +44,7 @@ const cleared: Partial<CatalogQuery> = {
   min: undefined,
   max: undefined,
   specs: {},
+  task: undefined,
 };
 
 export function activeFilterCount(query: CatalogQuery): number {
@@ -46,6 +55,7 @@ export function activeFilterCount(query: CatalogQuery): number {
     (query.onSale ? 1 : 0) +
     (query.power ? 1 : 0) +
     (query.min || query.max ? 1 : 0) +
+    (query.task ? 1 : 0) +
     Object.values(query.specs).reduce((sum, values) => sum + values.length, 0)
   );
 }
@@ -69,20 +79,33 @@ export function Filters({ total, category }: { total: number; category?: string 
   const open = useFiltersOpen((state) => state.open);
   const setOpen = useFiltersOpen((state) => state.setOpen);
   const dialog = useRef<HTMLDivElement>(null);
-  const savedPlatform = usePlatform((state) => state.slug);
 
+  // Which options exist comes from the whole section; how many each gives comes from the current
+  // query with that option in place of its own group (013 F). An option that gives 0 is disabled.
   const scope = products.filter((product) => !category || product.category === category);
+  const base: CatalogQuery = { ...query, category };
+  const countWith = (patch: Partial<CatalogQuery>) => applyQuery({ ...base, ...patch }).length;
+
   const brandRows = brands
-    .map((brand) => ({ ...brand, count: scope.filter((p) => p.brand === brand.slug).length }))
-    .filter((row) => row.count > 0);
+    .filter((brand) => scope.some((p) => p.brand === brand.slug))
+    .map((brand) => ({ ...brand, count: countWith({ brands: [brand.slug] }) }));
   const platformRows = platforms
-    .map((platform) => ({ ...platform, count: scope.filter((p) => p.platform === platform.slug).length }))
-    .filter((row) => row.count > 0);
+    .filter((platform) => scope.some((p) => p.platform === platform.slug))
+    .map((platform) => ({ ...platform, count: countWith({ platforms: [platform.slug] }) }));
   const powerRows = (["cordless", "corded"] as const)
-    .map((power) => ({ power, count: scope.filter((p) => p.power === power).length }))
-    .filter((row) => row.count > 0);
-  // Только там, где у категории реально ≥2 разных значения — иначе фильтр не отсеивает.
-  const specGroups = category ? specFacets(scope, locale, category) : [];
+    .filter((power) => scope.some((p) => p.power === power))
+    .map((power) => ({ power, count: countWith({ power }) }));
+  // Only where the section really has ≥2 values; otherwise the filter removes nothing. Impact
+  // energy on rotary hammers is left to the task pills above the grid, which cover the same thing.
+  const specGroups = (category ? specFacets(scope, locale, category) : [])
+    .filter((facet) => !(category === TASK_CATEGORY && facet.key === "impact"))
+    .map((facet) => ({
+      ...facet,
+      options: facet.options.map((option) => ({
+        ...option,
+        count: countWith({ specs: { ...query.specs, [facet.key]: [option.slug] } }),
+      })),
+    }));
 
   const toggleIn = (key: "brands" | "platforms", value: string) => {
     const current = query[key];
@@ -166,15 +189,6 @@ export function Filters({ total, category }: { total: number; category?: string 
             </div>
           </div>
 
-          {savedPlatform && platformRows.some((row) => row.slug === savedPlatform) ? (
-            <SavedPlatform
-              slug={savedPlatform}
-              applied={query.platforms.includes(savedPlatform)}
-              onToggle={() => toggleIn("platforms", savedPlatform)}
-              label={dict.nav.myBattery}
-            />
-          ) : null}
-
           {powerRows.length > 1 ? (
             <Group title={dict.catalog.power}>
               {powerRows.map(({ power, count }) => (
@@ -184,6 +198,7 @@ export function Filters({ total, category }: { total: number; category?: string 
                   onChange={() => push({ ...query, power: query.power === power ? undefined : power })}
                   label={power === "corded" ? dict.catalog.corded : dict.catalog.cordless}
                   count={count}
+                  disabled={count === 0 && query.power !== power}
                 />
               ))}
             </Group>
@@ -198,6 +213,7 @@ export function Filters({ total, category }: { total: number; category?: string 
                   onChange={() => toggleIn("brands", brand.slug)}
                   label={brand.name}
                   count={brand.count}
+                  disabled={brand.count === 0 && !query.brands.includes(brand.slug)}
                 />
               ))}
             </Group>
@@ -211,17 +227,21 @@ export function Filters({ total, category }: { total: number; category?: string 
           {platformRows.length > 0 ? (
             <Group title={dict.catalog.platform}>
               <div className="flex flex-wrap gap-2 pb-3">
-                {platformRows.map((platform) => (
-                  <button
-                    key={platform.slug}
-                    type="button"
-                    aria-pressed={query.platforms.includes(platform.slug)}
-                    onClick={() => toggleIn("platforms", platform.slug)}
-                    className="chip"
-                  >
-                    {platform.name}
-                  </button>
-                ))}
+                {platformRows.map((platform) => {
+                  const pressed = query.platforms.includes(platform.slug);
+                  return (
+                    <button
+                      key={platform.slug}
+                      type="button"
+                      aria-pressed={pressed}
+                      onClick={() => toggleIn("platforms", platform.slug)}
+                      disabled={platform.count === 0 && !pressed}
+                      className="chip !h-11 disabled:cursor-not-allowed disabled:border-[var(--hair)] disabled:text-bone-faint"
+                    >
+                      {platform.name}
+                    </button>
+                  );
+                })}
               </div>
             </Group>
           ) : null}
@@ -290,7 +310,7 @@ export function FiltersTrigger() {
       <IconFilter className="h-[18px] w-[18px]" />
       {dict.catalog.filters}
       {active > 0 ? (
-        <span className="t-num grid h-5 min-w-5 place-items-center rounded-full bg-signal px-1.5 text-[12px] text-black">
+        <span className="t-num grid h-6 min-w-6 place-items-center rounded-full bg-signal px-1.5 text-sm text-black">
           {active}
         </span>
       ) : null}
@@ -325,6 +345,7 @@ function SpecGroup({
           onChange={() => onToggle(option.slug)}
           label={option.label}
           count={option.count}
+          disabled={option.count === 0 && !selected.includes(option.slug)}
         />
       ))}
       {hidden > 0 ? (
@@ -337,17 +358,25 @@ function SpecGroup({
 }
 
 /**
- * Выбранные фильтры чипами: каждый снимается одним нажатием.
- * То, что уже видно строкой быстрых чипов над сеткой, здесь второй раз не показываем — иначе
- * один и тот же фильтр стоит на экране трижды (чип + чекбокс в панели + этот ряд).
+ * Applied filters as chips; each chip is one 44px button that removes it (013 G), and "Скинути все"
+ * follows when there are several. Filters already shown by the quick chips or the task pills above
+ * the grid are not repeated here, or one filter would stand on screen three times.
+ * When the buyer has named their battery platform and no platform filter is set, a dashed chip
+ * offers it in one tap (015); once applied, the platform shows as an ordinary chip.
  */
 export function ActiveFilters({ category }: { category?: string }) {
   const { dict, locale } = useI18n();
   const { query, push } = useCatalogQuery();
   const mounted = useMounted();
-  const savedPlatformRaw = usePlatform((state) => state.slug);
-  const savedPlatform = mounted ? savedPlatformRaw ?? undefined : undefined;
-  const quick = category ? computeQuickChips(category, locale, savedPlatform) : null;
+  const savedSlug = usePlatform((state) => state.slug);
+  const saved = mounted && savedSlug ? platforms.find((platform) => platform.slug === savedSlug) : undefined;
+  const quick = category ? computeQuickChips(category, locale) : null;
+  const suggest =
+    saved &&
+    query.platforms.length === 0 &&
+    applyQuery({ ...query, category, platforms: [saved.slug] }).length > 0
+      ? saved
+      : undefined;
 
   const chips: { key: string; label: string; remove: () => void }[] = [];
   for (const slug of query.brands) {
@@ -355,7 +384,6 @@ export function ActiveFilters({ category }: { category?: string }) {
     chips.push({ key: `b-${slug}`, label: name, remove: () => push({ ...query, brands: query.brands.filter((v) => v !== slug) }) });
   }
   for (const slug of query.platforms) {
-    if (quick?.platform === slug) continue;
     const name = platforms.find((platform) => platform.slug === slug)?.name ?? slug;
     chips.push({ key: `p-${slug}`, label: name, remove: () => push({ ...query, platforms: query.platforms.filter((v) => v !== slug) }) });
   }
@@ -368,7 +396,12 @@ export function ActiveFilters({ category }: { category?: string }) {
   if (query.min || query.max)
     chips.push({
       key: "price",
-      label: `${query.min ?? "0"} – ${query.max ?? "∞"} ₴`,
+      label:
+        query.min && query.max
+          ? `${price(query.min)} – ${price(query.max)} ₴`
+          : query.max
+            ? dict.listing.priceTo(price(query.max))
+            : dict.listing.priceFrom(price(query.min ?? 0)),
       remove: () => push({ ...query, min: undefined, max: undefined }),
     });
   if (query.inStock && !quick?.inStock)
@@ -391,50 +424,41 @@ export function ActiveFilters({ category }: { category?: string }) {
     }
   }
 
-  if (chips.length === 0) return null;
+  if (chips.length === 0 && !suggest) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2.5 pb-6">
-      <span className="text-[15px] text-bone-dim">{dict.catalog.selected}:</span>
+    <div className="flex flex-wrap items-center gap-2 pb-6">
+      {suggest ? (
+        <button
+          type="button"
+          onClick={() => push({ ...query, platforms: [suggest.slug] })}
+          className="listing-suggest"
+        >
+          <IconPlus className="h-4 w-4" strokeWidth={2} />
+          {dict.listing.onlyMine(suggest.name)}
+        </button>
+      ) : null}
       {chips.map((chip) => (
-        <span key={chip.key} className="chip !h-9 !gap-1 !pr-1.5 text-sm">
+        <button
+          key={chip.key}
+          type="button"
+          onClick={chip.remove}
+          aria-label={dict.catalog.removeFilter(chip.label)}
+          className="chip !h-11 !pr-3.5"
+        >
           {chip.label}
-          <button
-            type="button"
-            onClick={chip.remove}
-            aria-label={dict.catalog.removeFilter(chip.label)}
-            className="grid h-7 w-7 place-items-center rounded-full text-bone-dim transition-colors hover:text-bone"
-          >
-            <IconClose className="h-3.5 w-3.5" strokeWidth={2} />
-          </button>
-        </span>
+          <IconClose className="h-4 w-4 text-bone-dim" strokeWidth={2} />
+        </button>
       ))}
-    </div>
-  );
-}
-
-function SavedPlatform({
-  slug,
-  applied,
-  onToggle,
-  label,
-}: {
-  slug: string;
-  applied: boolean;
-  onToggle: () => void;
-  label: string;
-}) {
-  const platform = platforms.find((item) => item.slug === slug);
-  const mounted = useMounted();
-  if (!mounted || !platform) return null;
-
-  return (
-    <div className="border-b border-[var(--hair)] py-5">
-      <button type="button" onClick={onToggle} aria-pressed={applied} className="chip !h-11 w-full !justify-start">
-        <IconBattery className="h-5 w-5 shrink-0" />
-        <span className="text-bone-dim">{label}</span>
-        <span className="font-medium">{platform.name}</span>
-      </button>
+      {chips.length > 1 ? (
+        <button
+          type="button"
+          onClick={() => push({ ...query, ...cleared })}
+          className="h-11 px-2 text-[15px] text-bone-dim transition-colors hover:text-bone"
+        >
+          {dict.catalog.resetAll}
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -453,22 +477,30 @@ function Check({
   onChange,
   label,
   count,
+  disabled,
 }: {
   checked: boolean;
   onChange: () => void;
   label: string;
   count?: number;
+  /** The option gives 0 products with the other filters as they are (013 F). */
+  disabled?: boolean;
 }) {
   return (
-    <label className="flex min-h-11 items-center gap-3 text-base text-bone">
+    <label
+      className={`flex min-h-11 items-center gap-3 text-base ${disabled ? "cursor-not-allowed text-bone-faint" : "text-bone"}`}
+    >
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="check"
+        disabled={disabled}
+        className="check disabled:cursor-not-allowed disabled:opacity-50"
       />
       <span className="flex-1">{label}</span>
-      {count !== undefined ? <span className="text-sm text-bone-dim">{count}</span> : null}
+      {count !== undefined ? (
+        <span className={`text-sm ${disabled ? "text-bone-faint" : "text-bone-dim"}`}>{count}</span>
+      ) : null}
     </label>
   );
 }
@@ -485,7 +517,8 @@ function PriceRange({ query, onChange }: { query: CatalogQuery; onChange: (next:
       max: max ? Number(max) : undefined,
     });
 
-  const input = "field !h-12 !px-3.5 text-[15px] t-num";
+  // 16px (the field default): smaller text makes iOS zoom in on focus (013 G).
+  const input = "field !h-12 !px-3.5 t-num";
 
   return (
     <div className="flex items-center gap-2.5 pb-3">
@@ -531,20 +564,27 @@ export function SortSelect({ className = "" }: { className?: string }) {
     { value: "inStock", label: dict.catalog.sortInStock },
   ] as const;
 
+  // The visible label hides below 640px, so the select carries its own name (013 G). Short option
+  // labels fit the phone pill without cutting ("Спочатку по…", 013 E). Own arrow instead of the
+  // native one, which sat against the rounded edge.
   return (
     <label className={`flex items-center gap-3 text-[15px] text-bone-dim ${className}`}>
       <span className="hidden shrink-0 whitespace-nowrap sm:block">{dict.catalog.sort}</span>
-      <select
-        value={query.sort}
-        onChange={(event) => push({ ...query, sort: event.target.value as CatalogQuery["sort"] })}
-        className="h-11 min-w-0 flex-1 rounded-full border border-[var(--hair-strong)] bg-ink-900 px-4 text-[15px] text-bone outline-none focus:border-signal"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <span className="relative flex min-w-0 flex-1">
+        <select
+          value={query.sort}
+          aria-label={dict.catalog.sort}
+          onChange={(event) => push({ ...query, sort: event.target.value as CatalogQuery["sort"] })}
+          className="h-11 w-full min-w-0 appearance-none rounded-full border border-[var(--hair-strong)] bg-ink-900 pl-4 pr-10 text-[15px] text-bone outline-none focus:border-signal"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <IconChevron className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 rotate-90 text-bone-dim" />
+      </span>
     </label>
   );
 }

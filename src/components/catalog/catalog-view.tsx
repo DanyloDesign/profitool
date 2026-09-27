@@ -7,7 +7,7 @@ import { categories, categoryBySlug } from "@/data/taxonomy";
 import { applyQuery, categoryHref, href, parseQuery, queryToParams } from "@/lib/shop";
 import { ProductCard } from "@/components/catalog/product-card";
 import { ActiveFilters, Filters, FiltersTrigger, SortSelect } from "@/components/catalog/filters";
-import { QuickChips } from "@/components/catalog/quick-chips";
+import { QuickChips, TaskChips } from "@/components/catalog/quick-chips";
 import { LoadMore, Pagination } from "@/components/catalog/pagination";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 
@@ -97,17 +97,21 @@ function CatalogBody({ locale, categorySlug, search }: ViewProps & { search: URL
       </div>
 
       {!category ? (
-        <div className="mt-4 flex flex-wrap gap-2 lg:mt-6">
+        // Below 1024px one swipe row instead of a wall of four wrapped rows (013 E).
+        <div className="-mx-[var(--gutter)] mt-4 flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 scrollbar-none lg:mx-0 lg:mt-6 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0">
           {categories.map((item) => (
-            <Link key={item.slug} href={categoryHref(locale, item.slug)} className="chip !h-11 !px-5">
+            <Link key={item.slug} href={categoryHref(locale, item.slug)} className="chip !h-11 shrink-0 !px-5">
               {item.name[locale]}
             </Link>
           ))}
         </div>
       ) : (
         // Только на странице категории: на корне каталога уже есть чипы навигации по разделам,
-        // вторая полоса чипов рядом превращается в шум.
-        <div className="mt-4 lg:mt-6">
+        // вторая полоса чипов рядом превращается в шум. Task pills (015) only on rotary hammers.
+        <div className="mt-5 flex flex-col gap-4 lg:mt-6">
+          <Suspense fallback={null}>
+            <TaskChips category={category.slug} />
+          </Suspense>
           <Suspense fallback={null}>
             <QuickChips category={category.slug} />
           </Suspense>

@@ -10,16 +10,16 @@ import { useCart, useCompare } from "@/store/shop";
 import { announceAdded, useCartUI } from "@/store/cart-ui";
 import { IconCheck } from "@/components/ui/icons";
 import type { Product } from "@/data/types";
+import { BUY_CTA_ID } from "./buy-box";
 
 /**
- * Мобильная липкая панель (<1024px): появляется, когда блок цены в BuyBox (id="buy-box-price")
- * уходит из вьюпорта — а не кнопка, чтобы панель не всплывала на старте, пока цена ещё видна.
- * Кнопка повторяет состояние корзины из BuyBox: «У кошик» до добавления, «У кошику · N» после —
- * тап тогда ведёт в корзину (модалка на ≥md, /cart на телефоне), как кнопка в шапке.
- * Панель остаётся в DOM всегда (только translate/opacity), поэтому её высоту можно измерить.
- * Резервируем её нижним отступом body через lib/body-inset.ts, как и панель сравнения: Footer —
- * сосед {children} в layout.tsx, поэтому только body padding даёт зазор под подвалом.
- * Отступы обеих панелей складываются.
+ * Phone and tablet sticky bar (<1024px). It watches the BuyBox buy button (013 E, 015), not the
+ * price: the bar shows whenever that button is off screen, above or below. On a 390×844 phone the
+ * button sits under the fold at first, so the bar is there from the first screen.
+ * The button mirrors the cart state of the BuyBox: "У кошик" before adding, "У кошику · N" after,
+ * and then leads to the cart (the cart panel on ≥md, /cart on phones), like the header cart.
+ * The bar stays in the DOM (translate/opacity only) so its height can be measured and reserved as
+ * body padding through lib/body-inset.ts, together with the compare bar.
  */
 export function StickyBuyBar({ product }: { product: Product }) {
   const { locale, dict } = useI18n();
@@ -33,7 +33,7 @@ export function StickyBuyBar({ product }: { product: Product }) {
   const compareCount = useCompare((state) => state.slugs.length);
 
   useEffect(() => {
-    const target = document.getElementById("buy-box-price");
+    const target = document.getElementById(BUY_CTA_ID);
     if (!target) return;
     const observer = new IntersectionObserver(([entry]) => setHidden(entry.isIntersecting));
     observer.observe(target);
@@ -41,8 +41,8 @@ export function StickyBuyBar({ product }: { product: Product }) {
   }, []);
 
   useEffect(() => {
-    // До mounted компонент возвращает null (гидратация), barRef ещё не привязан — без `mounted`
-    // в зависимостях высота так и останется 0, потому что этот эффект больше не перезапустится.
+    // Before `mounted` the component returns null and barRef is empty; without `mounted` in the
+    // dependencies the height would stay 0, because this effect would not run again.
     const measure = () => setBarHeight(barRef.current?.offsetHeight ?? 0);
     measure();
     window.addEventListener("resize", measure);
@@ -65,8 +65,8 @@ export function StickyBuyBar({ product }: { product: Product }) {
   return (
     <div
       ref={barRef}
-      // inert (не aria-hidden): скрытая панель не должна ловить фокус с клавиатуры, а
-      // aria-hidden на предке с фокусируемым потомком — нарушение, а не решение.
+      // inert, not aria-hidden: the hidden bar must not take keyboard focus, and aria-hidden on an
+      // ancestor of a focusable element is a violation, not a fix.
       inert={!show}
       className={`fixed inset-x-0 z-30 border-t border-[var(--hair-strong)] bg-ink-900/95 backdrop-blur-xl transition-transform lg:hidden ${
         show ? "translate-y-0" : "pointer-events-none translate-y-full"

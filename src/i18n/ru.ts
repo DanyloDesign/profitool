@@ -146,8 +146,6 @@ export const ru: Dict = {
     dec: "Уменьшить количество",
     inc: "Увеличить количество",
     subtotal: "Товары",
-    // Сумма в мини-корзине: без метода доставки это ещё не «К оплате» из чекаута (решение 3).
-    miniTotal: "Итого",
     delivery: "Доставка",
     deliveryFree: "Бесплатно",
     // Подсказка в корзине: метод доставки ещё не выбран, поэтому это не сумма к оплате (решение 3).
@@ -159,16 +157,11 @@ export const ru: Dict = {
     freeLeft: (n: string) => `До бесплатной доставки ещё ${n} ₴`,
     label: "Товары в корзине",
     summary: "Итог заказа",
-    // Мини-корзина под кнопкой в шапке.
-    miniTitle: (n: number) => `В корзине ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
-    miniCartBtn: "Корзина",
-    miniCheckoutBtn: "Оформить",
-    closeCart: "Закрыть корзину",
     repeatOrder: "Повторить заказ",
-    // Блок допродажи в корзине и модалке.
+    // Cross-sell block on the cart page.
     crossSellTitle: "Добавить к заказу",
     crossSellAdd: (name: string) => `Добавить ${name} к заказу`,
-    // Живая область для скринридеров: озвучивает добавление, пока видна только мини-корзина.
+    // One live region for screen readers (CartDrawer): announces every add and removal.
     added: (name: string) => `Добавлено в корзину: ${name}`,
     removed: (name: string) => `Убрано из корзины: ${name}`,
   },
@@ -317,6 +310,27 @@ export const ru: Dict = {
   // Cart drawer and phone cart sheet.
   drawer: {
     title: "Добавлено в корзину",
+    cartTitle: "Корзина",
+    close: "Закрыть корзину",
+    lines: "Товары в корзине",
+    remove: "Убрать",
+    removeItem: (name: string) => `Убрать ${name} из корзины`,
+    dec: (name: string) => `Уменьшить количество: ${name}`,
+    inc: (name: string) => `Увеличить количество: ${name}`,
+    qty: (n: number) => `${n} шт`,
+    freeLeft: (sum: string) => `До бесплатной доставки ещё ${sum} ₴`,
+    freeDone: "Доставка Новой почтой бесплатна",
+    suggestSafety: "Не забудь про защиту",
+    suggestAccessory: "Часто берут вместе",
+    suggestAdd: (name: string) => `Добавить ${name} в корзину`,
+    total: (n: number) => `Итого, ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
+    deliveryNote: "Доставку посчитаем, когда выберешь способ получения",
+    checkout: "Оформить заказ",
+    continue: "Продолжить покупки",
+    openCart: "Открыть корзину",
+    empty: "Корзина пуста",
+    emptyText: "Выбери инструмент в каталоге.",
+    emptyCta: "В каталог",
   },
 
   // Product page.

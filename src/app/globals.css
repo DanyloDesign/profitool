@@ -700,7 +700,173 @@
 
 
 /* --- 015 cart drawer --- */
+/* Header cart pill: after an add it fills with the brand gradient for 1.2s (store/cart-ui.ts sets
+   data-flash). The gradient sits on ::before and only its opacity changes, like tint-btn. Under
+   reduced motion the global rule makes the change instant, the flash itself stays. */
+.cart-pill {
+  isolation: isolate;
+}
+.cart-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grad-brand);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-panel-out) var(--ease-std);
+}
+.cart-pill[data-flash] {
+  color: #000;
+  border-color: transparent;
+}
+.cart-pill[data-flash]::before {
+  opacity: 1;
+  transition-duration: var(--dur-fast);
+}
 
+/* The drawer. Phones: a bottom sheet up to 85% of the screen. From 768px: a right panel, 440px. */
+.cart-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+.cart-drawer-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  animation: cart-drawer-fade-in var(--dur-panel-in) var(--ease-std);
+}
+.cart-drawer[data-state="closing"] .cart-drawer-scrim {
+  animation: cart-drawer-fade-out var(--dur-panel-out) var(--ease-out) forwards;
+}
+.cart-drawer-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  max-height: 85dvh;
+  overflow: hidden;
+  background: var(--color-ink-900);
+  border-radius: 28px 28px 0 0;
+  /* The hairline ring keeps the black panel apart from the scrim in the dark theme. */
+  box-shadow:
+    0 0 0 1px var(--hair),
+    var(--shadow-pop);
+  outline: none;
+  animation: cart-drawer-up var(--dur-panel-in) var(--ease-in);
+}
+.cart-drawer[data-state="closing"] .cart-drawer-panel {
+  animation: cart-drawer-down var(--dur-panel-out) var(--ease-out) forwards;
+}
+/* The handle and the title row are the drag zone of the sheet. */
+.cart-drawer-grip {
+  flex-shrink: 0;
+  touch-action: none;
+}
+.cart-drawer-handle {
+  display: flex;
+  height: 20px;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cart-drawer-handle::before {
+  content: "";
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--hair-strong);
+}
+.cart-drawer-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline: 16px;
+}
+.cart-drawer-foot {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hair);
+  background: var(--color-ink-800);
+}
+.cart-drawer-progress {
+  background-image: var(--grad-brand);
+  transition: width 300ms var(--ease-std);
+}
+@media (min-width: 768px) {
+  .cart-drawer-panel {
+    left: auto;
+    top: 0;
+    width: 440px;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 28px 0 0 28px;
+    animation-name: cart-drawer-in-right;
+  }
+  .cart-drawer[data-state="closing"] .cart-drawer-panel {
+    animation-name: cart-drawer-out-right;
+  }
+  .cart-drawer-grip {
+    touch-action: auto;
+  }
+  .cart-drawer-handle {
+    display: none;
+  }
+  .cart-drawer-body {
+    padding: 8px 28px 0;
+  }
+  .cart-drawer-foot {
+    gap: 12px;
+    padding: 20px 28px 28px;
+  }
+}
+/* Reduced motion: no slide, opacity only (the global rule in @layer base shortens it further). */
+@media (prefers-reduced-motion: reduce) {
+  .cart-drawer .cart-drawer-panel {
+    animation-name: cart-drawer-fade-in;
+  }
+  .cart-drawer[data-state="closing"] .cart-drawer-panel {
+    animation-name: cart-drawer-fade-out;
+  }
+}
+@keyframes cart-drawer-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes cart-drawer-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes cart-drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes cart-drawer-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes cart-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cart-drawer-fade-out {
+  to {
+    opacity: 0;
+  }
+}
 
 /* --- end 015 drawer --- */
 

@@ -8,7 +8,7 @@ import { brandBySlug } from "@/data/taxonomy";
 import { productBySlug, products } from "@/data/products";
 import type { Product } from "@/data/types";
 import { imageOf, price, productHref } from "@/lib/shop";
-import { announceAdded } from "@/store/cart-ui";
+import { flashCartPill } from "@/store/cart-ui";
 import { useCart, type CartItem } from "@/store/shop";
 import { IconPlus } from "@/components/ui/icons";
 
@@ -28,8 +28,10 @@ function isDisc(product: Product): boolean {
  * Допродажа — доповнення, а не конкуренти: інструмент того самого призначення в кошику
  * ніколи не пропонуємо повторно, лише сумісну оснастку й засоби захисту. Немає підходящого —
  * блок ховається (порожній масив), а не показує будь-що з каталогу.
+ * The cart drawer (015) takes the first pick with `limit = 1`: the accessory when one fits,
+ * otherwise the safety item.
  */
-function pickCrossSell(items: CartItem[], limit = 2): Product[] {
+export function pickCrossSell(items: CartItem[], limit = 2): Product[] {
   const cartSlugs = new Set(items.map((item) => item.slug));
   const cartProducts = items
     .map((item) => productBySlug.get(item.slug))
@@ -89,6 +91,7 @@ function pickCrossSell(items: CartItem[], limit = 2): Product[] {
   return picks.slice(0, limit);
 }
 
+/** Cross-sell on the /cart page. The page itself shows the new line, so an add only flashes the pill. */
 export function CrossSell() {
   const { locale, dict } = useI18n();
   const mounted = useMounted();
@@ -124,7 +127,7 @@ export function CrossSell() {
                 type="button"
                 onClick={() => {
                   add(product.slug);
-                  announceAdded();
+                  flashCartPill();
                 }}
                 aria-label={dict.cart.crossSellAdd(name)}
                 className="icon-btn shrink-0 border border-[var(--hair-strong)] hover:border-signal hover:text-signal-text"

@@ -6,6 +6,7 @@ import { getDict, htmlLang, isLocale, locales, type Locale } from "@/i18n";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { CompareBar } from "@/components/catalog/compare-bar";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 import { LocaleProvider } from "@/i18n/context";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { asset } from "@/lib/asset";
@@ -87,6 +88,8 @@ export default async function LocaleLayout({
           <main className="min-h-[60vh]">{children}</main>
           <Footer locale={typed} dict={dict} />
           <CompareBar />
+          {/* 015: one cart drawer for the whole app, opened by announceAdded() and the header pill. */}
+          <CartDrawer />
         </LocaleProvider>
       </body>
     </html>

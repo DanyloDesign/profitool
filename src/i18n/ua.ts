@@ -145,8 +145,6 @@ export const ua = {
     dec: "Зменшити кількість",
     inc: "Збільшити кількість",
     subtotal: "Товари",
-    // Сума в міні-корзині: без методу доставки це ще не «До сплати» з чекауту (рішення 3).
-    miniTotal: "Разом",
     delivery: "Доставка",
     deliveryFree: "Безкоштовно",
     // Підказка в кошику: метод доставки ще не обрано, тож це не сума до сплати (рішення 3).
@@ -158,16 +156,11 @@ export const ua = {
     freeLeft: (n: string) => `До безкоштовної доставки ще ${n} ₴`,
     label: "Товари в кошику",
     summary: "Підсумок замовлення",
-    // Мини-корзина под кнопкой в шапке.
-    miniTitle: (n: number) => `У кошику ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
-    miniCartBtn: "Кошик",
-    miniCheckoutBtn: "Оформити",
-    closeCart: "Закрити кошик",
     repeatOrder: "Повторити замовлення",
-    // Блок допродажу у кошику й модалці.
+    // Cross-sell block on the cart page.
     crossSellTitle: "Додати до замовлення",
     crossSellAdd: (name: string) => `Додати ${name} до замовлення`,
-    // Живий регіон для скринридерів: озвучує додавання, доки видима лише міні-корзина.
+    // One live region for screen readers (CartDrawer): announces every add and removal.
     added: (name: string) => `Додано в кошик: ${name}`,
     removed: (name: string) => `Прибрано з кошика: ${name}`,
   },
@@ -315,6 +308,27 @@ export const ua = {
   // Cart drawer and phone cart sheet.
   drawer: {
     title: "Додано в кошик",
+    cartTitle: "Кошик",
+    close: "Закрити кошик",
+    lines: "Товари в кошику",
+    remove: "Прибрати",
+    removeItem: (name: string) => `Прибрати ${name} з кошика`,
+    dec: (name: string) => `Зменшити кількість: ${name}`,
+    inc: (name: string) => `Збільшити кількість: ${name}`,
+    qty: (n: number) => `${n} шт`,
+    freeLeft: (sum: string) => `До безкоштовної доставки ще ${sum} ₴`,
+    freeDone: "Доставка Новою поштою безкоштовна",
+    suggestSafety: "Не забудь про захист",
+    suggestAccessory: "Часто беруть разом",
+    suggestAdd: (name: string) => `Додати ${name} в кошик`,
+    total: (n: number) => `Разом, ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
+    deliveryNote: "Доставку порахуємо, коли обереш спосіб отримання",
+    checkout: "Оформити замовлення",
+    continue: "Продовжити покупки",
+    openCart: "Відкрити кошик",
+    empty: "Кошик порожній",
+    emptyText: "Обери інструмент у каталозі.",
+    emptyCta: "У каталог",
   },
 
   // Product page.

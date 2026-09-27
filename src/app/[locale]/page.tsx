@@ -167,27 +167,28 @@ function Categories({ locale, dict }: Ctx) {
         <SectionAction action={{ href: href(locale, "/catalog"), label: dict.home.allProducts(products.length) }} placement="head" />
       </div>
 
-      <div className="mt-6 grid grid-cols-4 gap-y-2 md:mt-7 md:gap-x-3 md:gap-y-4 lg:grid-cols-8">
+      {/* Phones: two columns of "photo + name" rows, so every name fits whole without hyphens.
+          From 768px: photo tiles, 4 then 8 in a row. */}
+      <div className="mt-6 grid grid-cols-2 gap-x-3 gap-y-1 md:mt-7 md:grid-cols-4 md:gap-y-4 lg:grid-cols-8">
         {categories.map((category) => (
           <Link
             key={category.slug}
             href={categoryHref(locale, category.slug)}
-            className="flex flex-col items-center gap-1.5 rounded-[18px] pb-2 pt-1 text-center transition-colors duration-[var(--dur-fast)] hover:bg-ink-800 md:gap-2.5 md:px-1.5 md:pb-4 md:pt-3.5"
+            className="flex min-h-14 items-center gap-2.5 rounded-[18px] px-1.5 py-1.5 text-left transition-colors duration-[var(--dur-fast)] hover:bg-ink-800 md:flex-col md:px-1.5 md:pb-4 md:pt-3.5 md:text-center"
           >
-            <span className="relative block aspect-square w-16 md:w-24 lg:w-full lg:max-w-[120px]">
+            <span className="relative block aspect-square w-11 shrink-0 md:w-24 lg:w-full lg:max-w-[120px]">
               <Image
                 src={categoryPhoto(category.slug)}
                 alt=""
                 fill
-                sizes="(min-width: 1024px) 120px, (min-width: 768px) 96px, 64px"
+                sizes="(min-width: 1024px) 120px, (min-width: 768px) 96px, 44px"
                 className="object-contain"
               />
             </span>
-            {/* Long compound names ("шліфмашини") are wider than a tile on phones and in the
-                8-column row at 1024–1279px: break them at TILE_BREAKS and never leave a two-letter
-                tail. There "Кутові шліфмашини" takes three lines; everything else takes two.
-                Where whole words fit, hyphens stay off so names break at the space. */}
-            <span className="line-clamp-3 text-sm font-medium leading-[18px] text-bone hyphens-auto [hyphenate-limit-chars:6_3_3] md:text-base md:leading-snug md:hyphens-none lg:hyphens-auto xl:hyphens-none">
+            {/* In the 8-column row at 1024–1279px long compound names ("шліфмашини") are wider than
+                a tile: break them at TILE_BREAKS and never leave a two-letter tail. Elsewhere whole
+                words fit, so hyphens stay off and names break at the space. */}
+            <span className="line-clamp-3 min-w-0 text-[15px] font-medium leading-snug text-bone hyphens-none md:text-base lg:hyphens-auto lg:[hyphenate-limit-chars:6_3_3] xl:hyphens-none">
               {tileName(category.name[locale])}
             </span>
           </Link>

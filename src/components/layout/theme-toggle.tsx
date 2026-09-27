@@ -34,9 +34,8 @@ export function useTheme(): [Theme, () => void] {
 
 /**
  * Кнопка-иконка для шапки. Подпись описывает действие: куда переключит нажатие.
- * Квадратна `ghost-btn btn-sm` (006 review #2): та сама рамка/висота/перехід, що й у
- * city/support/lang поруч у шарі 1, лише без тексту — паддінг обнулений, ширина фіксована
- * під квадрат, щоб не розтягувалась текстовою шириною ghost-btn за замовчуванням.
+ * 015: a quiet square `bar-btn` of the header utility cluster; the cluster (.hdr-util in
+ * globals.css) sets its colour and size, the padding is zeroed and the width is 44px.
  */
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { dict } = useI18n();
@@ -51,7 +50,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       title={label}
       className={`bar-btn w-11 shrink-0 !px-0 ${className}`}
     >
-      {theme === "light" ? <IconMoon className="h-[22px] w-[22px]" /> : <IconSun className="h-[22px] w-[22px]" />}
+      {theme === "light" ? <IconMoon className="h-5 w-5" /> : <IconSun className="h-5 w-5" />}
     </button>
   );
 }

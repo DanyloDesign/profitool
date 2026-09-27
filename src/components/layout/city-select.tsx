@@ -26,9 +26,13 @@ function IconMapPin({ className }: { className?: string }) {
 
 /**
  * Кнопка города доставки + поповер со списком городов и «Інше місто». Выбор пишется в
- * store/location и подставляется в чекаут. `fullWidth` — блочный вариант с рамкой для подвала
- * мега-меню (1024–1439px) и мобильного меню (<1024px). Инлайн-вариант в самой шапке (от 1440px) —
- * компактная текстовая кнопка без рамки: поиск в шапке главный, место экономим.
+ * store/location и подставляется в чекаут. `fullWidth` — блочный вариант с рамкой для мобильного
+ * меню (<768px).
+ *
+ * 015: in the header (from 768px) it is a quiet text button of the utility cluster. At 1024–1279px
+ * the one-row header has no room for the name, so only the pin stays and aria-label carries the
+ * city. The popover opens from the button's right edge: the cluster sits near the right edge of
+ * the header, and a 280px list opening to the right would leave the screen.
  */
 export function CitySelect({ className = "", fullWidth = false }: { className?: string; fullWidth?: boolean }) {
   const { locale, dict } = useI18n();
@@ -58,14 +62,14 @@ export function CitySelect({ className = "", fullWidth = false }: { className?: 
         }
       >
         <IconMapPin className="h-4 w-4 shrink-0" />
-        <span className={`truncate ${fullWidth ? "" : "max-w-[64px] lg:max-w-[120px]"}`}>{label}</span>
+        <span className={`truncate ${fullWidth ? "" : "max-w-[120px] lg:hidden xl:inline"}`}>{label}</span>
       </button>
 
       {open ? (
         <div
           role="dialog"
           aria-label={dict.nav.cityPopoverTitle}
-          className="absolute left-0 top-[calc(100%+8px)] z-20 w-[280px] rounded-[24px] border border-[var(--hair-strong)] bg-ink-850 p-3 shadow-[var(--shadow-pop)]"
+          className={`absolute top-[calc(100%+8px)] z-20 w-[280px] ${fullWidth ? "left-0" : "right-0"} rounded-[24px] border border-[var(--hair-strong)] bg-ink-850 p-3 shadow-[var(--shadow-pop)]`}
         >
           <p className="t-eyebrow px-2 pb-2 text-bone-dim">{dict.nav.cityPopoverTitle}</p>
           <ul className="grid gap-0.5">
@@ -84,7 +88,7 @@ export function CitySelect({ className = "", fullWidth = false }: { className?: 
                   }`}
                 >
                   <span>{city.name[locale]}</span>
-                  <span className="shrink-0 text-[13px] text-bone-dim">
+                  <span className="shrink-0 text-sm text-bone-dim">
                     {isFastDelivery(city.slug) ? dict.nav.cityDeliveryFast : dict.nav.cityDeliverySlow}
                   </span>
                 </button>
@@ -102,7 +106,7 @@ export function CitySelect({ className = "", fullWidth = false }: { className?: 
             }}
             className="mt-2 border-t border-[var(--hair)] pt-3"
           >
-            <label htmlFor="city-select-custom" className="block px-1 text-[13px] text-bone-dim">
+            <label htmlFor="city-select-custom" className="block px-1 text-sm text-bone-dim">
               {dict.nav.cityCustom}
             </label>
             <div className="mt-1.5 grid gap-2 px-1">

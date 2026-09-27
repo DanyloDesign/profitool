@@ -299,6 +299,23 @@ export const ru: Dict = {
   header: {
     popularTitle: "Часто ищут",
     popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерный уровень", "биты"],
+    placeholder: "Болгарка, M18, DHR243…",
+    typing: ["болгарка", "M18", "DHR243", "перфоратор SDS-Plus", "лазерный уровень"],
+    suggestions: "Подсказки поиска",
+    sectionsTitle: "Разделы",
+    sectionNote: "Раздел",
+    productsTitle: "Товары",
+    inSection: (name: string) => `В разделе «${name}»`,
+    noResults: (q: string) => `По запросу «${q}» ничего не нашли. Попробуй название раздела или модель.`,
+    keyMove: "↑ ↓ выбрать",
+    keyOpen: "Enter открыть",
+    keyClose: "Esc закрыть",
+    clear: "Очистить поиск",
+    platformsTitle: "Аккумуляторные платформы",
+    myBatteries: "Мои батареи",
+    noBatteries: "Нет батарей",
+    tools: (n: number) => `${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    showTools: (n: number) => `Показать ${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
   },
 
   // Product card.

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDict, isLocale, locales } from "@/i18n";
-import { kitNoBattery, productBySlug, products } from "@/data/products";
+import { productBySlug, products } from "@/data/products";
 import { brandBySlug, categoryBySlug } from "@/data/taxonomy";
 import { categoryHref, countIn, href, imageOf, relatedTo } from "@/lib/shop";
 import { BuyBox } from "@/components/product/buy-box";
@@ -11,7 +11,6 @@ import { ProductTabs } from "@/components/product/product-tabs";
 import { StickyBuyBar } from "@/components/product/sticky-buy-bar";
 import { ProductSection } from "@/components/catalog/product-section";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { IconAlert } from "@/components/ui/icons";
 
 type Params = { params: Promise<{ locale: string; slug: string }> };
 
@@ -42,7 +41,6 @@ export default async function ProductPage({ params }: Params) {
   const brand = brandBySlug.get(product.brand);
   const category = categoryBySlug.get(product.category);
   const related = relatedTo(product, 4);
-  const noBattery = product.kit.includes(kitNoBattery);
 
   const crumbs = [
     { label: dict.common.home, href: href(locale) },
@@ -113,20 +111,9 @@ export default async function ProductPage({ params }: Params) {
           </div>
         </div>
 
+        {/* Попередження «без акумулятора» тепер рядком у BuyBox (buy-box.tsx), не рамкою тут:
+            DESIGN.md панелей і підложок не дозволяє, а покупець бачить рядок у момент кліку. */}
         <div className="lg:col-start-1 lg:row-start-2">
-          {noBattery ? (
-            <div
-              role="note"
-              className="flex items-start gap-3.5 rounded-[24px] border border-signal p-5"
-            >
-              <IconAlert className="mt-0.5 h-5 w-5 shrink-0 text-signal-text" />
-              <div>
-                <p className="text-base font-medium text-bone">{dict.product.noBatteryTitle}</p>
-                <p className="mt-1 text-[15px] leading-normal text-bone-dim">{dict.product.noBatteryText}</p>
-              </div>
-            </div>
-          ) : null}
-
           <div className="mt-14">
             <ProductTabs product={product} />
           </div>

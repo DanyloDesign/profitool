@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/context";
 import { brandBySlug } from "@/data/taxonomy";
 import { productBySlug } from "@/data/products";
-import { cartTotals, href, imageOf, price, productHref } from "@/lib/shop";
+import { href, imageOf, orderTotals, price, productHref } from "@/lib/shop";
 import { useCart, type CartItem } from "@/store/shop";
 import { useCartUI } from "@/store/cart-ui";
 import { IconClose, IconTrash } from "@/components/ui/icons";
@@ -61,7 +61,8 @@ export function MiniCart({ triggerRef }: { triggerRef: RefObject<HTMLElement | n
   const removalIndexRef = useRef<number | null>(null);
   const [announcement, setAnnouncement] = useState("");
 
-  const { lines, total, pieces } = cartTotals(items);
+  // Без метода доставки: «Разом» — сумма товарів, доставку показує тільки чекаут (рішення 3).
+  const { lines, total, pieces } = orderTotals(items);
 
   // Новий slug або зросла кількість — «додано в кошик»; зниклий slug або зменшена кількість —
   // «прибрано з кошика». За раз вважаємо лише одну подію (реальний user-флоу так і працює).
@@ -266,7 +267,7 @@ export function MiniCart({ triggerRef }: { triggerRef: RefObject<HTMLElement | n
 
           <div className="border-t border-[var(--hair)] px-5 py-4">
             <div className="mb-3.5 flex items-baseline justify-between">
-              <span className="text-sm text-bone-dim">{dict.cart.total}</span>
+              <span className="text-sm text-bone-dim">{dict.cart.miniTotal}</span>
               <span className="t-price text-xl text-bone">{price(total)} ₴</span>
             </div>
             <div className="flex gap-3">

@@ -5,7 +5,7 @@ import { useMounted } from "@/lib/use-mounted";
 import Link from "next/link";
 import { useI18n } from "@/i18n/context";
 import { brandBySlug } from "@/data/taxonomy";
-import { cartTotals, FREE_DELIVERY_FROM, href, imageOf, keyValue, price, productHref } from "@/lib/shop";
+import { DELIVERY_COST, FREE_DELIVERY_FROM, href, imageOf, keyValue, orderTotals, price, productHref } from "@/lib/shop";
 import { useCart, useLastOrder } from "@/store/shop";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconCart, IconMinus, IconPlus, IconTrash } from "@/components/ui/icons";
@@ -22,7 +22,10 @@ export function CartView() {
 
   if (!mounted) return <div className="min-h-[40vh]" role="status" aria-busy="true" />;
 
-  const { lines, gross, discount, subtotal, delivery, total, pieces } = cartTotals(items);
+  // Без методу доставки: сторінка кошика не рахує доставку в сумі, показує її окремою підказкою
+  // (рішення 3) — метод, а з ним і точна ціна доставки, обирається на чекауті.
+  const { lines, gross, discount, subtotal, pieces } = orderTotals(items);
+  const total = subtotal;
 
   if (lines.length === 0) {
     // Товары никуда не отправлялись, чекаут только демо — restoreCart просто повторяет прошлые slugs.
@@ -97,8 +100,9 @@ export function CartView() {
                     <button
                       type="button"
                       onClick={() => setQty(product.slug, qty - 1)}
+                      disabled={qty <= 1}
                       aria-label={dict.cart.dec}
-                      className="icon-btn !h-[50px] !w-12"
+                      className="icon-btn !h-[50px] !w-12 disabled:opacity-35"
                     >
                       <IconMinus className="h-4 w-4" />
                     </button>
@@ -116,8 +120,11 @@ export function CartView() {
                     </button>
                   </div>
 
-                  <span className="t-price text-xl text-bone @[640px]:w-[150px] @[640px]:text-right @[640px]:text-2xl">
-                    {price(sum)} ₴
+                  <span className="flex items-baseline justify-end gap-2 @[640px]:w-[150px]">
+                    <span className="t-price text-xl text-bone @[640px]:text-2xl">{price(sum)} ₴</span>
+                    {product.oldPrice ? (
+                      <span className="text-sm text-bone-dim line-through">{price(product.oldPrice * qty)} ₴</span>
+                    ) : null}
                   </span>
 
                   <button
@@ -138,15 +145,17 @@ export function CartView() {
           <dl>
             <Row label={dict.cart.items(pieces)} value={`${price(gross)} ₴`} first />
             {discount > 0 ? <Row label={dict.common.discount} value={`−${price(discount)} ₴`} accent /> : null}
-            <Row
-              label={dict.cart.delivery}
-              value={delivery === 0 ? dict.cart.deliveryFree : `${price(delivery)} ₴`}
-              plain
-            />
           </dl>
 
+          {/* Метод доставки обирають на чекауті — тут лише підказка ціни, у суму вона не входить. */}
+          <p className="mt-4 text-sm text-bone-dim">
+            {subtotal >= FREE_DELIVERY_FROM
+              ? dict.cart.deliveryNoteFree(price(FREE_DELIVERY_FROM))
+              : dict.cart.deliveryNoteFrom(price(DELIVERY_COST))}
+          </p>
+
           {left > 0 ? (
-            <div className="mt-4">
+            <div className="mt-3">
               <p className="text-sm text-bone-dim">{dict.cart.freeLeft(price(left))}</p>
               <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-ink-600">
                 <div
@@ -180,13 +189,11 @@ function Row({
   label,
   value,
   accent,
-  plain,
   first,
 }: {
   label: string;
   value: string;
   accent?: boolean;
-  plain?: boolean;
   first?: boolean;
 }) {
   return (
@@ -196,7 +203,7 @@ function Row({
       }`}
     >
       <dt className="text-base text-bone-dim">{label}</dt>
-      <dd className={plain ? "text-base text-bone" : `t-price text-lg ${accent ? "text-signal-text" : "text-bone"}`}>
+      <dd className={`t-price text-lg ${accent ? "text-signal-text" : "text-bone"}`}>
         {value}
       </dd>
     </div>

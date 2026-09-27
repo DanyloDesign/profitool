@@ -57,6 +57,9 @@ export type Category = {
 
 export type Product = {
   slug: string;
+  /** Путь к собственному фото товара, например "/products/makita-dhr243z-photo.png".
+   *  Без него imageOf() берёт фолбэк «категория + бренд» (общее фото на модельный ряд). */
+  image?: string;
   brand: string;
   model: string;
   sku: string;

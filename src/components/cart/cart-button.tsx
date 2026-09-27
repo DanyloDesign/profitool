@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/i18n/context";
-import { cartTotals, href, price } from "@/lib/shop";
+import { href, orderTotals, price } from "@/lib/shop";
 import { useMounted } from "@/lib/use-mounted";
 import { useCart } from "@/store/shop";
 import { useCartUI } from "@/store/cart-ui";
@@ -48,7 +48,7 @@ export function CartButton({ withModal = true }: { withModal?: boolean }) {
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cartCount = mounted ? cartItems.reduce((acc, item) => acc + item.qty, 0) : 0;
-  const cartSum = mounted ? cartTotals(cartItems).subtotal : 0;
+  const cartSum = mounted ? orderTotals(cartItems).subtotal : 0;
 
   const clearCloseTimeout = () => {
     if (closeTimeoutRef.current) {

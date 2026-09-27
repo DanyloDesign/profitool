@@ -28,7 +28,7 @@ const K = {
 /** Метка «без аккумулятора»: по ней карточка товара показывает предупреждение. */
 export const kitNoBattery = K.noBattery;
 
-export const products: Product[] = [
+const allProducts: Product[] = [
   // ── Перфоратори ────────────────────────────────────────────────────────────
   {
     slug: "makita-hr2470",
@@ -1345,6 +1345,47 @@ export const products: Product[] = [
     },
   },
 ];
+
+/**
+ * Слаги, чьё фото показывает не тот инструмент (например, корпус другой модели) или тестовый
+ * снимок с надписью «Mackita» — прячем товар из рейлов, каталога, поиска, сравнения, допродажи
+ * и страницы товара, пока ему не подберут собственное фото (proposal 013, workstream A,
+ * решение 1а). Убрать слаг отсюда — единственное действие, нужное, чтобы товар снова появился.
+ */
+export const HIDDEN_UNTIL_PHOTO = new Set<string>([]);
+
+/**
+ * Товары с собственным снимком модели: `/products/{slug}-photo.png`, собирает
+ * tools/products/prepare_slug_photos.py по tools/products/rozetka-ids-by-slug.json.
+ * Остальные пока показывают общий снимок пары «категория + бренд» (см. imageOf()).
+ */
+const OWN_PHOTO = new Set<string>([
+  "bosch-glm-50-27c",
+  "makita-ga5030",
+  "dewalt-dwe4157",
+  "makita-dhr243z",
+  "makita-hr001gz",
+  "milwaukee-m18-bos125",
+  "makita-sk209gdz",
+  "makita-dbo180z",
+  "makita-bo5041",
+  "makita-dga504z",
+  "makita-ddf484z",
+  "bosch-gsr-18v-55",
+  "milwaukee-m18-fpd2",
+  "metabo-bs-18-lt-bl",
+  "ryobi-r18dd5",
+  "milwaukee-m18-fcs66",
+  "milwaukee-m12-3pl",
+  "metabo-ks-18-ltx-57",
+  "ryobi-r18cs7",
+]);
+
+/** Каталог без спрятанных до фото товаров — единая точка фильтрации: рейлы, каталог, поиск,
+ *  сравнение и generateStaticParams читают этот список, скрытый слаг просто в него не попадает. */
+export const products: Product[] = allProducts
+  .filter((product) => !HIDDEN_UNTIL_PHOTO.has(product.slug))
+  .map((product) => (OWN_PHOTO.has(product.slug) ? { ...product, image: `/products/${product.slug}-photo.png` } : product));
 
 export const productBySlug = new Map(products.map((p) => [p.slug, p]));
 

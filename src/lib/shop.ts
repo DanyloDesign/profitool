@@ -27,8 +27,10 @@ export function keyValue(product: Product, locale: Locale): string {
   return raw;
 }
 
-/** Товар показываем настоящим снимком: покупатель должен узнать инструмент. */
+/** Товар показываем настоящим снимком: покупатель должен узнать инструмент.
+ *  Есть собственное фото модели — берём его, иначе общий снимок «категория + бренд». */
 export function imageOf(product: Product): string {
+  if (product.image) return asset(product.image);
   const category = categoryBySlug.get(product.category);
   return asset(`/products/${category?.tool ?? "drill"}-${product.brand}-photo.png`);
 }
@@ -54,7 +56,16 @@ export function categoryHref(locale: Locale, slug?: string): string {
 export const FREE_DELIVERY_FROM = 5000;
 export const DELIVERY_COST = 120;
 
-export function cartTotals(items: { slug: string; qty: number }[]) {
+export type DeliveryMethod = "novapost" | "courier" | "pickup";
+
+/**
+ * Единственный источник итогов заказа (proposal 013, workstream B) — шапка, мини-корзина,
+ * страница корзины и чекаут вызывают только эту функцию, чтобы сумма нигде не расходилась.
+ * Без `method` доставка в итог не входит (метод ещё не выбран): шапка и мини-корзина показывают
+ * сумму товаров, страница корзины — её же, а доставку выносит отдельной строкой-подсказкой.
+ * Чекаут передаёт выбранный метод, и тогда доставка прибавляется к сумме («pickup» — бесплатно).
+ */
+export function orderTotals(items: { slug: string; qty: number }[], method?: DeliveryMethod) {
   const lines = items
     .map((item) => {
       const product = productBySlug.get(item.slug);
@@ -65,7 +76,8 @@ export function cartTotals(items: { slug: string; qty: number }[]) {
   const subtotal = lines.reduce((acc, line) => acc + line.sum, 0);
   // «Товары» считаем по старым ценам, разницу показываем строкой «Скидка».
   const gross = lines.reduce((acc, line) => acc + (line.product.oldPrice ?? line.product.price) * line.qty, 0);
-  const delivery = subtotal === 0 || subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_COST;
+  const delivery =
+    !method || method === "pickup" || subtotal === 0 || subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_COST;
   return {
     lines,
     gross,

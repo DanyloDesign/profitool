@@ -5,6 +5,7 @@ import { useMounted } from "@/lib/use-mounted";
 import { useState } from "react";
 import { useI18n } from "@/i18n/context";
 import type { Product } from "@/data/types";
+import { kitNoBattery } from "@/data/products";
 import { brandBySlug, platformBySlug } from "@/data/taxonomy";
 import { discountPercent, href, price } from "@/lib/shop";
 import { COMPARE_LIMIT, useCart, useCompare, usePlatform, useWishlist } from "@/store/shop";
@@ -25,6 +26,8 @@ export function BuyBox({ product }: { product: Product }) {
   const myPlatform = usePlatform((state) => state.slug);
 
   const out = product.stock === 0;
+  // По значению, не по ссылке: product приходит с сервера сериализованной копией.
+  const noBattery = product.kit.some((item) => item.ua === kitNoBattery.ua);
   const discount = discountPercent(product);
   const platform = product.platform ? platformBySlug.get(product.platform) : null;
   const inCompare = mounted && compareSlugs.includes(product.slug);
@@ -48,6 +51,9 @@ export function BuyBox({ product }: { product: Product }) {
       </div>
 
       <Availability product={product} />
+      {/* Одним рядком під наявністю: покупець бачить це в момент кліку «У кошик», а не в рамці
+          нижче на сторінці (рамку прибрано, DESIGN.md панелей не дозволяє). */}
+      {noBattery ? <p className="mt-2 text-[15px] text-bone-dim">{kitNoBattery[locale]}</p> : null}
 
       <div className="mt-6 flex items-stretch gap-3">
         <div className="flex shrink-0 items-center rounded-full border border-[var(--hair-strong)]">

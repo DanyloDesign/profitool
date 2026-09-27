@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { CompareBar } from "@/components/catalog/compare-bar";
 import { LocaleProvider } from "@/i18n/context";
 import { THEME_SCRIPT } from "@/lib/theme";
+import { asset } from "@/lib/asset";
 import { IconGradientDefs } from "@/components/ui/icons";
 
 /** Заголовки, цены, слово в логотипе. Полная кириллица, включая ґ є і ї. */
@@ -42,15 +43,15 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
     description: dict.meta.description,
     icons: {
       icon: [
-        { url: "/brand/logo.svg", type: "image/svg+xml" },
-        { url: "/brand/mark-32.png", sizes: "32x32", type: "image/png" },
+        { url: asset("/brand/logo.svg"), type: "image/svg+xml" },
+        { url: asset("/brand/mark-32.png"), sizes: "32x32", type: "image/png" },
       ],
-      apple: "/brand/apple-touch-icon.png",
+      apple: asset("/brand/apple-touch-icon.png"),
     },
     openGraph: {
       title: dict.meta.title,
       description: dict.meta.description,
-      images: [{ url: "/brand/og-base.png", width: 1200, height: 630 }],
+      images: [{ url: asset("/brand/og-base.png"), width: 1200, height: 630 }],
     },
   };
 }

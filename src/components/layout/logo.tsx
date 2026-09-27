@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { asset } from "@/lib/asset";
 
 /**
  * Знак и слово. Рисунок знака не трогаем: молоток и зубило выбиты в заливке,
@@ -9,7 +10,7 @@ export function Logo({ href, className = "" }: { href: string; className?: strin
   return (
     <Link href={href} className={`flex shrink-0 items-center gap-2.5 sm:gap-3 ${className}`}>
       <Image
-        src="/brand/logo.svg"
+        src={asset("/brand/logo.svg")}
         alt=""
         width={44}
         height={44}

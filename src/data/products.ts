@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 import type { Localized, Product } from "./types";
 
 /** Комплектация повторяется от модели к модели, поэтому собрана в один словарь. */
@@ -1349,5 +1350,5 @@ export const productBySlug = new Map(products.map((p) => [p.slug, p]));
 
 /** Путь к packshot: рендер зависит от типа инструмента и бренда. */
 export function productImage(product: Product, tool: string): string {
-  return `/products/${tool}-${product.brand}.png`;
+  return asset(`/products/${tool}-${product.brand}.png`);
 }

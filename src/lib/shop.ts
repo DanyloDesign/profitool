@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n";
+import { asset } from "@/lib/asset";
 import { categoryBySlug, platformBySlug } from "@/data/taxonomy";
 import { productBySlug, products } from "@/data/products";
 import { localize, type Localized, type Product, type SpecKey, type SpecValue } from "@/data/types";
@@ -29,13 +30,13 @@ export function keyValue(product: Product, locale: Locale): string {
 /** Товар показываем настоящим снимком: покупатель должен узнать инструмент. */
 export function imageOf(product: Product): string {
   const category = categoryBySlug.get(product.category);
-  return `/products/${category?.tool ?? "drill"}-${product.brand}-photo.png`;
+  return asset(`/products/${category?.tool ?? "drill"}-${product.brand}-photo.png`);
 }
 
 /** Иконка раздела — стеклянный рендер из Blender, он же в меню каталога. */
 export function categoryIcon(slug: string): string {
   const tool = categoryBySlug.get(slug)?.tool ?? "drill";
-  return `/products/${tool}-makita-glass.png`;
+  return asset(`/products/${tool}-makita-glass.png`);
 }
 
 export function href(locale: Locale, path = ""): string {

@@ -707,5 +707,193 @@
 
 /* --- 015 product page and catalog --- */
 
+/* Product page. The photo takes the left column; model, figures, price and the buy button share
+   the right one, so everything that decides the purchase fits the first screen at 1512×945. */
+.pdp-photo {
+  position: relative;
+  height: 300px;
+}
+@media (min-width: 640px) {
+  .pdp-photo {
+    height: 420px;
+  }
+}
+@media (min-width: 1024px) {
+  .pdp-photo {
+    height: 560px;
+  }
+}
+
+/* The buy column sticks only when the whole column fits under the header (the tallest one, M18
+   CAG125XPDB with a two-line name, ends at 861px): a taller sticky block
+   would hide its own bottom (the terms) until the page ends. */
+@media (min-width: 1024px) and (min-height: 880px) {
+  .pdp-buy {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+}
+
+/* Model name in the buy column: smaller than t-h1, so "GBH 2-26 DFR" keeps one line. */
+.pdp-title {
+  font-size: 1.75rem;
+}
+@media (min-width: 1024px) {
+  .pdp-title {
+    font-size: 2.5rem;
+  }
+}
+
+.pdp-price {
+  font-size: 2rem;
+}
+@media (min-width: 1024px) {
+  .pdp-price {
+    font-size: 2.75rem;
+  }
+}
+
+/* Secondary lines of the buy column: kit line, terms, lead. */
+.pdp-line {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+/* Four big figures: value in Unbounded above a quiet label, hairlines between rows. */
+.pdp-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  border-top: 1px solid var(--hair);
+}
+/* Three figures stand in one row rather than leaving a hole in a 2×2 grid. */
+.pdp-figures[data-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 20px;
+}
+.pdp-figures > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.pdp-figures dt {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-bone-dim);
+}
+.pdp-figures dd {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-bone);
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1024px) {
+  .pdp-figures dd {
+    font-size: 1.375rem;
+  }
+}
+
+/* Shelf under the page: a swipe rail on phones, four columns from 768px. */
+.pdp-shelf {
+  display: flex;
+  gap: 16px;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.pdp-shelf::-webkit-scrollbar {
+  display: none;
+}
+.pdp-shelf > * {
+  flex: 0 0 min(46%, 240px);
+  scroll-snap-align: start;
+}
+@media (min-width: 768px) {
+  .pdp-shelf {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 48px 40px;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+
+/* Catalog: task pills for rotary hammers, 48px, title over the energy range. */
+.listing-task {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 4px 20px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  color: var(--color-bone);
+  text-align: left;
+  white-space: nowrap;
+  transition:
+    border-color var(--dur-fast) var(--ease-std),
+    color var(--dur-fast) var(--ease-std);
+}
+.listing-task:hover:not(:disabled) {
+  border-color: var(--color-bone-dim);
+}
+.listing-task[aria-pressed="true"] {
+  padding-left: 16px;
+  border-color: var(--color-signal);
+}
+.listing-task:disabled {
+  border-color: var(--hair);
+  color: var(--color-bone-faint);
+  cursor: not-allowed;
+}
+.listing-task-title {
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.listing-task[aria-pressed="true"] .listing-task-title {
+  color: var(--color-signal-text);
+}
+.listing-task-range {
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--color-bone-dim);
+}
+.listing-task:disabled .listing-task-range {
+  color: var(--color-bone-faint);
+}
+
+/* Catalog: the remembered battery platform offered as a one-tap filter. Dashed, so it reads as a
+   suggestion next to the applied filters. */
+.listing-suggest {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1px dashed var(--color-stock);
+  border-radius: 999px;
+  color: var(--color-stock);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-std);
+}
+.listing-suggest:hover {
+  background-color: color-mix(in srgb, var(--color-stock) 10%, transparent);
+}
 
 /* --- end 015 product page --- */

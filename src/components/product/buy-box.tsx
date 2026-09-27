@@ -2,20 +2,25 @@
 
 import Link from "next/link";
 import { useMounted } from "@/lib/use-mounted";
-import { useState } from "react";
 import { useI18n } from "@/i18n/context";
 import type { Product } from "@/data/types";
-import { kitNoBattery } from "@/data/products";
+import { kitBattery, kitKind } from "@/data/products";
 import { brandBySlug, platformBySlug } from "@/data/taxonomy";
 import { discountPercent, href, price } from "@/lib/shop";
 import { COMPARE_LIMIT, useCart, useCompare, usePlatform, useWishlist } from "@/store/shop";
 import { announceAdded, useCartUI } from "@/store/cart-ui";
-import { IconCheck, IconCompare, IconHeart, IconMinus, IconPlus } from "@/components/ui/icons";
+import { IconCheck, IconCompare, IconHeart } from "@/components/ui/icons";
 
+/** The sticky phone bar watches this element: it shows as soon as the buy button leaves the screen. */
+export const BUY_CTA_ID = "buy-box-cta";
+
+/**
+ * Price, stock, the kit line and the buy button (015). Wishlist and compare sit next to the button
+ * as icon buttons, so the column that decides the purchase stays short enough to stick.
+ */
 export function BuyBox({ product }: { product: Product }) {
   const { locale, dict } = useI18n();
   const mounted = useMounted();
-  const [qty, setQty] = useState(1);
 
   const add = useCart((state) => state.add);
   const inCart = useCart((state) => state.items.find((item) => item.slug === product.slug));
@@ -23,66 +28,36 @@ export function BuyBox({ product }: { product: Product }) {
   const compareSlugs = useCompare((state) => state.slugs);
   const toggleWish = useWishlist((state) => state.toggle);
   const wishSlugs = useWishlist((state) => state.slugs);
-  const myPlatform = usePlatform((state) => state.slug);
 
   const out = product.stock === 0;
-  // По значению, не по ссылке: product приходит с сервера сериализованной копией.
-  const noBattery = product.kit.some((item) => item.ua === kitNoBattery.ua);
   const discount = discountPercent(product);
-  const platform = product.platform ? platformBySlug.get(product.platform) : null;
   const inCompare = mounted && compareSlugs.includes(product.slug);
   const compareFull = mounted && compareSlugs.length >= COMPARE_LIMIT && !inCompare;
   const wished = mounted && wishSlugs.includes(product.slug);
-  const fits = mounted && !!myPlatform && product.platform === myPlatform;
-  const brand = brandBySlug.get(product.brand)?.name ?? product.brand;
+  const name = `${brandBySlug.get(product.brand)?.name ?? product.brand} ${product.model}`;
 
   return (
     <div>
-      <div id="buy-box-price" className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-        <span className="t-price text-4xl text-bone lg:text-[44px]">{price(product.price)} ₴</span>
+      {/* id kept: other code may still look for the price block. The sticky bar watches the button. */}
+      <div id="buy-box-price" className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <span className="t-price pdp-price text-bone">{price(product.price)} ₴</span>
         {product.oldPrice ? (
           <span className="text-lg text-bone-dim line-through">{price(product.oldPrice)}</span>
         ) : null}
         {discount ? (
-          <span className="inline-flex h-7 items-center rounded-full bg-signal px-3 text-sm font-semibold text-black">
+          <span className="inline-flex h-7 items-center self-center rounded-full bg-signal px-3 text-sm font-semibold text-black">
             −{discount}%
           </span>
         ) : null}
+        <Availability product={product} />
       </div>
 
-      <Availability product={product} />
-      {/* Одним рядком під наявністю: покупець бачить це в момент кліку «У кошик», а не в рамці
-          нижче на сторінці (рамку прибрано, DESIGN.md панелей не дозволяє). */}
-      {noBattery ? <p className="mt-2 text-[15px] text-bone-dim">{kitNoBattery[locale]}</p> : null}
+      <KitLine product={product} />
 
-      <div className="mt-6 flex items-stretch gap-3">
-        <div className="flex shrink-0 items-center rounded-full border border-[var(--hair-strong)]">
-          <button
-            type="button"
-            onClick={() => setQty((value) => Math.max(1, value - 1))}
-            disabled={out || qty <= 1}
-            aria-label={dict.cart.dec}
-            className="icon-btn !h-[50px] !w-12 disabled:opacity-35"
-          >
-            <IconMinus className="h-4 w-4" />
-          </button>
-          <span className="t-price w-7 text-center text-[17px] text-bone" aria-live="polite">
-            {qty}
-          </span>
-          <button
-            type="button"
-            onClick={() => setQty((value) => Math.min(product.stock || 1, value + 1))}
-            disabled={out || qty >= product.stock}
-            aria-label={dict.cart.inc}
-            className="icon-btn !h-[50px] !w-12 disabled:opacity-35"
-          >
-            <IconPlus className="h-4 w-4" />
-          </button>
-        </div>
-
+      <div id={BUY_CTA_ID} className="mt-6 flex items-stretch gap-3">
         {mounted && inCart ? (
-          // Товар уже в корзине: кнопка ведёт туда же, куда кнопка корзины в шапке — модалка
-          // на ≥md, страница /cart на телефоне. Второй полноширинной кнопки под ней больше нет.
+          // Already in the cart: the button leads where the header cart leads (the cart panel on
+          // ≥md, the /cart page on phones).
           <Link
             href={href(locale, "/cart")}
             onClick={(event) => {
@@ -100,7 +75,7 @@ export function BuyBox({ product }: { product: Product }) {
           <button
             type="button"
             onClick={() => {
-              add(product.slug, qty);
+              add(product.slug, 1);
               announceAdded();
             }}
             disabled={out}
@@ -109,74 +84,106 @@ export function BuyBox({ product }: { product: Product }) {
             {out ? dict.stock.out : dict.product.addToCart}
           </button>
         )}
-      </div>
-
-      <div className="mt-2 flex items-center justify-center gap-6">
         <button
           type="button"
           onClick={() => toggleWish(product.slug)}
           aria-pressed={wished}
-          className={`inline-flex h-11 items-center gap-2 text-[15px] transition-colors ${
-            wished ? "text-signal-text" : "text-bone-dim hover:text-bone"
-          }`}
+          aria-label={wished ? dict.product.wishlistRemove(name) : dict.product.wishlistAdd(name)}
+          title={wished ? dict.product.inWishlist : dict.product.addToWishlist}
+          className="ghost-btn w-13 shrink-0 !px-0"
         >
           <IconHeart className="h-5 w-5" filled={wished} gradient={wished} />
-          {wished ? dict.product.inWishlist : dict.product.addToWishlist}
         </button>
         <button
           type="button"
           onClick={() => toggleCompare(product.slug)}
           disabled={compareFull}
           aria-pressed={inCompare}
-          className={`inline-flex h-11 items-center gap-2 text-[15px] transition-colors disabled:opacity-40 ${
-            inCompare ? "text-signal-text" : "text-bone-dim hover:text-bone"
-          }`}
+          aria-label={inCompare ? dict.product.compareRemove(name) : dict.product.compareAdd(name)}
+          title={compareFull ? dict.compare.limit : inCompare ? dict.product.inCompare : dict.product.compare}
+          className="ghost-btn w-13 shrink-0 !px-0"
         >
           <IconCompare className="h-5 w-5" gradient={inCompare} />
-          {inCompare ? dict.product.inCompare : dict.product.compare}
         </button>
       </div>
-
-      {platform ? (
-        <div className="mt-8 border-t border-[var(--hair)] pt-6">
-          <p className="text-base font-medium text-bone">{dict.product.compatible}</p>
-          <p className="t-h3 mt-2 text-bone">
-            {brand} {platform.name}
-          </p>
-          <p className="mt-2 text-[15px] text-bone-dim">{platform.note[locale]}</p>
-          {fits ? (
-            <p className="mt-4 inline-flex items-center gap-2 text-[15px] text-stock">
-              <IconCheck className="h-4 w-4" />
-              {dict.home.platformPick}
-            </p>
-          ) : (
-            <Link
-              href={`${href(locale, "/catalog")}?platform=${platform.slug}`}
-              className="chip mt-4 !h-11 !px-5"
-            >
-              {dict.product.sameSeries}
-            </Link>
-          )}
-        </div>
-      ) : null}
     </div>
+  );
+}
+
+/**
+ * One calm line under the price about what powers the tool (015, kit truth). Bare tools say so
+ * and name the platform; once the buyer's own platform matches, the line turns stock green.
+ * Nothing for corded tools and accessories.
+ */
+function KitLine({ product }: { product: Product }) {
+  const { locale, dict } = useI18n();
+  const mounted = useMounted();
+  const myPlatform = usePlatform((state) => state.slug);
+
+  const kind = kitKind(product);
+  if (kind === "plain") return null;
+
+  const platform = product.platform ? platformBySlug.get(product.platform) : undefined;
+  const platformName = platform ? `${brandBySlug.get(platform.brand)?.name ?? ""} ${platform.name}`.trim() : "";
+
+  let lead: string;
+  let rest = "";
+  let tone: string;
+  if (kind === "withBattery") {
+    const battery = kitBattery(product)?.[locale] ?? "";
+    lead = dict.pdp.kitIncluded(battery.charAt(0).toLowerCase() + battery.slice(1));
+    tone = "text-stock";
+  } else {
+    const fits = mounted && !!myPlatform && myPlatform === product.platform;
+    lead = dict.pdp.kitBare;
+    if (platformName) rest = fits ? dict.pdp.kitFits(platformName) : dict.pdp.kitWorksWith(platformName);
+    tone = fits ? "text-stock" : "text-signal-text";
+  }
+
+  return (
+    <p className={`pdp-line mt-3 flex gap-2.5 ${tone}`}>
+      <BoxIcon />
+      <span>
+        <span className="font-medium">{lead}</span>
+        {rest ? <> {rest}</> : null}
+      </span>
+    </p>
+  );
+}
+
+function BoxIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="mt-px h-5 w-5 shrink-0"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M4 8l8-4 8 4v8l-8 4-8-4z" />
+      <path d="M4 8l8 4 8-4M12 12v8" />
+    </svg>
   );
 }
 
 function Availability({ product }: { product: Product }) {
   const { dict } = useI18n();
 
+  // No "we'll let you know" here: the shop has no restock notice (CLAUDE.md, left out on purpose).
   const state =
     product.stock === 0
-      ? { dot: "bg-bone-faint", text: `${dict.stock.out}. ${dict.stock.outNote}`, color: "text-bone-dim" }
+      ? { dot: "bg-bone-faint", text: dict.stock.out, color: "text-bone-dim" }
       : product.stock <= 5
         ? { dot: "bg-signal", text: dict.stock.low(product.stock), color: "text-signal-text" }
         : { dot: "bg-stock", text: dict.stock.in, color: "text-bone" };
 
   return (
-    <p className={`mt-4 flex items-center gap-2.5 text-base ${state.color}`}>
-      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${state.dot}`} aria-hidden />
+    <span className={`pdp-line inline-flex items-center gap-2 ${state.color}`}>
+      <span className={`h-2 w-2 shrink-0 rounded-full ${state.dot}`} aria-hidden />
       {state.text}
-    </p>
+    </span>
   );
 }

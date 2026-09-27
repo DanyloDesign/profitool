@@ -36,9 +36,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
 
 # typescript
 *.tsbuildinfo
@@ -51,3 +48,22 @@ next-env.d.ts
 # client source materials (public repo, keep local)
 docs/dev/*.docx
 docs/dev/PROFITOOL Site.html
+
+# OS junk
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# logs and stray screenshots from tools/shots runs outside docs
+*.log
+/out*.png
+/tools/shots/*.png

@@ -1,0 +1,647 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   PROFITOOL · дизайн-система «Витрина»
+   Чёрный фон, тёплый белый текст, акцент из градиента логотипа.
+   Спецификация: DESIGN.md
+   ───────────────────────────────────────────────────────────── */
+
+@theme {
+  /* поверхности, от самой глубокой к самой светлой */
+  --color-ink-900: #000000;
+  --color-ink-850: #0a0a0b;
+  --color-ink-800: #0e0f11;
+  --color-ink-750: #141517;
+  --color-ink-700: #191a1d;
+  --color-ink-600: #24282c;
+  --color-ink-500: #343a3f;
+
+  /* текст: тёплый белый вместо чистого #FFF, он режет глаз на графите */
+  --color-bone: #f2efe9;
+  --color-bone-dim: #a0a19d;
+  --color-bone-faint: #8a8b87;
+
+  /* акцент из логотипа. Заливка кнопок и бейджей, текст на ней только чёрный */
+  --color-signal: #f18f37;
+  --color-signal-hot: #f5a04f;
+  --color-signal-deep: #b8641d;
+  /* акцентный текст на чёрном: активный пункт меню, ссылки */
+  --color-signal-text: #f5a21a;
+  /* концы градиента логотипа. С 006 (раунд 2) используется как заливка signal-btn и как
+     цвет активного индикатора сравнения/избранного — см. --grad-brand ниже */
+  --color-brand-a: #f5a21a;
+  --color-brand-b: #ed7c53;
+  /* та же пара, но для текста и иконок: тёмная тема совпадает с brand-a/b, светлая — темнее,
+     потому что #F5A21A на белом даёт 2,1:1. Используется в тексте «Каталог» и в градиентной
+     иконке активного сравнения/избранного (--grad-brand-text) */
+  --color-brand-a-text: #f5a21a;
+  --color-brand-b-text: #ed7c53;
+
+  /* склад */
+  --color-stock: #a6c34f;
+  --color-warn: #ffb020;
+
+  --font-display: var(--font-unbounded), "Arial Black", sans-serif;
+  --font-ui: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
+
+  --container-shell: 1440px;
+
+  --ease-cut: cubic-bezier(0.2, 0.9, 0.24, 1);
+  --ease-metal: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --hair: rgba(255, 255, 255, 0.1);
+  --hair-strong: rgba(255, 255, 255, 0.22);
+  --shadow-pop: 0 30px 70px rgba(0, 0, 0, 0.8);
+  --gutter: 20px;
+  /* Шапка двошарова з 006: --header-l1/-l2 — висота першого й другого ряду (зміст рядів різний
+     на мобільному й від 768px, назви умовні), --header-h — їхня сума, нею живуть sticky-відступи
+     сторінок і MegaMenu/MobileMenu. Пікселі не дублювати — міняти тільки тут. */
+  --header-l1: 56px;
+  --header-l2: 64px;
+  --header-h: calc(var(--header-l1) + var(--header-l2));
+  /* Затемнення під модалкою кошика: завжди чорне, не токен поверхні — inк-900 у світлій темі білий. */
+  --scrim: rgba(0, 0, 0, 0.7);
+  /* Градиент логотипа (006, раунд 2). --grad-brand — заливка кнопок, ярче и одинаковая в
+     обеих темах (чёрный текст на ней держит 7,6:1 и выше в любой точке). --grad-brand-text —
+     для текста/иконок, берёт цвета из --color-brand-a-text/-b-text и поэтому темнее в светлой
+     теме, читается через background-clip:text. */
+  --grad-brand: linear-gradient(135deg, var(--color-brand-a), var(--color-brand-b));
+  --grad-brand-text: linear-gradient(135deg, var(--color-brand-a-text), var(--color-brand-b-text));
+
+  /* Тонированная заливка tint-btn (006, раунд 3): та же пара brand-a/b, что и --grad-brand,
+     но на 20% альфы поверх чёрного — тёплый коричневый, не кроет фото товара. Бордер чуть
+     плотнее (34%), иначе заливка сливается с чёрным полем карточки — контраст замерен,
+     см. Round 3 в docs/dev/006-two-layer-header/implementation.md. */
+  --tint-btn-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-brand-a) 20%, transparent),
+    color-mix(in srgb, var(--color-brand-b) 20%, transparent)
+  );
+  --tint-btn-border: color-mix(in srgb, var(--color-brand-a) 34%, transparent);
+}
+
+/* Светлая тема. Те же имена токенов, другие значения: компоненты про тему не знают.
+   Фон чисто белый. Акцент на белом темнее, чтобы граница держала 3:1, а акцентный текст 4,5:1.
+   Контрасты замерены, таблица в DESIGN.md. Атрибут ставит скрипт в <head> до отрисовки. */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --color-ink-900: #ffffff;
+  --color-ink-850: #faf9f7;
+  --color-ink-800: #f5f4f1;
+  --color-ink-750: #efeeea;
+  --color-ink-700: #e8e6e1;
+  --color-ink-600: #dcdad4;
+  --color-ink-500: #c9c6bf;
+
+  --color-bone: #14130f;
+  --color-bone-dim: #55564f;
+  --color-bone-faint: #6b6c66;
+
+  --color-signal: #de7417;
+  --color-signal-hot: #ee923f;
+  --color-signal-deep: #a9490a;
+  --color-signal-text: #a9490a;
+  /* Исходные brand-a/b (#F5A21A/#ED7C53) дают 2,1–2,8:1 на белом — мало для текста и иконок.
+     Тёмные концы держат 5,0–5,2:1 на всём градиенте, замерено tools/shots/contrast.mjs. */
+  --color-brand-a-text: #c2410c;
+  --color-brand-b-text: #b45309;
+
+  --color-stock: #3f7d1a;
+  --color-warn: #b3261e;
+
+  --hair: rgba(0, 0, 0, 0.1);
+  --hair-strong: rgba(0, 0, 0, 0.36);
+  --shadow-pop: 0 20px 50px rgba(20, 19, 15, 0.18);
+  --scrim: rgba(20, 19, 15, 0.45);
+
+  /* tint-btn на белом (011): непрозрачная заливка, бренд 38% на белом. Прозрачные 16% сливались
+     с фоном карточки и не давали кнопке акцента. Hover по-прежнему полный --grad-brand, так что
+     разница покоя и наведения сохраняется. Текст --color-bone на заливке держит >12:1. */
+  --tint-btn-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-brand-a) 38%, #fff),
+    color-mix(in srgb, var(--color-brand-b) 38%, #fff)
+  );
+  --tint-btn-border: color-mix(in srgb, var(--color-brand-b) 60%, #fff);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 40px;
+    /* Планшет: той самий двошаровий каркас, стиснутий (підписи ховаються в компонентах).
+       Ряд 1 навмисно вищий за самі пілюлі (44px): ≥8px повітря зверху й знизу (owner note,
+       006 round 2 — раніше було 48px, лишало тільки 2px). */
+    --header-l1: 60px;
+    --header-l2: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --header-l1: 60px;
+    --header-l2: 72px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 72px;
+  }
+}
+
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    background: var(--color-ink-900);
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+
+  body {
+    background: var(--color-ink-900);
+    color: var(--color-bone);
+    font-family: var(--font-ui);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: #000;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink-900);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ink-600);
+    border: 3px solid var(--color-ink-900);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-signal-deep);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ── Типографика ───────────────────────────────────────────── */
+/* Unbounded широкий: размеры подобраны под него, регистр обычный. */
+
+@utility t-hero {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.25rem, 4.4vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+@utility t-h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+/* Заголовок секции на главной и в рейках. */
+@utility t-section {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.625rem, 2.8vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+@utility t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+@utility t-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Подпись раздела: Unbounded, без капса. */
+@utility t-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+/* Служебная подпись: подпись поля, единица измерения. Меньше 14px не бывает. */
+@utility t-tag {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+/* Цена. Размер задаёт место вызова. */
+@utility t-price {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+@utility t-num {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+/* ── Каркас ────────────────────────────────────────────────── */
+
+@utility shell {
+  width: 100%;
+  max-width: var(--container-shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility hair {
+  border: 1px solid var(--hair);
+}
+@utility hair-t {
+  border-top: 1px solid var(--hair);
+}
+@utility hair-b {
+  border-bottom: 1px solid var(--hair);
+}
+@utility hair-l {
+  border-left: 1px solid var(--hair);
+}
+@utility hair-r {
+  border-right: 1px solid var(--hair);
+}
+
+/* ── Кнопки ────────────────────────────────────────────────── */
+/* Размер меняют переменные: --btn-h, --btn-px, --btn-fs. См. btn-lg, btn-sm. */
+
+@utility btn-lg {
+  --btn-h: 60px;
+  --btn-px: 40px;
+  --btn-fs: 1.0625rem;
+}
+
+@utility btn-sm {
+  --btn-h: 44px;
+  --btn-px: 22px;
+  --btn-fs: 0.9375rem;
+}
+
+/* Кнопка призыва. Заливка градиентом логотипа (006, раунд 2) — единственный градиент в
+   интерфейсе кроме текста «Каталог» и активных иконок сравнения/избранного. Текст на ней
+   только чёрный: в любой точке градиента даёт 7,6:1 и выше, tools/shots/contrast.mjs. */
+@utility signal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  background-image: var(--grad-brand);
+  color: #000;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: 999px;
+  transition:
+    background-image 0.2s var(--ease-cut),
+    filter 0.2s var(--ease-cut);
+
+  &:hover {
+    /* Угол градиента чуть смещён вместо простой замены цвета — заметно, но не мигает. */
+    background-image: linear-gradient(115deg, var(--color-brand-a), var(--color-brand-b));
+    filter: brightness(1.04);
+  }
+  &:active {
+    transform: translateY(1px);
+    filter: brightness(0.92);
+  }
+  &:disabled {
+    background-image: none;
+    background-color: var(--color-ink-600);
+    color: var(--color-bone-dim);
+    cursor: not-allowed;
+  }
+}
+
+/* Кнопка «У кошик» на карточке товара (006, раунд 3). Состояние покоя — тонированная заливка
+   градиента логотипа (см. --tint-btn-bg/-border выше), не полная плашка: в сетке из 12+ карточек
+   сплошной оранжевый signal-btn спорил с фото и ценой. При наведении/фокусе заливка становится
+   полной (--grad-brand) через ::before с переходом только opacity (сам gradient не анимируется) —
+   150мс, off под prefers-reduced-motion общим правилом в @layer base. Состояние «в корзине»
+   переопределяется через [data-state="added"] ниже, отключает и заливку, и hover-слой. */
+@utility tint-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  border-radius: 999px;
+  border: 1px solid var(--tint-btn-border);
+  background-image: var(--tint-btn-bg);
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    color 0.15s var(--ease-cut),
+    border-color 0.15s var(--ease-cut),
+    filter 0.15s var(--ease-cut);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background-image: var(--grad-brand);
+    opacity: 0;
+    transition: opacity 0.18s var(--ease-cut);
+    z-index: -1;
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
+    color: #000;
+    border-color: transparent;
+  }
+  &:hover:not(:disabled)::before,
+  &:focus-visible:not(:disabled)::before {
+    opacity: 1;
+  }
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+    filter: brightness(0.93);
+  }
+  &:disabled {
+    background-image: none;
+    background-color: var(--color-ink-600);
+    border-color: transparent;
+    color: var(--color-bone-dim);
+    cursor: not-allowed;
+  }
+}
+
+/* Состояние «добавлено» для tint-btn: гасит и заливку покоя, и hover-слой, держит семантику
+   склада (--color-stock) как раньше на ghost-btn — рамка и текст зелёные в обеих темах. */
+.tint-btn[data-state="added"] {
+  background-image: none;
+  background-color: transparent;
+  border-color: var(--color-stock);
+  color: var(--color-stock);
+}
+.tint-btn[data-state="added"]::before {
+  opacity: 0 !important;
+}
+.tint-btn[data-state="added"]:hover,
+.tint-btn[data-state="added"]:focus-visible {
+  border-color: var(--color-stock);
+  color: var(--color-stock);
+}
+/* 009: после ухода курсора и возврата «В кошику» превращается в «Прибрати з кошика».
+   Зелёный здесь читался бы как подтверждение, поэтому нейтральный бордер и текст.
+   Hover только для настоящей мыши: на тач-экране «липкий» hover после тапа гасил бы зелёный. */
+@media (hover: hover) {
+  .tint-btn[data-state="added"][data-armed]:hover {
+    border-color: var(--hair-strong);
+    color: var(--color-bone);
+  }
+}
+.tint-btn[data-state="added"][data-armed]:focus-visible {
+  border-color: var(--hair-strong);
+  color: var(--color-bone);
+}
+
+@utility ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  border: 1px solid var(--hair-strong);
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: 999px;
+  transition:
+    border-color 0.2s var(--ease-cut),
+    color 0.2s var(--ease-cut);
+
+  &:hover {
+    border-color: var(--color-signal);
+    color: var(--color-signal-text);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    border-color: var(--hair);
+    color: var(--color-bone-faint);
+    cursor: not-allowed;
+  }
+}
+
+/* Круглая кнопка-иконка 44px: минимальная тап-цель. */
+@utility icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  color: var(--color-bone-dim);
+  transition: color 0.2s var(--ease-cut);
+
+  &:hover {
+    color: var(--color-bone);
+  }
+}
+
+/* ── Поля ──────────────────────────────────────────────────── */
+
+@utility field {
+  width: 100%;
+  height: 52px;
+  padding-inline: 20px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-bone);
+  font-size: 1rem;
+  transition: border-color 0.2s var(--ease-cut);
+
+  &::placeholder {
+    color: var(--color-bone-faint);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--color-signal);
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--color-warn);
+  }
+}
+
+@utility field-area {
+  height: auto;
+  padding-block: 14px;
+  border-radius: 26px;
+  resize: none;
+}
+
+/* Чекбокс и радио своими руками: родные на чёрном выходят белыми квадратами. */
+@utility check {
+  appearance: none;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--color-bone-dim);
+  border-radius: 6px;
+  background: transparent center / 14px no-repeat;
+  transition:
+    background-color 0.15s var(--ease-cut),
+    border-color 0.15s var(--ease-cut);
+
+  &:checked {
+    border-color: var(--color-signal);
+    background-color: var(--color-signal);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5 9.5 17.5 19.5 6.5'/%3E%3C/svg%3E");
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+}
+
+@utility radio {
+  appearance: none;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--color-bone-dim);
+  border-radius: 999px;
+  background: transparent;
+  transition: border-color 0.15s var(--ease-cut);
+
+  &:checked {
+    border-color: var(--color-signal);
+    background: radial-gradient(circle, var(--color-signal) 0 5px, transparent 6px);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+}
+
+/* Чип фильтра и платформы. */
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  height: 40px;
+  padding-inline: 16px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  color: var(--color-bone);
+  font-size: 0.9375rem;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    border-color 0.2s var(--ease-cut),
+    color 0.2s var(--ease-cut);
+
+  &:hover {
+    border-color: var(--color-bone-dim);
+  }
+  &[aria-pressed="true"],
+  &[data-on="true"] {
+    border-color: var(--color-signal);
+    color: var(--color-signal-text);
+  }
+}
+
+/* Строка характеристики. */
+@utility spec-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--hair);
+}
+
+@utility leader {
+  color: var(--color-bone-dim);
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

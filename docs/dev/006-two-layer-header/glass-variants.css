@@ -1,0 +1,287 @@
+/* ─────────────────────────────────────────────────────────────
+   «У кошик» — 3 варіанти Liquid Glass (Apple 2025-стиль)
+   Референс для раунду 4, 006-two-layer-header. НЕ підключено до збірки.
+   Токени за проєктною конвенцією: bare :root = тёмная тема (за замовчуванням
+   сайту), :root[data-theme="light"] — світла. Контрасти тексту прорахова́ні
+   в docs/dev/006-two-layer-header/ — див. 4-IMPLEMENTATION.md.
+   Всі три варіанти успадковують форму/розміри tint-btn (52px, radius 999px,
+   font-ui 600 16px), лишень заливка та шар скла інші.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* --- A: Clear glass ------------------------------------------------- */
+  --glass-a-fill: rgba(255, 255, 255, 0.09);
+  --glass-a-border-1: rgba(255, 255, 255, 0.5);
+  --glass-a-border-2: rgba(255, 255, 255, 0);
+  --glass-a-specular: rgba(255, 255, 255, 0.32);
+  --glass-a-shade: rgba(0, 0, 0, 0.4);
+  --glass-a-hover-tint: rgba(245, 162, 26, 0.22);
+  --glass-a-blur: 18px;
+  --glass-a-sat: 170%;
+
+  /* --- B: Tinted glass (amber, --grad-brand у низькій альфі) --------- */
+  --glass-b-fill: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-brand-a) 28%, transparent),
+    color-mix(in srgb, var(--color-brand-b) 28%, transparent)
+  );
+  --glass-b-border-1: rgba(255, 255, 255, 0.4);
+  --glass-b-border-2: rgba(237, 124, 83, 0.15);
+  --glass-b-specular: rgba(255, 255, 255, 0.3);
+  --glass-b-hover-text: #000;
+  --glass-b-blur: 16px;
+  --glass-b-sat: 180%;
+
+  /* --- C: Glass over photo (risky) ------------------------------------
+     Сидить на фото товара, тому додатковий scrim: без нього контраст тексту
+     провалюється на світлих ділянках фото (виміряно, 3,47:1 без scrim
+     проти 4,83:1+ з ним — див. IMPLEMENTATION). */
+  --glass-c-fill: rgba(255, 255, 255, 0.09);
+  --glass-c-scrim: rgba(0, 0, 0, 0.22);
+  --glass-c-border-1: rgba(255, 255, 255, 0.55);
+  --glass-c-border-2: rgba(255, 255, 255, 0);
+  --glass-c-specular: rgba(255, 255, 255, 0.4);
+  --glass-c-lens: rgba(255, 255, 255, 0.14);
+  --glass-c-blur: 22px;
+  --glass-c-sat: 190%;
+  --glass-c-overlap: -28px;
+}
+
+:root[data-theme="light"] {
+  --glass-a-fill: rgba(255, 255, 255, 0.6);
+  --glass-a-border-1: rgba(255, 255, 255, 0.9);
+  --glass-a-border-2: rgba(255, 255, 255, 0);
+  --glass-a-specular: rgba(255, 255, 255, 0.85);
+  --glass-a-shade: rgba(20, 19, 15, 0.08);
+  --glass-a-hover-tint: rgba(237, 124, 83, 0.16);
+
+  --glass-b-fill: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-brand-a) 22%, transparent),
+    color-mix(in srgb, var(--color-brand-b) 22%, transparent)
+  );
+  --glass-b-border-1: rgba(255, 255, 255, 0.7);
+  --glass-b-border-2: rgba(180, 83, 9, 0.12);
+  --glass-b-specular: rgba(255, 255, 255, 0.8);
+  --glass-b-hover-text: #000;
+
+  --glass-c-fill: rgba(255, 255, 255, 0.55);
+  --glass-c-scrim: rgba(255, 255, 255, 0.14);
+  --glass-c-border-1: rgba(255, 255, 255, 0.9);
+  --glass-c-border-2: rgba(20, 19, 15, 0.06);
+  --glass-c-specular: rgba(255, 255, 255, 0.9);
+  --glass-c-lens: rgba(255, 255, 255, 0.5);
+}
+
+/* ─── A. Clear glass ────────────────────────────────────────────────── */
+.glass-btn-a {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  background:
+    linear-gradient(var(--glass-a-fill), var(--glass-a-fill)) padding-box,
+    linear-gradient(135deg, var(--glass-a-border-1), var(--glass-a-border-2)) border-box;
+  backdrop-filter: blur(var(--glass-a-blur)) saturate(var(--glass-a-sat));
+  -webkit-backdrop-filter: blur(var(--glass-a-blur)) saturate(var(--glass-a-sat));
+  box-shadow:
+    inset 0 1px 0 var(--glass-a-specular),
+    inset 0 -10px 14px -12px var(--glass-a-shade),
+    0 10px 24px -14px rgba(0, 0, 0, 0.4);
+  transition:
+    box-shadow 0.18s var(--ease-cut, ease),
+    filter 0.18s var(--ease-cut, ease);
+}
+.glass-btn-a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--glass-a-hover-tint);
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-cut, ease);
+}
+.glass-btn-a:hover:not(:disabled)::before,
+.glass-btn-a:focus-visible:not(:disabled)::before {
+  opacity: 1;
+}
+.glass-btn-a:focus-visible {
+  outline: 2px solid var(--color-signal-text);
+  outline-offset: 2px;
+}
+.glass-btn-a:active:not(:disabled) {
+  transform: translateY(1px);
+  filter: brightness(0.96);
+}
+.glass-btn-a[data-state="added"] {
+  background: transparent;
+  border-color: var(--color-stock);
+  color: var(--color-stock);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+.glass-btn-a[data-state="added"]::before {
+  opacity: 0 !important;
+}
+
+/* ─── B. Tinted glass (amber) ──────────────────────────────────────── */
+.glass-btn-b {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  background:
+    var(--glass-b-fill) padding-box,
+    linear-gradient(135deg, var(--glass-b-border-1), var(--glass-b-border-2)) border-box;
+  backdrop-filter: blur(var(--glass-b-blur)) saturate(var(--glass-b-sat));
+  -webkit-backdrop-filter: blur(var(--glass-b-blur)) saturate(var(--glass-b-sat));
+  box-shadow:
+    inset 0 1px 0 var(--glass-b-specular),
+    0 10px 24px -14px rgba(180, 83, 9, 0.4);
+  transition:
+    color 0.15s var(--ease-cut, ease),
+    box-shadow 0.15s var(--ease-cut, ease);
+}
+.glass-btn-b::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grad-brand);
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-cut, ease);
+}
+.glass-btn-b:hover:not(:disabled),
+.glass-btn-b:focus-visible:not(:disabled) {
+  color: var(--glass-b-hover-text);
+}
+.glass-btn-b:hover:not(:disabled)::before,
+.glass-btn-b:focus-visible:not(:disabled)::before {
+  opacity: 1;
+}
+.glass-btn-b:focus-visible {
+  outline: 2px solid var(--color-signal-text);
+  outline-offset: 2px;
+}
+.glass-btn-b:active:not(:disabled) {
+  transform: translateY(1px);
+  filter: brightness(0.93);
+}
+.glass-btn-b[data-state="added"] {
+  background: transparent;
+  border-color: var(--color-stock);
+  color: var(--color-stock);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+.glass-btn-b[data-state="added"]::before {
+  opacity: 0 !important;
+}
+
+/* ─── C. Glass over photo (risky) ──────────────────────────────────────
+   Кнопка накладається на нижній край фото товара: обгортка картинки має
+   z-index нижче, картка отримує position:relative, кнопка — negative
+   margin-top, що затягує її на фото. */
+.product-media-c {
+  position: relative;
+  z-index: 0;
+}
+.glass-btn-c {
+  position: relative;
+  isolation: isolate;
+  z-index: 1;
+  margin-top: var(--glass-c-overlap, -28px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: var(--btn-h, 52px);
+  padding-inline: var(--btn-px, 28px);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: var(--color-bone);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--btn-fs, 1rem);
+  line-height: 1;
+  white-space: nowrap;
+  background:
+    linear-gradient(var(--glass-c-scrim), var(--glass-c-scrim)) padding-box,
+    linear-gradient(var(--glass-c-fill), var(--glass-c-fill)) padding-box,
+    linear-gradient(135deg, var(--glass-c-border-1), var(--glass-c-border-2)) border-box;
+  backdrop-filter: blur(var(--glass-c-blur)) saturate(var(--glass-c-sat));
+  -webkit-backdrop-filter: blur(var(--glass-c-blur)) saturate(var(--glass-c-sat));
+  box-shadow:
+    inset 0 1px 0 var(--glass-c-specular),
+    inset 0 14px 22px -16px var(--glass-c-lens),
+    0 14px 30px -14px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.18s var(--ease-cut, ease);
+}
+.glass-btn-c::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: rgba(245, 162, 26, 0.24);
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-cut, ease);
+}
+.glass-btn-c:hover:not(:disabled)::before,
+.glass-btn-c:focus-visible:not(:disabled)::before {
+  opacity: 1;
+}
+.glass-btn-c:focus-visible {
+  outline: 2px solid var(--color-signal-text);
+  outline-offset: 2px;
+}
+.glass-btn-c[data-state="added"] {
+  background: transparent;
+  border-color: var(--color-stock);
+  color: var(--color-stock);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+.glass-btn-c[data-state="added"]::before {
+  opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-btn-a,
+  .glass-btn-a::before,
+  .glass-btn-b,
+  .glass-btn-b::before,
+  .glass-btn-c,
+  .glass-btn-c::before {
+    transition: none;
+  }
+}

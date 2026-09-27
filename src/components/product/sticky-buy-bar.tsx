@@ -1,0 +1,108 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/context";
+import { useMounted } from "@/lib/use-mounted";
+import { href, price } from "@/lib/shop";
+import { setBodyInset } from "@/lib/body-inset";
+import { useCart, useCompare } from "@/store/shop";
+import { announceAdded, useCartUI } from "@/store/cart-ui";
+import { IconCheck } from "@/components/ui/icons";
+import type { Product } from "@/data/types";
+
+/**
+ * Мобильная липкая панель (<1024px): появляется, когда блок цены в BuyBox (id="buy-box-price")
+ * уходит из вьюпорта — а не кнопка, чтобы панель не всплывала на старте, пока цена ещё видна.
+ * Кнопка повторяет состояние корзины из BuyBox: «У кошик» до добавления, «У кошику · N» после —
+ * тап тогда ведёт в корзину (модалка на ≥md, /cart на телефоне), как кнопка в шапке.
+ * Панель остаётся в DOM всегда (только translate/opacity), поэтому её высоту можно измерить.
+ * Резервируем её нижним отступом body через lib/body-inset.ts, как и панель сравнения: Footer —
+ * сосед {children} в layout.tsx, поэтому только body padding даёт зазор под подвалом.
+ * Отступы обеих панелей складываются.
+ */
+export function StickyBuyBar({ product }: { product: Product }) {
+  const { locale, dict } = useI18n();
+  const mounted = useMounted();
+  const [hidden, setHidden] = useState(true);
+  const [barHeight, setBarHeight] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  const add = useCart((state) => state.add);
+  const inCart = useCart((state) => state.items.find((item) => item.slug === product.slug));
+  const compareCount = useCompare((state) => state.slugs.length);
+
+  useEffect(() => {
+    const target = document.getElementById("buy-box-price");
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => setHidden(entry.isIntersecting));
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // До mounted компонент возвращает null (гидратация), barRef ещё не привязан — без `mounted`
+    // в зависимостях высота так и останется 0, потому что этот эффект больше не перезапустится.
+    const measure = () => setBarHeight(barRef.current?.offsetHeight ?? 0);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [mounted]);
+
+  const show = mounted && !hidden;
+
+  useEffect(() => {
+    if (!show || barHeight === 0) return;
+    setBodyInset("sticky-buy-bar", barHeight);
+    return () => setBodyInset("sticky-buy-bar", 0);
+  }, [show, barHeight]);
+
+  if (!mounted) return null;
+
+  const out = product.stock === 0;
+  const compareVisible = compareCount > 0;
+
+  return (
+    <div
+      ref={barRef}
+      // inert (не aria-hidden): скрытая панель не должна ловить фокус с клавиатуры, а
+      // aria-hidden на предке с фокусируемым потомком — нарушение, а не решение.
+      inert={!show}
+      className={`fixed inset-x-0 z-30 border-t border-[var(--hair-strong)] bg-ink-900/95 backdrop-blur-xl transition-transform lg:hidden ${
+        show ? "translate-y-0" : "pointer-events-none translate-y-full"
+      }`}
+      style={{ bottom: compareVisible ? "84px" : "0px" }}
+    >
+      <div className="shell flex items-center gap-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+        <span className="t-price text-xl text-bone">{price(product.price)} ₴</span>
+        {inCart ? (
+          <Link
+            href={href(locale, "/cart")}
+            onClick={(event) => {
+              if (window.matchMedia("(min-width: 768px)").matches) {
+                event.preventDefault();
+                useCartUI.getState().show("modal");
+              }
+            }}
+            className="signal-btn btn-sm ml-auto flex-1"
+          >
+            <IconCheck className="h-4 w-4" />
+            {dict.product.inCart} · {inCart.qty}
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              add(product.slug, 1);
+              announceAdded();
+            }}
+            disabled={out}
+            className="signal-btn btn-sm ml-auto flex-1"
+          >
+            {out ? dict.stock.out : dict.product.addToCart}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -304,6 +304,24 @@ export const ua = {
   header: {
     popularTitle: "Часто шукають",
     popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерний рівень", "біти"],
+    placeholder: "Болгарка, M18, DHR243…",
+    // Queries the placeholder types out. Each one returns products (checked against lib/search).
+    typing: ["болгарка", "M18", "DHR243", "перфоратор SDS-Plus", "лазерний рівень"],
+    suggestions: "Підказки пошуку",
+    sectionsTitle: "Розділи",
+    sectionNote: "Розділ",
+    productsTitle: "Товари",
+    inSection: (name: string) => `У розділі «${name}»`,
+    noResults: (q: string) => `Нічого не знайшли за «${q}». Спробуй назву розділу або модель.`,
+    keyMove: "↑ ↓ вибрати",
+    keyOpen: "Enter відкрити",
+    keyClose: "Esc закрити",
+    clear: "Очистити пошук",
+    platformsTitle: "Акумуляторні платформи",
+    myBatteries: "Мої батареї",
+    noBatteries: "Не маю батарей",
+    tools: (n: number) => `${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    showTools: (n: number) => `Показати ${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
   },
 
   // Product card.

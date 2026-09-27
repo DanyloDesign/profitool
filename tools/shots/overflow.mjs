@@ -1,7 +1,8 @@
 ﻿import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 // node overflow.mjs <url> [width=390]
 const width = Number(process.argv[3] ?? 390);
-const browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless: true });
+const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 const page = await browser.newPage();
 await page.setViewport({ width, height: 900, deviceScaleFactor: 1, isMobile: false });
 await page.goto(process.argv[2], { waitUntil: "networkidle0", timeout: 60000 });

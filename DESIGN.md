@@ -100,7 +100,12 @@ https://claude.ai/artifact/KKGjeqMnJ37qergEko91RA
 
 ## Движение
 
-Одна анимация на весь сайт: масштаб фото товара при наведении, 500ms. Общий fade-in блоков убран.
+Since 015 motion follows one budget, set as tokens in `globals.css`: hover feedback within
+`--dur-fast` (100ms); panels in `--dur-panel-in` (240ms) with `--ease-in`, out `--dur-panel-out`
+(180ms) with `--ease-out`; everything else `--ease-std`. Moving parts: the card reveal (the photo steps
+back, details rise inside the photo frame), the search panel, the cart drawer or phone sheet, and the
+cart pill flashing the brand gradient for 1.2s after an add. `prefers-reduced-motion` turns all of it
+into fades. No page-wide fade-ins.
 
 
 ## Экраны
@@ -112,15 +117,22 @@ https://claude.ai/artifact/KKGjeqMnJ37qergEko91RA
 
 ## Повторяющиеся блоки
 
-- **Шапка**, двошарова з 006 (структура референсу PROFITOOL Site, стиль наш): шар 1 — логотип
-  зліва, місто/підтримка/мова/тема справа (окантовані пілюлі `ghost-btn btn-sm`, підписи
-  ховаються нижче lg); шар 2 — кнопка «Каталог» заливкою (бургер на планшеті замість неї, той
-  самий MobileMenu), пошук `flex-1` до 660px, іконки кабінету/обраного/порівняння по 52px,
-  корзина з сумою. Висоти в `--header-l1`/`--header-l2`/`--header-h` (globals.css), по 3
-  брейкпоінти (<768 два мобільних ряди, 768–1023 стиснуто, ≥1024 повний). Мобільний (<768) —
-  окремий каркас: ряд 1 бургер/лого/кабінет/кошик, ряд 2 пошук на всю ширину. Служебної смуги
-  над шапкою й градієнтної лінії під нею немає (власник відхилив).
-- **Карточка товара**: фото фиксированной высоты, бренд, модель, ключевой параметр, цена,
-  кнопка «У кошик» прижата к низу через `margin-top: auto`, чтобы кнопки в ряду стояли в линию.
-  Ярлык скидки слева сверху, сердце избранного справа сверху.
+- **Header** (015). From 1024px one row, 72px: logo (mark 32px, word 18px), a dark "Каталог" pill
+  that opens the mega menu, an open search field up to 620px, a quiet 14px utility cluster (city,
+  support, language, theme as `bar-btn`), the remembered battery platform chip, wishlist, compare and
+  the cart pill with the sum. 768–1023px keep two rows; phones keep row 1 (menu, logo, account, cart)
+  and row 2 (full-width search). Heights live in `--header-l1`/`--header-l2`/`--header-h`. No service
+  strip above the header and no gradient line under it (the owner rejected both).
+- **Search panel** (015). Opens under the field. Empty: popular queries and the 8 sections. Typed:
+  section hits first, completions with the completed part in bold, up to 3 products with photo and
+  price. ↑↓ Enter Esc, combobox ARIA. One matcher for the panel, `/search` and the catalog:
+  `src/lib/search.ts`.
+- **Product card**. Photo frame of fixed height, brand, model, one key line (with "без АКБ" for bare
+  tools), price, the "У кошик" button pinned to the bottom with `margin-top: auto` so buttons in a row
+  line up. Discount badge top left, compare and wishlist top right. On pointer devices from 1024px,
+  hover or keyboard focus reveals details inside the photo frame: one short line, three specs, the kit
+  line. Price and button never move; Esc closes the reveal.
+- **Cart drawer** (015). "У кошик" and the cart pill open a right drawer (phones: a bottom sheet) that
+  stays until the buyer closes it: lines, free-delivery progress, one cross-sell, total,
+  "Оформити замовлення", "Продовжити покупки".
 - **Подвал**: логотип с адресом и телефоном, три колонки ссылок, бренды чипами, полоса оплаты.

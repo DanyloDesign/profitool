@@ -54,6 +54,18 @@ export const ru: Dict = {
     saleAll: (n: number) => `Все ${n} акционных`,
     fresh: "Новинки",
     viewAll: "Смотреть всё",
+    // 015: hero kit line, "Мои батареи" row, section tiles.
+    heroKitBare: (platform: string) => `Без аккумулятора и зарядного, работает с батареями ${platform}`,
+    heroKitFits: (platform: string) => `Без аккумулятора: подходит к твоим батареям ${platform}`,
+    batteries: "Мои батареи",
+    batteriesNone: "Не выбрано",
+    batteriesNo: "Нет батарей",
+    batteriesList: "Платформа батарей",
+    batteriesHelp: "Покажем, что к ним подходит, и отметим совместимое",
+    batteriesHelpChosen: "Совместимый инструмент отметили в карточках",
+    batteriesCount: (n: number) => `${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    batteriesShow: (n: number) => `Показать ${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    allProducts: (n: number) => `Все ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
   },
 
   catalog: {
@@ -74,10 +86,10 @@ export const ru: Dict = {
     onSaleOnly: "Со скидкой",
     showResults: (n: number) => `Показать ${n}`,
     sort: "Сортировка",
-    sortPopular: "Сначала популярные",
-    sortCheap: "Сначала дешёвые",
-    sortExpensive: "Сначала дорогие",
-    sortNew: "Сначала новинки",
+    sortPopular: "Популярные",
+    sortCheap: "Дешевле",
+    sortExpensive: "Дороже",
+    sortNew: "Новые",
     selected: "Выбрано",
     removeFilter: (name: string) => `Убрать фильтр ${name}`,
     empty: "По этим фильтрам ничего нет",
@@ -91,7 +103,7 @@ export const ru: Dict = {
     chipInStock: "В наличии",
     chipMyPlatform: "Моя платформа",
     showResultsItems: (n: number) => `Показать ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
-    sortInStock: "Сначала в наличии",
+    sortInStock: "В наличии",
     showMore: (n: number) => `Показать ещё ${n}`,
     specMore: (n: number) => `Ещё ${n}`,
     prevPage: "Предыдущая страница",
@@ -146,8 +158,6 @@ export const ru: Dict = {
     dec: "Уменьшить количество",
     inc: "Увеличить количество",
     subtotal: "Товары",
-    // Сумма в мини-корзине: без метода доставки это ещё не «К оплате» из чекаута (решение 3).
-    miniTotal: "Итого",
     delivery: "Доставка",
     deliveryFree: "Бесплатно",
     // Подсказка в корзине: метод доставки ещё не выбран, поэтому это не сумма к оплате (решение 3).
@@ -159,16 +169,11 @@ export const ru: Dict = {
     freeLeft: (n: string) => `До бесплатной доставки ещё ${n} ₴`,
     label: "Товары в корзине",
     summary: "Итог заказа",
-    // Мини-корзина под кнопкой в шапке.
-    miniTitle: (n: number) => `В корзине ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
-    miniCartBtn: "Корзина",
-    miniCheckoutBtn: "Оформить",
-    closeCart: "Закрыть корзину",
     repeatOrder: "Повторить заказ",
-    // Блок допродажи в корзине и модалке.
+    // Cross-sell block on the cart page.
     crossSellTitle: "Добавить к заказу",
     crossSellAdd: (name: string) => `Добавить ${name} к заказу`,
-    // Живая область для скринридеров: озвучивает добавление, пока видна только мини-корзина.
+    // One live region for screen readers (CartDrawer): announces every add and removal.
     added: (name: string) => `Добавлено в корзину: ${name}`,
     removed: (name: string) => `Убрано из корзины: ${name}`,
   },
@@ -319,5 +324,95 @@ export const ru: Dict = {
     phone: "0 800 33 11 22",
     toTop: "Наверх",
     home: "Главная",
+  },
+
+  // 015 (UX concept). Each section below has one owner; add keys only to your own section.
+
+  // Header and search panel.
+  header: {
+    popularTitle: "Часто ищут",
+    popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерный уровень", "биты"],
+    placeholder: "Болгарка, M18, DHR243…",
+    typing: ["болгарка", "M18", "DHR243", "перфоратор SDS-Plus", "лазерный уровень"],
+    suggestions: "Подсказки поиска",
+    sectionsTitle: "Разделы",
+    sectionNote: "Раздел",
+    productsTitle: "Товары",
+    inSection: (name: string) => `В разделе «${name}»`,
+    noResults: (q: string) => `По запросу «${q}» ничего не нашли. Попробуй название раздела или модель.`,
+    keyMove: "↑ ↓ выбрать",
+    keyOpen: "Enter открыть",
+    keyClose: "Esc закрыть",
+    clear: "Очистить поиск",
+    platformsTitle: "Аккумуляторные платформы",
+    myBatteries: "Мои батареи",
+    noBatteries: "Нет батарей",
+    tools: (n: number) => `${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    showTools: (n: number) => `Показать ${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+  },
+
+  // Product card.
+  card: {
+    bare: "без АКБ",
+    compatible: "к твоим батареям",
+  },
+
+  // Cart drawer and phone cart sheet.
+  drawer: {
+    title: "Добавлено в корзину",
+    cartTitle: "Корзина",
+    close: "Закрыть корзину",
+    lines: "Товары в корзине",
+    remove: "Убрать",
+    removeItem: (name: string) => `Убрать ${name} из корзины`,
+    dec: (name: string) => `Уменьшить количество: ${name}`,
+    inc: (name: string) => `Увеличить количество: ${name}`,
+    qty: (n: number) => `${n} шт`,
+    freeLeft: (sum: string) => `До бесплатной доставки ещё ${sum} ₴`,
+    freeDone: "Доставка Новой почтой бесплатна",
+    suggestSafety: "Не забудь про защиту",
+    suggestAccessory: "Часто берут вместе",
+    suggestAdd: (name: string) => `Добавить ${name} в корзину`,
+    total: (n: number) => `Итого, ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
+    deliveryNote: "Доставку посчитаем, когда выберешь способ получения",
+    checkout: "Оформить заказ",
+    continue: "Продолжить покупки",
+    openCart: "Открыть корзину",
+    empty: "Корзина пуста",
+    emptyText: "Выбери инструмент в каталоге.",
+    emptyCta: "В каталог",
+  },
+
+  // Product page.
+  pdp: {
+    inBox: "Что в коробке",
+    figures: "Главное о модели",
+    figurePlatform: (name: string) => `Платформа ${name}`,
+    kitBare: "Без аккумулятора и зарядного.",
+    kitWorksWith: (platform: string) => `Работает с батареями ${platform}.`,
+    kitFits: (platform: string) => `Подходит к твоим батареям ${platform}.`,
+    kitIncluded: (items: string) => `В комплекте ${items}.`,
+    boxBattery: "Аккумулятор",
+    boxCharger: "Зарядное устройство",
+    boxNeeds: (platform: string) => `нужна батарея ${platform}`,
+    boxYours: (platform: string) => `подойдёт твоя батарея ${platform}`,
+    boxMissing: "нет в комплекте",
+    terms: "Доставка, гарантия, возврат",
+    more: (category: string) => `Ещё ${category.toLowerCase()}`,
+    onPlatform: (platform: string) => `На платформе ${platform}`,
+  },
+
+  // Catalog listing.
+  listing: {
+    tasksTitle: "Под какую работу",
+    taskHome: "Для дома",
+    taskHomeRange: "до 2,5 Дж",
+    taskDaily: "Каждый день на объекте",
+    taskDailyRange: "2,5–3 Дж",
+    taskHeavy: "Тяжёлый бетон",
+    taskHeavyRange: "свыше 3 Дж",
+    onlyMine: (platform: string) => `Только под мои ${platform}`,
+    priceTo: (value: string) => `до ${value} ₴`,
+    priceFrom: (value: string) => `от ${value} ₴`,
   },
 };

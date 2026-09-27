@@ -1,8 +1,9 @@
 import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 
 // node click.mjs <url> <width> <out.png> <css-selector-to-click> [height]
 const [url, width, out, selector, height = "900"] = process.argv.slice(2);
-const browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless: true });
+const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 const page = await browser.newPage();
 const w = Number(width);
 await page.setViewport({ width: w, height: Number(height), deviceScaleFactor: 1, isMobile: w < 500, hasTouch: w < 500 });

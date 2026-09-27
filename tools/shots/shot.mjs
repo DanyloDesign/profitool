@@ -1,9 +1,10 @@
 import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 
 // node shot.mjs <url> <width> <out.png> [height] [full]
 const [url, width, out, height = "900", full = "1"] = process.argv.slice(2);
 const browser = await puppeteer.launch({
-  executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  executablePath: chromePath,
   headless: true,
 });
 const page = await browser.newPage();

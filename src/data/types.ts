@@ -77,6 +77,9 @@ export type Product = {
   warranty: number;
   sold: number;
   description: Localized;
+  /** One line for the card's hover reveal. Set only where the first sentence of `description`
+   *  runs past two lines; shortOf() derives the rest. */
+  short?: Localized;
 };
 
 export function localize(value: SpecValue, locale: Locale): string {

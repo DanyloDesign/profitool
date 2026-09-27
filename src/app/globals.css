@@ -56,9 +56,9 @@
   --hair-strong: rgba(255, 255, 255, 0.22);
   --shadow-pop: 0 30px 70px rgba(0, 0, 0, 0.8);
   --gutter: 20px;
-  /* Шапка двошарова з 006: --header-l1/-l2 — висота першого й другого ряду (зміст рядів різний
-     на мобільному й від 768px, назви умовні), --header-h — їхня сума, нею живуть sticky-відступи
-     сторінок і MegaMenu/MobileMenu. Пікселі не дублювати — міняти тільки тут. */
+  /* Header rows: --header-l1/-l2 are the heights of the first and second row, --header-h is their
+     sum; sticky offsets, the menus and the search panel live on it. Two rows below 1024px (006),
+     one 72px row from 1024px (015: --header-l1 is 0). Change the pixels only here. */
   --header-l1: 56px;
   --header-l2: 64px;
   --header-h: calc(var(--header-l1) + var(--header-l2));
@@ -81,6 +81,16 @@
     color-mix(in srgb, var(--color-brand-b) 20%, transparent)
   );
   --tint-btn-border: color-mix(in srgb, var(--color-brand-a) 34%, transparent);
+
+  /* 015: one motion budget for the whole site (NN/g animation duration, Material 3 easing).
+     Hover feedback within 100ms, panels in 240ms and out 180ms. Reduced motion is handled by the
+     global rule in @layer base. */
+  --dur-fast: 100ms;
+  --dur-panel-in: 240ms;
+  --dur-panel-out: 180ms;
+  --ease-in: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-out: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-std: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Светлая тема. Те же имена токенов, другие значения: компоненты про тему не знают.
@@ -141,7 +151,8 @@
 }
 @media (min-width: 1024px) {
   :root {
-    --header-l1: 48px;
+    /* 015: one 72px row from 1024px, the top row is gone. */
+    --header-l1: 0px;
     --header-l2: 72px;
   }
 }
@@ -672,3 +683,625 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   015 (UX concept). One block per stream; add rules only inside your own block.
+   ========================================================================== */
+
+/* --- 015 header and search panel --- */
+
+/* One block from 768px (header.tsx). Tablet: two rows, logo and the utility cluster on top, the
+   burger, the field and the icons below. From 1024px: one row in drawing order. */
+.hdr-bar {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-rows: var(--header-l1) var(--header-l2);
+  grid-template-areas:
+    "logo logo util"
+    "burger search actions";
+  align-items: center;
+  column-gap: 12px;
+}
+@media (min-width: 1024px) {
+  .hdr-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: var(--header-l2);
+  }
+}
+
+/* The utility cluster: city, support, language, theme. Smaller and quieter than everything else
+   in the row; hover goes to the text colour, orange stays for the primary action. */
+.hdr-util .bar-btn {
+  color: var(--color-bone-dim);
+  font-size: 0.875rem;
+  transition: color var(--dur-fast) var(--ease-std);
+}
+.hdr-util .bar-btn:hover,
+.hdr-util .bar-btn[aria-expanded="true"] {
+  color: var(--color-bone);
+}
+/* "Мої батареї": the one coloured item of the cluster. */
+.hdr-util .hdr-platform,
+.hdr-util .hdr-platform:hover {
+  color: var(--color-stock);
+  font-weight: 600;
+}
+
+/* Page scrim under the search panel and the mega menu; the header stays clear. */
+.hdr-scrim {
+  position: fixed;
+  inset: var(--header-h) 0 0 0;
+  background: var(--scrim);
+  animation: hdr-fade-in var(--dur-panel-in) var(--ease-std);
+}
+
+.hdr-mega {
+  animation: hdr-pop-in var(--dur-panel-in) var(--ease-in);
+}
+
+/* Search panel. Tablet: across the page under the header. Phone: covers the page below the
+   header. From 1024px: 720px under the field. */
+.hdr-panel {
+  position: fixed;
+  z-index: 1;
+  top: calc(var(--header-h) + 8px);
+  left: var(--gutter);
+  right: var(--gutter);
+  max-height: calc(100dvh - var(--header-h) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 16px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 28px;
+  background: var(--color-ink-900);
+  box-shadow: var(--shadow-pop);
+  animation: hdr-pop-in var(--dur-panel-in) var(--ease-in);
+}
+.hdr-panel[data-variant="phone"] {
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: none;
+  padding: 12px calc(var(--gutter) - 12px) 32px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+@media (min-width: 1024px) {
+  .hdr-panel[data-variant="bar"] {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: -12px;
+    right: auto;
+    width: 720px;
+    max-height: calc(100dvh - var(--header-h) - 32px);
+    padding: 20px 12px 16px;
+  }
+}
+
+/* A row of the panel: section, completion or product. The active one (↑↓) and the hovered one
+   share the surface tint. */
+.hdr-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding-inline: 12px;
+  border-radius: 16px;
+  color: var(--color-bone);
+  font-size: 1rem;
+  text-align: left;
+  transition: background-color var(--dur-fast) var(--ease-std);
+}
+.hdr-row:hover,
+.hdr-row[data-active] {
+  background: var(--color-ink-800);
+}
+
+/* A popular query: a chip at the 44px tap size. */
+.hdr-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding-inline: 16px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  color: var(--color-bone);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  transition:
+    border-color var(--dur-fast) var(--ease-std),
+    background-color var(--dur-fast) var(--ease-std);
+}
+.hdr-chip:hover,
+.hdr-chip[data-active] {
+  border-color: var(--color-bone-dim);
+  background: var(--color-ink-800);
+}
+
+@keyframes hdr-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes hdr-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* --- end 015 header --- */
+
+
+/* --- 015 product card --- */
+
+/* The photo frame keeps its height in every state, so nothing below it moves and no neighbour is
+   covered. At rest it is transparent; the reveal gives it the ink-800 surface and its 18px radius. */
+.pcard-frame {
+  border-radius: 18px;
+  transition: background-color var(--dur-fast) var(--ease-std);
+}
+.pcard-photo {
+  transform-origin: 50% 0;
+}
+.pcard-reveal {
+  opacity: 0;
+  /* Clicks fall through to the photo link underneath; the pointer stays over the card. */
+  pointer-events: none;
+}
+.pcard-tool:disabled {
+  opacity: 0.4;
+}
+
+/* Pointer devices: compare and wishlist show on hover or keyboard focus, an active one stays.
+   Touch screens keep them visible, as before. */
+@media (hover: hover) and (pointer: fine) {
+  .pcard-tool {
+    transition:
+      opacity var(--dur-fast) var(--ease-std),
+      color 0.2s var(--ease-cut);
+  }
+  .pcard-tool:not([aria-pressed="true"]) {
+    opacity: 0;
+  }
+  .pcard:hover .pcard-tool,
+  .pcard:has(:focus-visible) .pcard-tool,
+  .pcard-tool:focus-visible {
+    opacity: 1;
+  }
+  .pcard:hover .pcard-tool:disabled,
+  .pcard:has(:focus-visible) .pcard-tool:disabled {
+    opacity: 0.4;
+  }
+}
+
+/* The reveal (product-card.tsx sets data-open, gated by the same query). The photo steps back to
+   the top of the frame and a panel with the short line, three specs and the kit line rises into
+   the space it leaves. Scale per size is measured at 1512px so the tallest panel (two short lines,
+   three specs, kit) keeps 7px clear of the photo: home 300px frame, catalog 292px. The rail (220px)
+   shows the short line and the kit line only, so its photo steps back less. */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .pcard {
+    --pcard-scale: 0.44;
+    --pcard-lift: 12px;
+  }
+  .pcard[data-size="catalog"] {
+    --pcard-scale: 0.42;
+  }
+  .pcard[data-size="rail"] {
+    --pcard-scale: 0.5;
+  }
+
+  .pcard-photo {
+    transition: transform var(--dur-panel-out) var(--ease-std);
+  }
+  .pcard-reveal {
+    transform: translateY(10px);
+    transition:
+      opacity var(--dur-panel-out) var(--ease-out),
+      transform var(--dur-panel-out) var(--ease-out);
+  }
+
+  .pcard[data-open] .pcard-frame {
+    background-color: var(--color-ink-800);
+  }
+  .pcard[data-open] .pcard-photo {
+    transform: translateY(var(--pcard-lift)) scale(var(--pcard-scale));
+    transition: transform var(--dur-panel-in) var(--ease-in);
+  }
+  .pcard[data-open] .pcard-reveal {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-panel-in) var(--ease-std),
+      transform var(--dur-panel-in) var(--ease-in);
+  }
+}
+
+/* Reduced motion: the panel only fades; the global rule in @layer base already drops durations. */
+@media (prefers-reduced-motion: reduce) {
+  .pcard-reveal {
+    transform: none !important;
+  }
+}
+
+/* "Мої батареї": the trigger turns green once a platform is chosen. */
+.pp-trigger[data-chosen] {
+  border-color: var(--color-stock);
+}
+
+
+/* --- end 015 card --- */
+
+
+/* --- 015 cart drawer --- */
+/* Header cart pill: after an add it fills with the brand gradient for 1.2s (store/cart-ui.ts sets
+   data-flash). The gradient sits on ::before and only its opacity changes, like tint-btn. Under
+   reduced motion the global rule makes the change instant, the flash itself stays. */
+.cart-pill {
+  isolation: isolate;
+}
+.cart-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--grad-brand);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-panel-out) var(--ease-std);
+}
+.cart-pill[data-flash] {
+  color: #000;
+  border-color: transparent;
+}
+.cart-pill[data-flash]::before {
+  opacity: 1;
+  transition-duration: var(--dur-fast);
+}
+
+/* The drawer. Phones: a bottom sheet up to 85% of the screen. From 768px: a right panel, 440px. */
+.cart-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+.cart-drawer-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim);
+  animation: cart-drawer-fade-in var(--dur-panel-in) var(--ease-std);
+}
+.cart-drawer[data-state="closing"] .cart-drawer-scrim {
+  animation: cart-drawer-fade-out var(--dur-panel-out) var(--ease-out) forwards;
+}
+.cart-drawer-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  max-height: 85dvh;
+  overflow: hidden;
+  background: var(--color-ink-900);
+  border-radius: 28px 28px 0 0;
+  /* The hairline ring keeps the black panel apart from the scrim in the dark theme. */
+  box-shadow:
+    0 0 0 1px var(--hair),
+    var(--shadow-pop);
+  outline: none;
+  animation: cart-drawer-up var(--dur-panel-in) var(--ease-in);
+}
+.cart-drawer[data-state="closing"] .cart-drawer-panel {
+  animation: cart-drawer-down var(--dur-panel-out) var(--ease-out) forwards;
+}
+/* The handle and the title row are the drag zone of the sheet. */
+.cart-drawer-grip {
+  flex-shrink: 0;
+  touch-action: none;
+}
+.cart-drawer-handle {
+  display: flex;
+  height: 20px;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cart-drawer-handle::before {
+  content: "";
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--hair-strong);
+}
+.cart-drawer-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline: 16px;
+}
+.cart-drawer-foot {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hair);
+  background: var(--color-ink-800);
+}
+.cart-drawer-progress {
+  background-image: var(--grad-brand);
+  transition: width 300ms var(--ease-std);
+}
+@media (min-width: 768px) {
+  .cart-drawer-panel {
+    left: auto;
+    top: 0;
+    width: 440px;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 28px 0 0 28px;
+    animation-name: cart-drawer-in-right;
+  }
+  .cart-drawer[data-state="closing"] .cart-drawer-panel {
+    animation-name: cart-drawer-out-right;
+  }
+  .cart-drawer-grip {
+    touch-action: auto;
+  }
+  .cart-drawer-handle {
+    display: none;
+  }
+  .cart-drawer-body {
+    padding: 8px 28px 0;
+  }
+  .cart-drawer-foot {
+    gap: 12px;
+    padding: 20px 28px 28px;
+  }
+}
+/* Reduced motion: no slide, opacity only (the global rule in @layer base shortens it further). */
+@media (prefers-reduced-motion: reduce) {
+  .cart-drawer .cart-drawer-panel {
+    animation-name: cart-drawer-fade-in;
+  }
+  .cart-drawer[data-state="closing"] .cart-drawer-panel {
+    animation-name: cart-drawer-fade-out;
+  }
+}
+@keyframes cart-drawer-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes cart-drawer-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes cart-drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes cart-drawer-out-right {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes cart-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cart-drawer-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* --- end 015 drawer --- */
+
+
+/* --- 015 product page and catalog --- */
+
+/* Product page. The photo takes the left column; model, figures, price and the buy button share
+   the right one, so everything that decides the purchase fits the first screen at 1512×945. */
+.pdp-photo {
+  position: relative;
+  height: 300px;
+}
+@media (min-width: 640px) {
+  .pdp-photo {
+    height: 420px;
+  }
+}
+@media (min-width: 1024px) {
+  .pdp-photo {
+    height: 560px;
+  }
+}
+
+/* The buy column sticks only when the whole column fits under the header (the tallest one, M18
+   CAG125XPDB with a two-line name, ends at 861px): a taller sticky block
+   would hide its own bottom (the terms) until the page ends. */
+@media (min-width: 1024px) and (min-height: 880px) {
+  .pdp-buy {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+}
+
+/* Model name in the buy column: smaller than t-h1, so "GBH 2-26 DFR" keeps one line. */
+.pdp-title {
+  font-size: 1.75rem;
+}
+@media (min-width: 1024px) {
+  .pdp-title {
+    font-size: 2.5rem;
+  }
+}
+
+.pdp-price {
+  font-size: 2rem;
+}
+@media (min-width: 1024px) {
+  .pdp-price {
+    font-size: 2.75rem;
+  }
+}
+
+/* Secondary lines of the buy column: kit line, terms, lead. */
+.pdp-line {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+/* Four big figures: value in Unbounded above a quiet label, hairlines between rows. */
+.pdp-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  border-top: 1px solid var(--hair);
+}
+/* Three figures stand in one row rather than leaving a hole in a 2×2 grid. */
+.pdp-figures[data-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 20px;
+}
+.pdp-figures > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.pdp-figures dt {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-bone-dim);
+}
+.pdp-figures dd {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-bone);
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1024px) {
+  .pdp-figures dd {
+    font-size: 1.375rem;
+  }
+}
+
+/* Shelf under the page: a swipe rail on phones, four columns from 768px. */
+.pdp-shelf {
+  display: flex;
+  gap: 16px;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.pdp-shelf::-webkit-scrollbar {
+  display: none;
+}
+.pdp-shelf > * {
+  flex: 0 0 min(46%, 240px);
+  scroll-snap-align: start;
+}
+@media (min-width: 768px) {
+  .pdp-shelf {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 48px 40px;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+}
+
+/* Catalog: task pills for rotary hammers, 48px, title over the energy range. */
+.listing-task {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 4px 20px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  color: var(--color-bone);
+  text-align: left;
+  white-space: nowrap;
+  transition:
+    border-color var(--dur-fast) var(--ease-std),
+    color var(--dur-fast) var(--ease-std);
+}
+.listing-task:hover:not(:disabled) {
+  border-color: var(--color-bone-dim);
+}
+.listing-task[aria-pressed="true"] {
+  padding-left: 16px;
+  border-color: var(--color-signal);
+}
+.listing-task:disabled {
+  border-color: var(--hair);
+  color: var(--color-bone-faint);
+  cursor: not-allowed;
+}
+.listing-task-title {
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.listing-task[aria-pressed="true"] .listing-task-title {
+  color: var(--color-signal-text);
+}
+.listing-task-range {
+  font-size: 0.875rem;
+  line-height: 1.25;
+  color: var(--color-bone-dim);
+}
+.listing-task:disabled .listing-task-range {
+  color: var(--color-bone-faint);
+}
+
+/* Catalog: the remembered battery platform offered as a one-tap filter. Dashed, so it reads as a
+   suggestion next to the applied filters. */
+.listing-suggest {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1px dashed var(--color-stock);
+  border-radius: 999px;
+  color: var(--color-stock);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-std);
+}
+.listing-suggest:hover {
+  background-color: color-mix(in srgb, var(--color-stock) 10%, transparent);
+}
+
+/* --- end 015 product page --- */

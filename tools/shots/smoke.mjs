@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 
 // node smoke.mjs [baseUrl]   сквозная проверка: корзина, избранное, сравнение, фильтры, оформление, ящик фильтров
 const base = process.argv[2] ?? "http://localhost:3000";
@@ -9,7 +10,7 @@ const check = (name, ok, detail = "") => {
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless: true });
+const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 
 async function clickByText(page, selector, text) {
   const ok = await page.evaluate(
@@ -40,6 +41,11 @@ async function clickByText(page, selector, text) {
   await sleep(400);
   const cart = await page.$eval('header a[href$="/cart"]', (a) => a.getAttribute("aria-label"));
   check("шапка: корзина после добавления", /Кошик, 1/.test(cart), cart);
+  check("кошик: панель відкрилась після додавання", !!(await page.$('[role="dialog"]')));
+  // 015: the cart drawer is modal, close it before touching the page again.
+  await page.keyboard.press("Escape");
+  await sleep(400);
+  check("кошик: Esc закриває панель", !(await page.$('[role="dialog"]')));
 
   await page.click('article button[aria-label^="Додати"]');
   await page.click('article button[aria-label^="Порівняти"]');

@@ -4,13 +4,15 @@ import { useSearchParams } from "next/navigation";
 import { getDict, type Locale } from "@/i18n";
 import { applyQuery, emptyQuery, href } from "@/lib/shop";
 import { ProductCard } from "@/components/catalog/product-card";
-import { SearchBox } from "@/components/layout/header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconSearch } from "@/components/ui/icons";
 
 /**
  * Запрос ?q= читается в браузере, как и фильтры каталога: страница собирается статически.
  * До гидрации рисуется пустой поиск с подсказкой.
+ *
+ * 015: the page has no field of its own. The header field shows the query (HeaderSearch reads
+ * `?q=` on /search) and answers with the same suggestions panel on every width.
  */
 export function SearchView({ locale }: { locale: Locale }) {
   return (
@@ -32,9 +34,6 @@ function SearchBody({ locale, query }: { locale: Locale; query: string }) {
   return (
     <div className="shell pb-8 pt-10">
       <h1 className="t-h1 text-bone">{dict.search.title}</h1>
-
-      {/* На телефоне поле в шапке не помещается, поэтому поиск живёт здесь. */}
-      <SearchBox key={query} className="relative mt-6 max-w-2xl md:hidden" defaultValue={query} autoFocus={!query} />
 
       <p className="mt-6 text-[17px] text-bone-dim">
         {query ? dict.search.results(found.length, query) : dict.search.hint}

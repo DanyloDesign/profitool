@@ -53,6 +53,18 @@ export const ua = {
     saleAll: (n: number) => `Усі ${n} акційних`,
     fresh: "Новинки",
     viewAll: "Дивитись усе",
+    // 015: hero kit line, "Мої батареї" row, section tiles.
+    heroKitBare: (platform: string) => `Без акумулятора і зарядного, працює з батареями ${platform}`,
+    heroKitFits: (platform: string) => `Без акумулятора: підходить до твоїх батарей ${platform}`,
+    batteries: "Мої батареї",
+    batteriesNone: "Не вибрано",
+    batteriesNo: "Не маю батарей",
+    batteriesList: "Платформа батарей",
+    batteriesHelp: "Покажемо, що до них пасує, і позначимо сумісне",
+    batteriesHelpChosen: "Сумісний інструмент позначили в картках",
+    batteriesCount: (n: number) => `${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    batteriesShow: (n: number) => `Показати ${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    allProducts: (n: number) => `Усі ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
   },
 
   catalog: {
@@ -73,10 +85,10 @@ export const ua = {
     onSaleOnly: "Зі знижкою",
     showResults: (n: number) => `Показати ${n}`,
     sort: "Сортування",
-    sortPopular: "Спочатку популярні",
-    sortCheap: "Спочатку дешеві",
-    sortExpensive: "Спочатку дорогі",
-    sortNew: "Спочатку новинки",
+    sortPopular: "Популярні",
+    sortCheap: "Дешевші",
+    sortExpensive: "Дорожчі",
+    sortNew: "Нові",
     selected: "Обрано",
     removeFilter: (name: string) => `Прибрати фільтр ${name}`,
     empty: "За цими фільтрами нічого немає",
@@ -90,7 +102,7 @@ export const ua = {
     chipInStock: "В наявності",
     chipMyPlatform: "Моя платформа",
     showResultsItems: (n: number) => `Показати ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
-    sortInStock: "Спочатку в наявності",
+    sortInStock: "В наявності",
     showMore: (n: number) => `Показати ще ${n}`,
     specMore: (n: number) => `Ще ${n}`,
     prevPage: "Попередня сторінка",
@@ -145,8 +157,6 @@ export const ua = {
     dec: "Зменшити кількість",
     inc: "Збільшити кількість",
     subtotal: "Товари",
-    // Сума в міні-корзині: без методу доставки це ще не «До сплати» з чекауту (рішення 3).
-    miniTotal: "Разом",
     delivery: "Доставка",
     deliveryFree: "Безкоштовно",
     // Підказка в кошику: метод доставки ще не обрано, тож це не сума до сплати (рішення 3).
@@ -158,16 +168,11 @@ export const ua = {
     freeLeft: (n: string) => `До безкоштовної доставки ще ${n} ₴`,
     label: "Товари в кошику",
     summary: "Підсумок замовлення",
-    // Мини-корзина под кнопкой в шапке.
-    miniTitle: (n: number) => `У кошику ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
-    miniCartBtn: "Кошик",
-    miniCheckoutBtn: "Оформити",
-    closeCart: "Закрити кошик",
     repeatOrder: "Повторити замовлення",
-    // Блок допродажу у кошику й модалці.
+    // Cross-sell block on the cart page.
     crossSellTitle: "Додати до замовлення",
     crossSellAdd: (name: string) => `Додати ${name} до замовлення`,
-    // Живий регіон для скринридерів: озвучує додавання, доки видима лише міні-корзина.
+    // One live region for screen readers (CartDrawer): announces every add and removal.
     added: (name: string) => `Додано в кошик: ${name}`,
     removed: (name: string) => `Прибрано з кошика: ${name}`,
   },
@@ -317,5 +322,96 @@ export const ua = {
     phone: "0 800 33 11 22",
     toTop: "Нагору",
     home: "Головна",
+  },
+
+  // 015 (UX concept). Each section below has one owner; add keys only to your own section.
+
+  // Header and search panel.
+  header: {
+    popularTitle: "Часто шукають",
+    popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерний рівень", "біти"],
+    placeholder: "Болгарка, M18, DHR243…",
+    // Queries the placeholder types out. Each one returns products (checked against lib/search).
+    typing: ["болгарка", "M18", "DHR243", "перфоратор SDS-Plus", "лазерний рівень"],
+    suggestions: "Підказки пошуку",
+    sectionsTitle: "Розділи",
+    sectionNote: "Розділ",
+    productsTitle: "Товари",
+    inSection: (name: string) => `У розділі «${name}»`,
+    noResults: (q: string) => `Нічого не знайшли за «${q}». Спробуй назву розділу або модель.`,
+    keyMove: "↑ ↓ вибрати",
+    keyOpen: "Enter відкрити",
+    keyClose: "Esc закрити",
+    clear: "Очистити пошук",
+    platformsTitle: "Акумуляторні платформи",
+    myBatteries: "Мої батареї",
+    noBatteries: "Не маю батарей",
+    tools: (n: number) => `${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    showTools: (n: number) => `Показати ${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+  },
+
+  // Product card.
+  card: {
+    bare: "без АКБ",
+    compatible: "до твоїх батарей",
+  },
+
+  // Cart drawer and phone cart sheet.
+  drawer: {
+    title: "Додано в кошик",
+    cartTitle: "Кошик",
+    close: "Закрити кошик",
+    lines: "Товари в кошику",
+    remove: "Прибрати",
+    removeItem: (name: string) => `Прибрати ${name} з кошика`,
+    dec: (name: string) => `Зменшити кількість: ${name}`,
+    inc: (name: string) => `Збільшити кількість: ${name}`,
+    qty: (n: number) => `${n} шт`,
+    freeLeft: (sum: string) => `До безкоштовної доставки ще ${sum} ₴`,
+    freeDone: "Доставка Новою поштою безкоштовна",
+    suggestSafety: "Не забудь про захист",
+    suggestAccessory: "Часто беруть разом",
+    suggestAdd: (name: string) => `Додати ${name} в кошик`,
+    total: (n: number) => `Разом, ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
+    deliveryNote: "Доставку порахуємо, коли обереш спосіб отримання",
+    checkout: "Оформити замовлення",
+    continue: "Продовжити покупки",
+    openCart: "Відкрити кошик",
+    empty: "Кошик порожній",
+    emptyText: "Обери інструмент у каталозі.",
+    emptyCta: "У каталог",
+  },
+
+  // Product page.
+  pdp: {
+    inBox: "Що в коробці",
+    figures: "Головне про модель",
+    figurePlatform: (name: string) => `Платформа ${name}`,
+    kitBare: "Без акумулятора і зарядного.",
+    kitWorksWith: (platform: string) => `Працює з батареями ${platform}.`,
+    kitFits: (platform: string) => `Підходить до твоїх батарей ${platform}.`,
+    kitIncluded: (items: string) => `У комплекті ${items}.`,
+    boxBattery: "Акумулятор",
+    boxCharger: "Зарядний пристрій",
+    boxNeeds: (platform: string) => `потрібна батарея ${platform}`,
+    boxYours: (platform: string) => `підійде твоя батарея ${platform}`,
+    boxMissing: "немає в комплекті",
+    terms: "Доставка, гарантія, повернення",
+    more: (category: string) => `Ще ${category.toLowerCase()}`,
+    onPlatform: (platform: string) => `На платформі ${platform}`,
+  },
+
+  // Catalog listing.
+  listing: {
+    tasksTitle: "Під яку роботу",
+    taskHome: "Для дому",
+    taskHomeRange: "до 2,5 Дж",
+    taskDaily: "Щодня на об'єкті",
+    taskDailyRange: "2,5–3 Дж",
+    taskHeavy: "Важкий бетон",
+    taskHeavyRange: "понад 3 Дж",
+    onlyMine: (platform: string) => `Лише під мої ${platform}`,
+    priceTo: (value: string) => `до ${value} ₴`,
+    priceFrom: (value: string) => `від ${value} ₴`,
   },
 };

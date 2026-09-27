@@ -4,6 +4,7 @@ import { categoryBySlug, platformBySlug } from "@/data/taxonomy";
 import { productBySlug, products } from "@/data/products";
 import { localize, type Localized, type Product, type SpecKey, type SpecValue } from "@/data/types";
 import { plural } from "@/i18n/plural";
+import { matchesQuery } from "@/lib/search";
 
 /** Неразрывный пробел как разделитель разрядов: 12 490, а не 12490. */
 export function price(value: number): string {
@@ -39,6 +40,25 @@ export function imageOf(product: Product): string {
 export function categoryIcon(slug: string): string {
   const tool = categoryBySlug.get(slug)?.tool ?? "drill";
   return asset(`/products/${tool}-makita-glass.png`);
+}
+
+/** 015: the product whose photo stands for a section in menus and home tiles. Chosen from photos
+ *  that show the right model (013, workstream A). */
+const CATEGORY_PHOTO_SLUG: Record<string, string> = {
+  "rotary-hammers": "milwaukee-m18-chx",
+  drills: "dewalt-dcd791d2",
+  grinders: "bosch-gws-750-125",
+  saws: "metabo-ks-18-ltx-57",
+  sanders: "dewalt-dwe6423",
+  measuring: "bosch-gll-3-80",
+  accessories: "bosch-extra-hard-43",
+  safety: "metabo-helmet-basic",
+};
+
+/** A real product photo for the section; the glass icon only when that product is gone. */
+export function categoryPhoto(slug: string): string {
+  const product = productBySlug.get(CATEGORY_PHOTO_SLUG[slug] ?? "");
+  return product ? imageOf(product) : categoryIcon(slug);
 }
 
 export function href(locale: Locale, path = ""): string {
@@ -105,6 +125,9 @@ export type CatalogQuery = {
   search?: string;
   /** Фасеты по характеристикам товара, ключ — SpecKey, значение — список specSlug. URL: spec.<key>=v1,v2 */
   specs: Record<string, string[]>;
+  /** 015: the job a rotary hammer is for, mapped to impact energy (home < 2.5 J, daily 2.5–3 J,
+   *  heavy > 3 J). The thresholds are an editorial choice. URL: task=home|daily|heavy */
+  task?: "home" | "daily" | "heavy";
 };
 
 export function emptyQuery(): CatalogQuery {
@@ -120,6 +143,7 @@ export function parseQuery(params: URLSearchParams, category?: string): CatalogQ
   };
   const power = params.get("power");
   const sort = params.get("sort");
+  const task = params.get("task");
 
   const specs: Record<string, string[]> = {};
   for (const [rawKey, value] of params.entries()) {
@@ -140,6 +164,7 @@ export function parseQuery(params: URLSearchParams, category?: string): CatalogQ
     sort: sort === "cheap" || sort === "expensive" || sort === "new" || sort === "inStock" ? sort : "popular",
     search: params.get("q") ?? undefined,
     specs,
+    task: task === "home" || task === "daily" || task === "heavy" ? task : undefined,
   };
 }
 
@@ -157,6 +182,7 @@ export function queryToParams(query: CatalogQuery): URLSearchParams {
   for (const [key, values] of Object.entries(query.specs ?? {})) {
     if (values.length) params.set(`spec.${key}`, values.join(","));
   }
+  if (query.task) params.set("task", query.task);
   return params;
 }
 
@@ -193,10 +219,16 @@ export function applyQuery(query: CatalogQuery): Product[] {
         if (num === null || !values.includes(`b${bucketIndex(num, buckets)}`)) return false;
       } else if (!values.includes(specSlug(entry[1]))) return false;
     }
-    if (needle) {
-      const haystack = `${product.brand} ${product.model} ${product.sku} ${product.slug}`.toLowerCase();
-      if (!haystack.includes(needle)) return false;
+    if (query.task) {
+      // 015: task chips on rotary hammers. A product without an impact spec never matches.
+      const impact = product.specs.find(([specKey]) => specKey === "impact");
+      const joules = impact ? parseNumeric(impact[1], "impact") : null;
+      if (joules === null) return false;
+      if (query.task === "home" && !(joules < 2.5)) return false;
+      if (query.task === "daily" && !(joules >= 2.5 && joules <= 3)) return false;
+      if (query.task === "heavy" && !(joules > 3)) return false;
     }
+    if (needle && !matchesQuery(product, needle)) return false;
     return true;
   });
 
@@ -406,20 +438,21 @@ export function platformName(slug?: string): string | null {
   return slug ? (platformBySlug.get(slug)?.name ?? null) : null;
 }
 
-/** Похожие: та же категория, а если мало — та же платформа. */
+/**
+ * 015: the shelf under the product page. Products from the same section, the most bought first
+ * ("Ще перфоратори"). Only when the section has nothing else, products on the same battery
+ * platform. The two are never mixed, so the shelf heading stays true.
+ */
 export function relatedTo(product: Product, limit = 4): Product[] {
-  const sameCategory = products.filter(
-    (candidate) => candidate.slug !== product.slug && candidate.category === product.category,
-  );
-  const samePlatform = product.platform
-    ? products.filter(
-        (candidate) =>
-          candidate.slug !== product.slug &&
-          candidate.platform === product.platform &&
-          candidate.category !== product.category,
-      )
-    : [];
-  return [...samePlatform, ...sameCategory].slice(0, limit);
+  const others = products.filter((candidate) => candidate.slug !== product.slug);
+  const bySold = (a: Product, b: Product) => b.sold - a.sold;
+  const sameCategory = others.filter((candidate) => candidate.category === product.category).sort(bySold);
+  if (sameCategory.length) return sameCategory.slice(0, limit);
+  if (!product.platform) return [];
+  return others
+    .filter((candidate) => candidate.platform === product.platform)
+    .sort(bySold)
+    .slice(0, limit);
 }
 
 export function bestsellers(limit = 8): Product[] {

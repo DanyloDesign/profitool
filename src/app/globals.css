@@ -842,6 +842,101 @@
 
 /* --- 015 product card --- */
 
+/* The photo frame keeps its height in every state, so nothing below it moves and no neighbour is
+   covered. At rest it is transparent; the reveal gives it the ink-800 surface and its 18px radius. */
+.pcard-frame {
+  border-radius: 18px;
+  transition: background-color var(--dur-fast) var(--ease-std);
+}
+.pcard-photo {
+  transform-origin: 50% 0;
+}
+.pcard-reveal {
+  opacity: 0;
+  /* Clicks fall through to the photo link underneath; the pointer stays over the card. */
+  pointer-events: none;
+}
+.pcard-tool:disabled {
+  opacity: 0.4;
+}
+
+/* Pointer devices: compare and wishlist show on hover or keyboard focus, an active one stays.
+   Touch screens keep them visible, as before. */
+@media (hover: hover) and (pointer: fine) {
+  .pcard-tool {
+    transition:
+      opacity var(--dur-fast) var(--ease-std),
+      color 0.2s var(--ease-cut);
+  }
+  .pcard-tool:not([aria-pressed="true"]) {
+    opacity: 0;
+  }
+  .pcard:hover .pcard-tool,
+  .pcard:has(:focus-visible) .pcard-tool,
+  .pcard-tool:focus-visible {
+    opacity: 1;
+  }
+  .pcard:hover .pcard-tool:disabled,
+  .pcard:has(:focus-visible) .pcard-tool:disabled {
+    opacity: 0.4;
+  }
+}
+
+/* The reveal (product-card.tsx sets data-open, gated by the same query). The photo steps back to
+   the top of the frame and a panel with the short line, three specs and the kit line rises into
+   the space it leaves. Scale per size is measured at 1512px so the tallest panel (two short lines,
+   three specs, kit) keeps 7px clear of the photo: home 300px frame, catalog 292px. The rail (220px)
+   shows the short line and the kit line only, so its photo steps back less. */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .pcard {
+    --pcard-scale: 0.44;
+    --pcard-lift: 12px;
+  }
+  .pcard[data-size="catalog"] {
+    --pcard-scale: 0.42;
+  }
+  .pcard[data-size="rail"] {
+    --pcard-scale: 0.5;
+  }
+
+  .pcard-photo {
+    transition: transform var(--dur-panel-out) var(--ease-std);
+  }
+  .pcard-reveal {
+    transform: translateY(10px);
+    transition:
+      opacity var(--dur-panel-out) var(--ease-out),
+      transform var(--dur-panel-out) var(--ease-out);
+  }
+
+  .pcard[data-open] .pcard-frame {
+    background-color: var(--color-ink-800);
+  }
+  .pcard[data-open] .pcard-photo {
+    transform: translateY(var(--pcard-lift)) scale(var(--pcard-scale));
+    transition: transform var(--dur-panel-in) var(--ease-in);
+  }
+  .pcard[data-open] .pcard-reveal {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-panel-in) var(--ease-std),
+      transform var(--dur-panel-in) var(--ease-in);
+  }
+}
+
+/* Reduced motion: the panel only fades; the global rule in @layer base already drops durations. */
+@media (prefers-reduced-motion: reduce) {
+  .pcard-reveal {
+    transform: none !important;
+  }
+}
+
+/* "Мої батареї": the trigger turns green once a platform is chosen. */
+.pp-trigger[data-chosen] {
+  border-color: var(--color-stock);
+}
+
 
 /* --- end 015 card --- */
 

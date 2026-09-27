@@ -42,6 +42,25 @@ export function categoryIcon(slug: string): string {
   return asset(`/products/${tool}-makita-glass.png`);
 }
 
+/** 015: the product whose photo stands for a section in menus and home tiles. Chosen from photos
+ *  that show the right model (013, workstream A). */
+const CATEGORY_PHOTO_SLUG: Record<string, string> = {
+  "rotary-hammers": "milwaukee-m18-chx",
+  drills: "dewalt-dcd791d2",
+  grinders: "bosch-gws-750-125",
+  saws: "metabo-ks-18-ltx-57",
+  sanders: "dewalt-dwe6423",
+  measuring: "bosch-gll-3-80",
+  accessories: "bosch-extra-hard-43",
+  safety: "metabo-helmet-basic",
+};
+
+/** A real product photo for the section; the glass icon only when that product is gone. */
+export function categoryPhoto(slug: string): string {
+  const product = productBySlug.get(CATEGORY_PHOTO_SLUG[slug] ?? "");
+  return product ? imageOf(product) : categoryIcon(slug);
+}
+
 export function href(locale: Locale, path = ""): string {
   return `/${locale}${path}`;
 }

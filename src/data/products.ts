@@ -28,6 +28,25 @@ const K = {
 /** Метка «без аккумулятора»: по ней карточка товара показывает предупреждение. */
 export const kitNoBattery = K.noBattery;
 
+export type KitKind = "bare" | "withBattery" | "plain";
+
+/**
+ * What the box holds as far as power goes: "bare" (cordless, no battery or charger),
+ * "withBattery" (battery in the box) or "plain" (corded tools and accessories).
+ * Compares by value: a product passed from a server component to a client one is a copy,
+ * so `item === kitNoBattery` would always be false there.
+ */
+export function kitKind(product: Pick<Product, "kit">): KitKind {
+  if (product.kit.some((item) => item.ua === K.noBattery.ua)) return "bare";
+  if (product.kit.some((item) => item.ua === K.battery1.ua || item.ua === K.battery2.ua)) return "withBattery";
+  return "plain";
+}
+
+/** The battery line from the kit, for "withBattery" products ("Два акумулятори 5,0 А·год"). */
+export function kitBattery(product: Pick<Product, "kit">): Localized | undefined {
+  return product.kit.find((item) => item.ua === K.battery1.ua || item.ua === K.battery2.ua);
+}
+
 const allProducts: Product[] = [
   // ── Перфоратори ────────────────────────────────────────────────────────────
   {
@@ -1381,11 +1400,52 @@ const OWN_PHOTO = new Set<string>([
   "ryobi-r18cs7",
 ]);
 
+/**
+ * Hand-written lines for the card's hover reveal, where the first sentence of the description is
+ * longer than two card lines and has no natural break (see shortOf() in lib/shop.ts).
+ * Every line restates a fact from the product's own description.
+ */
+const SHORT: Record<string, Localized> = {
+  "metabo-khe-2660": {
+    ua: "Запобіжна муфта зупиняє корпус, коли бур закусує в арматурі.",
+    ru: "Предохранительная муфта останавливает корпус, когда бур закусывает.",
+  },
+  "milwaukee-m18-fpd2": {
+    ua: "135 Н·м: крутить коронку 100 мм по дереву.",
+    ru: "135 Н·м: крутит коронку 100 мм по дереву.",
+  },
+  "metabo-bs-18-lt-bl": {
+    ua: "Батарея CAS підходить до інструментів тридцяти брендів.",
+    ru: "Батарея CAS подходит к инструментам тридцати брендов.",
+  },
+  "makita-bo5041": {
+    ua: "Швидко знімає шар і не лишає кругових слідів під лак.",
+    ru: "Быстро снимает слой и не оставляет круговых следов под лак.",
+  },
+  "makita-sk209gdz": {
+    ua: "Зелений промінь видно вдень на вулиці.",
+    ru: "Зелёный луч видно днём на улице.",
+  },
+  "makita-hss-19": {
+    ua: "Кобальтові свердла беруть нержавійку й інструментальну сталь.",
+    ru: "Кобальтовые свёрла берут нержавейку и инструментальную сталь.",
+  },
+  "dewalt-extreme-sds-5": {
+    ua: "Чотиригранна пластина не збиває кромку об арматуру.",
+    ru: "Четырёхгранная пластина не сбивает кромку об арматуру.",
+  },
+  "ryobi-helmet-home": {
+    ua: "Для домашнього ремонту, коли зверху сиплеться штукатурка.",
+    ru: "Для домашнего ремонта, когда сверху сыплется штукатурка.",
+  },
+};
+
 /** Каталог без спрятанных до фото товаров — единая точка фильтрации: рейлы, каталог, поиск,
  *  сравнение и generateStaticParams читают этот список, скрытый слаг просто в него не попадает. */
 export const products: Product[] = allProducts
   .filter((product) => !HIDDEN_UNTIL_PHOTO.has(product.slug))
-  .map((product) => (OWN_PHOTO.has(product.slug) ? { ...product, image: `/products/${product.slug}-photo.png` } : product));
+  .map((product) => (OWN_PHOTO.has(product.slug) ? { ...product, image: `/products/${product.slug}-photo.png` } : product))
+  .map((product) => (SHORT[product.slug] ? { ...product, short: SHORT[product.slug] } : product));
 
 export const productBySlug = new Map(products.map((p) => [p.slug, p]));
 

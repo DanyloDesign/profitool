@@ -16,4 +16,4 @@ node tools/shots/contrast.mjs                                        # конт�
 и список битых картинок. Голый `chrome --headless --window-size=390` не годится: окно не уже
 ~500px, кадр обрезается и показывает ложное переполнение.
 
-Путь к Chrome в скриптах жёстко прописан под Windows.
+Chrome path: `chrome.mjs` reads `CHROME_PATH`, otherwise the standard install location for Windows, macOS or Linux.

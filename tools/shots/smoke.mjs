@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 
 // node smoke.mjs [baseUrl]   сквозная проверка: корзина, избранное, сравнение, фильтры, оформление, ящик фильтров
 const base = process.argv[2] ?? "http://localhost:3000";
@@ -9,7 +10,7 @@ const check = (name, ok, detail = "") => {
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const browser = await puppeteer.launch({ executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", headless: true });
+const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 
 async function clickByText(page, selector, text) {
   const ok = await page.evaluate(

@@ -299,4 +299,33 @@ export const ru: Dict = {
     toTop: "Наверх",
     home: "Главная",
   },
+
+  // 015 (UX concept). Each section below has one owner; add keys only to your own section.
+
+  // Header and search panel.
+  header: {
+    popularTitle: "Часто ищут",
+    popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерный уровень", "биты"],
+  },
+
+  // Product card.
+  card: {
+    bare: "без АКБ",
+    compatible: "к твоим батареям",
+  },
+
+  // Cart drawer and phone cart sheet.
+  drawer: {
+    title: "Добавлено в корзину",
+  },
+
+  // Product page.
+  pdp: {
+    inBox: "Что в коробке",
+  },
+
+  // Catalog listing.
+  listing: {
+    tasksTitle: "Под какую работу",
+  },
 };

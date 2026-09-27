@@ -1,7 +1,8 @@
 import puppeteer from "puppeteer-core";
+import { chromePath } from "./chrome.mjs";
 const OUT = "../../docs/dev/009-cart-interactions/shots/";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const browser = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true });
+const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 const errors = [];
 const log = (ok, msg) => console.log(ok ? "PASS" : "FAIL", msg);
 

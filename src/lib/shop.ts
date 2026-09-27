@@ -4,6 +4,7 @@ import { categoryBySlug, platformBySlug } from "@/data/taxonomy";
 import { productBySlug, products } from "@/data/products";
 import { localize, type Localized, type Product, type SpecKey, type SpecValue } from "@/data/types";
 import { plural } from "@/i18n/plural";
+import { matchesQuery } from "@/lib/search";
 
 /** Неразрывный пробел как разделитель разрядов: 12 490, а не 12490. */
 export function price(value: number): string {
@@ -193,10 +194,7 @@ export function applyQuery(query: CatalogQuery): Product[] {
         if (num === null || !values.includes(`b${bucketIndex(num, buckets)}`)) return false;
       } else if (!values.includes(specSlug(entry[1]))) return false;
     }
-    if (needle) {
-      const haystack = `${product.brand} ${product.model} ${product.sku} ${product.slug}`.toLowerCase();
-      if (!haystack.includes(needle)) return false;
-    }
+    if (needle && !matchesQuery(product, needle)) return false;
     return true;
   });
 

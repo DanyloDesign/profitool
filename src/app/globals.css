@@ -81,6 +81,16 @@
     color-mix(in srgb, var(--color-brand-b) 20%, transparent)
   );
   --tint-btn-border: color-mix(in srgb, var(--color-brand-a) 34%, transparent);
+
+  /* 015: one motion budget for the whole site (NN/g animation duration, Material 3 easing).
+     Hover feedback within 100ms, panels in 240ms and out 180ms. Reduced motion is handled by the
+     global rule in @layer base. */
+  --dur-fast: 100ms;
+  --dur-panel-in: 240ms;
+  --dur-panel-out: 180ms;
+  --ease-in: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-out: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-std: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Светлая тема. Те же имена токенов, другие значения: компоненты про тему не знают.
@@ -672,3 +682,30 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   015 (UX concept). One block per stream; add rules only inside your own block.
+   ========================================================================== */
+
+/* --- 015 header and search panel --- */
+
+
+/* --- end 015 header --- */
+
+
+/* --- 015 product card --- */
+
+
+/* --- end 015 card --- */
+
+
+/* --- 015 cart drawer --- */
+
+
+/* --- end 015 drawer --- */
+
+
+/* --- 015 product page and catalog --- */
+
+
+/* --- end 015 product page --- */

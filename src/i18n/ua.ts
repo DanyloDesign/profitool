@@ -297,4 +297,33 @@ export const ua = {
     toTop: "Нагору",
     home: "Головна",
   },
+
+  // 015 (UX concept). Each section below has one owner; add keys only to your own section.
+
+  // Header and search panel.
+  header: {
+    popularTitle: "Часто шукають",
+    popular: ["болгарка", "перфоратор SDS-Plus", "M18", "лазерний рівень", "біти"],
+  },
+
+  // Product card.
+  card: {
+    bare: "без АКБ",
+    compatible: "до твоїх батарей",
+  },
+
+  // Cart drawer and phone cart sheet.
+  drawer: {
+    title: "Додано в кошик",
+  },
+
+  // Product page.
+  pdp: {
+    inBox: "Що в коробці",
+  },
+
+  // Catalog listing.
+  listing: {
+    tasksTitle: "Під яку роботу",
+  },
 };

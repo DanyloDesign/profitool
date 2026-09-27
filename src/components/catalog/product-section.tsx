@@ -3,15 +3,37 @@ import type { Product } from "@/data/types";
 import { ProductCard } from "./product-card";
 import { IconArrow } from "@/components/ui/icons";
 
+type Action = { href: string; label: string };
+
 type Props = {
   title: string;
   note?: string;
   items: Product[];
-  action?: { href: string; label: string; outline?: boolean };
+  action?: Action;
   size?: "home" | "catalog" | "rail";
   /** Заголовок секции главной или подзаголовок страницы. */
   level?: "section" | "sub";
 };
+
+/**
+ * 015: a section's "see all" link, one outline pill everywhere. From 640px it sits top-right next
+ * to the heading; on phones the same link goes full width under the grid (`placement="below"`).
+ */
+export function SectionAction({ action, placement }: { action: Action; placement: "head" | "below" }) {
+  return (
+    <Link
+      href={action.href}
+      className={
+        placement === "head"
+          ? "ghost-btn btn-sm hidden shrink-0 sm:inline-flex"
+          : "ghost-btn mt-8 flex w-full sm:hidden"
+      }
+    >
+      {action.label}
+      <IconArrow className="h-4 w-4" strokeWidth={2} />
+    </Link>
+  );
+}
 
 /** Блок товаров: заголовок, ссылка «дивитись усе» и сетка карточек 2 → 4 колонки. */
 export function ProductSection({ title, note, items, action, size = "home", level = "section" }: Props) {
@@ -23,19 +45,7 @@ export function ProductSection({ title, note, items, action, size = "home", leve
           {note ? <p className="mt-2.5 text-base text-bone-dim">{note}</p> : null}
         </div>
 
-        {action ? (
-          <Link
-            href={action.href}
-            className={
-              action.outline
-                ? "ghost-btn btn-sm hidden shrink-0 sm:inline-flex"
-                : "hidden shrink-0 text-base text-bone-dim transition-colors hover:text-signal-text sm:block"
-            }
-          >
-            {action.label}
-            {action.outline ? <IconArrow className="h-4 w-4" /> : null}
-          </Link>
-        ) : null}
+        {action ? <SectionAction action={action} placement="head" /> : null}
       </div>
 
       <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-10 md:gap-y-12">
@@ -43,6 +53,8 @@ export function ProductSection({ title, note, items, action, size = "home", leve
           <ProductCard key={product.slug} product={product} size={size} />
         ))}
       </div>
+
+      {action ? <SectionAction action={action} placement="below" /> : null}
     </section>
   );
 }

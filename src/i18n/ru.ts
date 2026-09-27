@@ -54,6 +54,18 @@ export const ru: Dict = {
     saleAll: (n: number) => `Все ${n} акционных`,
     fresh: "Новинки",
     viewAll: "Смотреть всё",
+    // 015: hero kit line, "Мои батареи" row, section tiles.
+    heroKitBare: (platform: string) => `Без аккумулятора и зарядного, работает с батареями ${platform}`,
+    heroKitFits: (platform: string) => `Без аккумулятора: подходит к твоим батареям ${platform}`,
+    batteries: "Мои батареи",
+    batteriesNone: "Не выбрано",
+    batteriesNo: "Нет батарей",
+    batteriesList: "Платформа батарей",
+    batteriesHelp: "Покажем, что к ним подходит, и отметим совместимое",
+    batteriesHelpChosen: "Совместимый инструмент отметили в карточках",
+    batteriesCount: (n: number) => `${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    batteriesShow: (n: number) => `Показать ${n} ${plural(n, ["инструмент", "инструмента", "инструментов"])}`,
+    allProducts: (n: number) => `Все ${n} ${plural(n, ["товар", "товара", "товаров"])}`,
   },
 
   catalog: {

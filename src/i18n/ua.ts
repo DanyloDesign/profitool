@@ -53,6 +53,18 @@ export const ua = {
     saleAll: (n: number) => `Усі ${n} акційних`,
     fresh: "Новинки",
     viewAll: "Дивитись усе",
+    // 015: hero kit line, "Мої батареї" row, section tiles.
+    heroKitBare: (platform: string) => `Без акумулятора і зарядного, працює з батареями ${platform}`,
+    heroKitFits: (platform: string) => `Без акумулятора: підходить до твоїх батарей ${platform}`,
+    batteries: "Мої батареї",
+    batteriesNone: "Не вибрано",
+    batteriesNo: "Не маю батарей",
+    batteriesList: "Платформа батарей",
+    batteriesHelp: "Покажемо, що до них пасує, і позначимо сумісне",
+    batteriesHelpChosen: "Сумісний інструмент позначили в картках",
+    batteriesCount: (n: number) => `${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    batteriesShow: (n: number) => `Показати ${n} ${plural(n, ["інструмент", "інструменти", "інструментів"])}`,
+    allProducts: (n: number) => `Усі ${n} ${plural(n, ["товар", "товари", "товарів"])}`,
   },
 
   catalog: {

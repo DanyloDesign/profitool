@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDict, isLocale, type Locale } from "@/i18n";
 import { categories, categoryBySlug, brandBySlug } from "@/data/taxonomy";
-import { productBySlug, products } from "@/data/products";
+import { kitKind, productBySlug, products } from "@/data/products";
 import type { Product } from "@/data/types";
 import {
   bestsellers,
   categoryHref,
-  categoryIcon,
+  categoryPhoto,
   discounted,
   freshArrivals,
   href,
@@ -16,8 +16,9 @@ import {
   price,
   productHref,
 } from "@/lib/shop";
-import { ProductSection } from "@/components/catalog/product-section";
+import { ProductSection, SectionAction } from "@/components/catalog/product-section";
 import { PlatformPicker } from "@/components/catalog/platform-picker";
+import { HeroKitLine } from "@/components/home/hero-kit-line";
 import { IconArrow } from "@/components/ui/icons";
 
 type Dict = ReturnType<typeof getDict>;
@@ -47,14 +48,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       <Hero locale={locale} dict={dict} />
 
-      <div className="shell space-y-16 pt-14 md:space-y-20 md:pt-16">
+      {/* 015: "Мої батареї" right under the hero, one row between two hairlines. */}
+      <div className="shell">
+        <PlatformPicker />
+      </div>
+
+      <div className="shell space-y-16 pt-12 md:space-y-20 md:pt-14">
         <Categories locale={locale} dict={dict} />
 
         <ProductSection
           title={dict.home.sale}
           note={dict.home.saleNote}
           items={sale}
-          action={{ href: `${href(locale, "/catalog")}?sale=1`, label: dict.home.saleAll(saleCount), outline: true }}
+          action={{ href: `${href(locale, "/catalog")}?sale=1`, label: dict.home.saleAll(saleCount) }}
         />
 
         <ProductSection
@@ -68,8 +74,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           items={fresh}
           action={{ href: `${href(locale, "/catalog")}?sort=new`, label: dict.home.viewAll }}
         />
-
-        <PlatformPicker />
       </div>
     </>
   );
@@ -81,7 +85,7 @@ function Hero({ locale, dict }: Ctx) {
   const category = categoryBySlug.get(product.category);
 
   return (
-    <section className="border-b border-[var(--hair)]">
+    <section>
       <div className="shell grid gap-x-8 pb-12 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr] lg:pb-0 lg:pt-20">
         <div className="lg:col-start-1 lg:row-start-1">
           <p className="text-sm font-medium text-signal-text">{dict.home.hitOfWeek}</p>
@@ -110,6 +114,7 @@ function Hero({ locale, dict }: Ctx) {
             <span className="t-price text-4xl text-bone lg:text-[44px]">{price(product.price)} ₴</span>
             <span className="text-base text-bone-dim">{dict.stock.inCity(product.stock)}</span>
           </div>
+          {kitKind(product) === "bare" && product.platform ? <HeroKitLine platform={product.platform} /> : null}
 
           <div className="mt-7 flex flex-wrap gap-3.5">
             <Link href={productHref(locale, product.slug)} className="signal-btn btn-lg w-full sm:w-auto">
@@ -128,42 +133,62 @@ function Hero({ locale, dict }: Ctx) {
   );
 }
 
-function Categories({ locale, dict }: Ctx) {
-  const inStock = products.filter((product) => product.stock > 0).length;
+/**
+ * Where long section names break on a narrow tile, as on the canvas. A soft hyphen takes priority
+ * over the browser's own points, which would split "Вимірюва-ння" or leave "-ни" on a line.
+ */
+const SHY = "\u00ad";
+const TILE_BREAKS: Record<string, string> = {
+  Перфоратори: `Перфо${SHY}ратори`,
+  Перфораторы: `Перфо${SHY}раторы`,
+  Шурупокрути: `Шурупо${SHY}крути`,
+  Шуруповёрты: `Шурупо${SHY}вёрты`,
+  Шліфмашини: `Шліф${SHY}машини`,
+  шліфмашини: `шліф${SHY}машини`,
+  Шлифмашины: `Шлиф${SHY}машины`,
+  шлифмашины: `шлиф${SHY}машины`,
+  Вимірювання: `Вимірю${SHY}вання`,
+};
+const tileName = (name: string) =>
+  name
+    .split(" ")
+    .map((word) => TILE_BREAKS[word] ?? word)
+    .join(" ");
 
+/**
+ * 015: section tiles with a real product photo each (categoryPhoto). Eight in one row from 1024px,
+ * a 4×2 grid below. The whole tile is the link; hover gives it the surface.
+ */
+function Categories({ locale, dict }: Ctx) {
   return (
     <section>
-      <div className="flex items-baseline justify-between gap-4">
-        <h2 className="t-eyebrow text-bone-dim">{dict.home.categories}</h2>
-        <Link
-          href={href(locale, "/catalog")}
-          className="text-[15px] text-bone-dim transition-colors hover:text-signal-text"
-        >
-          {dict.home.inStock(inStock)}
-        </Link>
+      <div className="flex items-end justify-between gap-6">
+        <h2 className="t-section text-bone">{dict.home.categories}</h2>
+        <SectionAction action={{ href: href(locale, "/catalog"), label: dict.home.allProducts(products.length) }} placement="head" />
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-x-10 border-b border-[var(--hair)] sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-4 gap-y-2 md:mt-7 md:gap-x-3 md:gap-y-4 lg:grid-cols-8">
         {categories.map((category) => (
           <Link
             key={category.slug}
             href={categoryHref(locale, category.slug)}
-            className="group flex items-center gap-4 border-t border-[var(--hair)] py-4 lg:gap-[18px] lg:py-5"
+            className="flex flex-col items-center gap-1.5 rounded-[18px] pb-2 pt-1 text-center transition-colors duration-[var(--dur-fast)] hover:bg-ink-800 md:gap-2.5 md:px-1.5 md:pb-4 md:pt-3.5"
           >
-            <span className="relative h-16 w-16 shrink-0 lg:h-[88px] lg:w-[88px]">
+            <span className="relative block aspect-square w-16 md:w-24 lg:w-full lg:max-w-[120px]">
               <Image
-                src={categoryIcon(category.slug)}
+                src={categoryPhoto(category.slug)}
                 alt=""
                 fill
-                sizes="88px"
-                className="object-contain transition-transform duration-500 group-hover:scale-105"
+                sizes="(min-width: 1024px) 120px, (min-width: 768px) 96px, 64px"
+                className="object-contain"
               />
             </span>
-            <span className="min-w-0">
-              <span className="block text-[19px] font-medium leading-snug text-bone transition-colors group-hover:text-signal-text">
-                {category.name[locale]}
-              </span>
-              <span className="mt-1 block text-sm text-bone-dim">{category.blurb[locale]}</span>
+            {/* Long compound names ("шліфмашини") are wider than a tile on phones and in the
+                8-column row at 1024–1279px: break them at TILE_BREAKS and never leave a two-letter
+                tail. There "Кутові шліфмашини" takes three lines; everything else takes two.
+                Where whole words fit, hyphens stay off so names break at the space. */}
+            <span className="line-clamp-3 text-sm font-medium leading-[18px] text-bone hyphens-auto [hyphenate-limit-chars:6_3_3] md:text-base md:leading-snug md:hyphens-none lg:hyphens-auto xl:hyphens-none">
+              {tileName(category.name[locale])}
             </span>
           </Link>
         ))}

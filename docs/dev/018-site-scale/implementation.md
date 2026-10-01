@@ -52,3 +52,9 @@ Proposal artifact: https://claude.ai/artifact/GKZjxQT5thArkFASzNJjAA
 
 hierarchy 7 · typography 6 (small labels) · color 8 (unchanged) · spacing 7 · originality 5
 (a density pass, no new form) · fit to brief 8.
+
+## Live
+
+Merged as PR #3, Pages deploy green. https://danylodesign.github.io/profitool/ua/ checked at
+1512×945: same as local (`shots/live-home-1512.png`, `shots/live-cat-1512.png`, 5 catalog cards in
+the first screen).

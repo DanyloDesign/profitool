@@ -131,7 +131,7 @@ export default async function ProductPage({ params }: Params) {
 
       {/* DOM order is the phone order: photo, the buy column, the details. On desktop the buy
           column stands to the right and spans both rows. */}
-      <div className="mt-6 grid gap-x-16 gap-y-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-y-0">
+      <div className="mt-6 grid gap-x-16 gap-y-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-y-0 xl:grid-cols-[minmax(0,1fr)_520px]">
         <div className="pdp-photo lg:col-start-1 lg:row-start-1">
           <Image
             src={imageOf(product)}

@@ -21,7 +21,7 @@ export function MegaMenu({ id, onClose }: { id: string; onClose: () => void }) {
       <div aria-hidden className="hdr-scrim" onClick={onClose} />
       <div id={id} className="hdr-mega absolute inset-x-0 top-full border-b border-[var(--hair)] bg-ink-900 shadow-[var(--shadow-pop)]">
         <div className="shell grid grid-cols-[minmax(0,1fr)_340px] gap-12 pb-8 pt-5 min-[1400px]:gap-14">
-          <ul className="grid grid-cols-2 content-start gap-x-6 gap-y-1">
+          <ul className="grid grid-cols-2 content-start gap-x-6 gap-y-1 xl:grid-cols-3">
             {categories.map((category) => (
               <li key={category.slug}>
                 <Link

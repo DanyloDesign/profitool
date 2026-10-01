@@ -35,7 +35,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // Один товар не показываем в двух блоках подряд.
   const used = new Set<string>([HERO_SLUG]);
   const take = (list: Product[]) => {
-    const picked = list.filter((product) => !used.has(product.slug)).slice(0, 4);
+    const picked = list.filter((product) => !used.has(product.slug)).slice(0, 5);
     picked.forEach((product) => used.add(product.slug));
     return picked;
   };
@@ -48,13 +48,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       <Hero locale={locale} dict={dict} />
 
-      {/* 015: "Мої батареї" right under the hero, one row between two hairlines. */}
+      {/* 015: "Мої батареї" right under the hero, one row between two hairlines. 018: from 1280px the
+          sale row comes next and categories after it, so the first screen shows products. */}
       <div className="shell">
         <PlatformPicker />
       </div>
 
-      <div className="shell space-y-16 pt-12 md:space-y-20 md:pt-14">
-        <Categories locale={locale} dict={dict} />
+      <div className="shell space-y-16 pt-12 md:space-y-20 md:pt-14 xl:pt-10">
+        <div className="xl:hidden">
+          <Categories locale={locale} dict={dict} />
+        </div>
 
         <ProductSection
           title={dict.home.sale}
@@ -62,6 +65,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           items={sale}
           action={{ href: `${href(locale, "/catalog")}?sale=1`, label: dict.home.saleAll(saleCount) }}
         />
+
+        <div className="hidden xl:block">
+          <Categories locale={locale} dict={dict} />
+        </div>
 
         <ProductSection
           title={dict.home.bestsellers}
@@ -86,7 +93,7 @@ function Hero({ locale, dict }: Ctx) {
 
   return (
     <section>
-      <div className="shell grid gap-x-8 pb-12 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr] lg:pb-0 lg:pt-20">
+      <div className="shell grid gap-x-8 pb-12 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_1fr] lg:pb-0 lg:pt-20 xl:pt-8">
         <div className="lg:col-start-1 lg:row-start-1">
           <p className="text-sm font-medium text-signal-text">{dict.home.hitOfWeek}</p>
           <h1 className="t-hero mt-4 text-bone">
@@ -96,7 +103,7 @@ function Hero({ locale, dict }: Ctx) {
           </h1>
         </div>
 
-        <div className="relative order-2 my-2 h-[280px] sm:h-[380px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:my-0 lg:h-[560px]">
+        <div className="relative order-2 my-2 h-[280px] sm:h-[380px] lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:my-0 lg:h-[560px] xl:h-[420px]">
           <Image
             src={imageOf(product)}
             alt={`${brand} ${product.model}`}
@@ -107,7 +114,7 @@ function Hero({ locale, dict }: Ctx) {
           />
         </div>
 
-        <div className="order-3 lg:col-start-1 lg:row-start-2 lg:pb-20">
+        <div className="order-3 lg:col-start-1 lg:row-start-2 lg:pb-20 xl:pb-8">
           <p className="max-w-[430px] text-[19px] leading-normal text-bone-dim">{product.description[locale]}</p>
 
           <div className="mt-7 flex flex-wrap items-baseline gap-x-4 gap-y-1">

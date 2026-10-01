@@ -31,7 +31,7 @@ export function WishlistView() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-12 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-12 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
       {items.map((product) => (
         <ProductCard key={product.slug} product={product} size="home" />
       ))}

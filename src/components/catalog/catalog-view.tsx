@@ -145,7 +145,7 @@ function CatalogBody({ locale, categorySlug, search }: ViewProps & { search: URL
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-12 xl:grid-cols-3">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-10 md:gap-y-12 xl:grid-cols-5 xl:gap-x-8">
                 {visible.map((product, index) => (
                   <ProductCard
                     key={product.slug}

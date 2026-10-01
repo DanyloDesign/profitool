@@ -48,7 +48,7 @@ export function ProductSection({ title, note, items, action, size = "home", leve
         {action ? <SectionAction action={action} placement="head" /> : null}
       </div>
 
-      <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-10 md:gap-y-12">
+      <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-10 md:gap-y-12 xl:grid-cols-5 xl:gap-x-8 max-xl:[&>*:nth-child(n+5)]:hidden">
         {items.map((product) => (
           <ProductCard key={product.slug} product={product} size={size} />
         ))}

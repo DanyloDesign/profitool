@@ -11,6 +11,7 @@ import { useI18n } from "@/i18n/context";
 import { categories } from "@/data/taxonomy";
 import { categoryHref, categoryPhoto, countIn, href } from "@/lib/shop";
 import { useCompare, useWishlist } from "@/store/shop";
+import { useAccount } from "@/store/account";
 import { Logo } from "@/components/layout/logo";
 import { CartButton } from "@/components/cart/cart-button";
 import { ThemeRow, ThemeToggle } from "@/components/layout/theme-toggle";
@@ -193,8 +194,8 @@ export function Header() {
 }
 
 /**
- * Action icons from 768px: account (tablet only; from 1024px it lives in the footer, as in the
- * 015 concept), wishlist, compare, cart.
+ * Action icons from 768px: account icon (tablet only), wishlist, compare, cart. From 1024px the
+ * account is a labelled pill after the cart, in the top right corner (019, owner's request).
  */
 function Actions() {
   const { locale, dict } = useI18n();
@@ -231,7 +232,52 @@ function Actions() {
       </IconLink>
 
       <CartButton />
+      <AccountPill />
     </>
+  );
+}
+
+/**
+ * Guest: "Увійти" leads to /account, where sign-in and registration are two tabs. Signed in: an
+ * initial and the first name, leads to the profile. Before hydration the guest state renders, the
+ * session lives in localStorage.
+ */
+function AccountPill() {
+  const { locale, dict } = useI18n();
+  const mounted = useMounted();
+  const session = useAccount((state) => state.session);
+  const pathname = usePathname();
+
+  const user = mounted ? session : null;
+  const firstName = user?.name.trim().split(/\s+/)[0] ?? "";
+  const current = pathname.includes("/account");
+
+  return (
+    <Link
+      href={href(locale, user ? "/account/profile" : "/account")}
+      aria-label={user ? `${dict.nav.account}: ${user.name}` : undefined}
+      aria-current={current ? "page" : undefined}
+      className={`ml-1 hidden h-11 shrink-0 items-center gap-2 rounded-full border text-[15px] font-medium text-bone transition-colors duration-[var(--dur-fast)] hover:border-signal lg:inline-flex ${
+        user ? "pl-1.5 pr-4" : "pl-3.5 pr-4"
+      } ${current ? "border-signal" : "border-[var(--hair-strong)]"}`}
+    >
+      {user ? (
+        <>
+          <span
+            aria-hidden
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bone text-sm font-semibold leading-none text-ink-900"
+          >
+            {firstName.charAt(0).toUpperCase()}
+          </span>
+          <span className="max-w-[12ch] truncate">{firstName}</span>
+        </>
+      ) : (
+        <>
+          <IconUser className="h-5 w-5 shrink-0" />
+          {dict.account.submitLogin}
+        </>
+      )}
+    </Link>
   );
 }
 

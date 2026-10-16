@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Dict, Locale } from "@/i18n";
 import { brands, categories } from "@/data/taxonomy";
+import { infoPages } from "@/data/info";
 import { categoryHref, href } from "@/lib/shop";
 import { Logo } from "@/components/layout/logo";
 import { IconClock, IconMapPin, IconPhone } from "@/components/ui/icons";
@@ -22,7 +23,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dict }) {
 
   return (
     <footer className="mt-24 border-t border-[var(--hair)]">
-      <div className="shell grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="shell grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.4fr_1fr_1fr_1fr_1.2fr]">
         <div className="max-w-[320px]">
           <Logo href={href(locale)} />
           <p className="mt-5 text-[15px] leading-relaxed text-bone-dim">{dict.common.footerAbout}</p>
@@ -79,6 +80,19 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dict }) {
                 {dict.nav.account}
               </Link>
             </li>
+          </ul>
+        </nav>
+
+        <nav aria-label={dict.info.navLabel}>
+          <p className="t-eyebrow text-bone">{dict.info.navLabel}</p>
+          <ul className="mt-5 grid gap-3">
+            {infoPages.map((page) => (
+              <li key={page.slug}>
+                <Link href={href(locale, `/info/${page.slug}`)} className={link}>
+                  {page.title[locale]}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 

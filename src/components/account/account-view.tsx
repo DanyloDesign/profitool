@@ -297,7 +297,13 @@ function RegisterForm({
       <button type="submit" className="signal-btn w-full">
         {dict.account.submitRegister}
       </button>
-      <p className="text-sm leading-normal text-bone-dim">{dict.account.consent}</p>
+      <p className="text-sm leading-normal text-bone-dim">
+        {dict.account.consentBefore}
+        <Link href={href(locale, "/info/privacy")} className="underline underline-offset-2 transition-colors hover:text-signal-text">
+          {dict.account.consentLink}
+        </Link>
+        {dict.account.consentAfter}
+      </p>
       <SwitchLink toLogin={true} targetHref={switchHref} />
     </form>
   );

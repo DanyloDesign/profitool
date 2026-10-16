@@ -258,7 +258,9 @@ export const ru: Dict = {
     strengthWeak: "Слабый",
     strengthMedium: "Средний",
     strengthStrong: "Надёжный",
-    consent: "Регистрируясь, вы соглашаетесь на обработку данных для доставки заказов.",
+    consentBefore: "Регистрируясь, вы соглашаетесь на ",
+    consentLink: "обработку данных",
+    consentAfter: " для доставки заказов.",
     errEmail: "Проверь адрес почты",
     errPassword: "Пароль не прошёл проверку",
     errLoginPassword: "Введи пароль",
@@ -306,6 +308,14 @@ export const ru: Dict = {
     low: (n: number) => `Осталось ${n}`,
     out: "Нет в наличии",
     outNote: "Сообщим, когда привезут",
+  },
+
+  info: {
+    navLabel: "Покупателям",
+    checkoutBefore: "Подтверждая заказ, ты принимаешь ",
+    checkoutReturns: "условия возврата",
+    checkoutAnd: " и ",
+    checkoutPrivacy: "правила обработки личных данных",
   },
 
   common: {

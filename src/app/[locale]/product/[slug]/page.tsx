@@ -13,7 +13,7 @@ import { ProductSections } from "@/components/product/product-sections";
 import { StickyBuyBar } from "@/components/product/sticky-buy-bar";
 import { ProductCard } from "@/components/catalog/product-card";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { IconArrow, IconMapPin, IconShield, IconTruck } from "@/components/ui/icons";
+import { IconArrow, IconChevron, IconMapPin, IconShield, IconTruck } from "@/components/ui/icons";
 
 type Params = { params: Promise<{ locale: string; slug: string }> };
 
@@ -116,13 +116,19 @@ export default async function ProductPage({ params }: Params) {
   ];
 
   const terms = [
-    { icon: <IconTruck className="h-5 w-5" />, text: dict.product.serviceDelivery },
-    { icon: <IconMapPin className="h-5 w-5" />, text: dict.checkout.methodPickup, note: dict.common.footerHours },
+    { icon: <IconTruck className="h-5 w-5" />, text: dict.product.serviceDelivery, page: "delivery" },
+    {
+      icon: <IconMapPin className="h-5 w-5" />,
+      text: dict.checkout.methodPickup,
+      note: dict.common.footerHours,
+      page: "delivery",
+    },
     {
       icon: <IconShield className="h-5 w-5" />,
       text: `${dict.product.warranty} ${dict.product.warrantyValue(product.warranty)}, ${dict.product.serviceWarranty}`,
+      page: "warranty",
     },
-    { icon: <ReturnIcon />, text: `${dict.product.returns} ${dict.product.returnsValue}` },
+    { icon: <ReturnIcon />, text: `${dict.product.returns} ${dict.product.returnsValue}`, page: "returns" },
   ];
 
   return (
@@ -179,12 +185,19 @@ export default async function ProductPage({ params }: Params) {
 
           <ul aria-label={dict.pdp.terms} className="mt-6 flex flex-col gap-3 border-t border-[var(--hair)] pt-5">
             {terms.map((term) => (
-              <li key={term.text} className="pdp-line flex gap-3 text-bone">
-                <span className="mt-px shrink-0 text-bone-dim">{term.icon}</span>
-                <span>
-                  {term.text}
-                  {term.note ? <span className="block text-bone-dim">{term.note}</span> : null}
-                </span>
+              <li key={term.text}>
+                <Link
+                  href={href(locale, `/info/${term.page}`)}
+                  className="pdp-line group flex gap-3 text-bone transition-colors hover:text-signal-text"
+                >
+                  <span className="mt-px shrink-0 text-bone-dim">{term.icon}</span>
+                  <span className="min-w-0 flex-1">
+                    {term.text}
+                    {term.note ? <span className="block text-bone-dim">{term.note}</span> : null}
+                  </span>
+                  {/* The chevron tells the row is a link to the terms page (023). */}
+                  <IconChevron className="mt-0.5 h-4 w-4 shrink-0 text-bone-faint transition-colors group-hover:text-signal-text" />
+                </Link>
               </li>
             ))}
           </ul>

@@ -554,7 +554,18 @@ export function CheckoutForm() {
           <button type="submit" disabled={isSubmitting} className="signal-btn btn-lg mt-6 w-full">
             {dict.checkout.submit}
           </button>
-          <p className="mt-4 text-sm leading-normal text-bone-dim">{dict.checkout.demo}</p>
+          <p className="mt-4 text-sm leading-normal text-bone-dim">
+            {dict.info.checkoutBefore}
+            <Link href={href(locale, "/info/returns")} className="underline underline-offset-2 transition-colors hover:text-signal-text">
+              {dict.info.checkoutReturns}
+            </Link>
+            {dict.info.checkoutAnd}
+            <Link href={href(locale, "/info/privacy")} className="underline underline-offset-2 transition-colors hover:text-signal-text">
+              {dict.info.checkoutPrivacy}
+            </Link>
+            .
+          </p>
+          <p className="mt-2 text-sm leading-normal text-bone-dim">{dict.checkout.demo}</p>
         </aside>
       </form>
     </>

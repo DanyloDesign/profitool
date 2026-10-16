@@ -257,7 +257,9 @@ export const ua = {
     strengthWeak: "Слабкий",
     strengthMedium: "Середній",
     strengthStrong: "Надійний",
-    consent: "Реєструючись, ви погоджуєтесь на обробку даних для доставки замовлень.",
+    consentBefore: "Реєструючись, ви погоджуєтесь на ",
+    consentLink: "обробку даних",
+    consentAfter: " для доставки замовлень.",
     errEmail: "Перевір адресу пошти",
     errPassword: "Пароль не пройшов перевірку",
     errLoginPassword: "Введи пароль",
@@ -304,6 +306,14 @@ export const ua = {
     low: (n: number) => `Залишилось ${n}`,
     out: "Немає в наявності",
     outNote: "Повідомимо, коли привезуть",
+  },
+
+  info: {
+    navLabel: "Покупцям",
+    checkoutBefore: "Підтверджуючи замовлення, ти приймаєш ",
+    checkoutReturns: "умови повернення",
+    checkoutAnd: " і ",
+    checkoutPrivacy: "правила обробки особистих даних",
   },
 
   common: {

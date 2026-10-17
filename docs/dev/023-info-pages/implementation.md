@@ -67,3 +67,47 @@ Checks after the fixes:
 
 Not checked: real phone, focus ring on the new links (keyboard pass not done), contrast of the faint chevron
 (decorative, the row text carries the meaning). Legal wording needs the owner or a lawyer before launch.
+
+## 2026-10-17: store address and no courier
+
+Owner facts: the store, pickup point and service are at smt Sofiivka, vul. Likarnia (ru: pgt Sofievka, ul. Bolnichnaya), Dnipropetrovsk oblast, no house number yet, coordinates 48.044502, 33.863312. There is no courier delivery anywhere: Nova Poshta and pickup only.
+
+Files changed:
+- `src/i18n/ua.ts`, `src/i18n/ru.ts`: footerAddress, footerAbout (no Kyiv, same tone), methodPickup, serviceRepair, stock.inCity ("шт у магазині" / "шт в магазине"). Removed dead keys: methodCourier, profile methodShort.courier, checkout.address, errAddress, nav.cityDeliveryFast.
+- `src/lib/shop.ts`: `DeliveryMethod` is now `"novapost" | "pickup"`.
+- `src/components/cart/checkout-form.tsx`: courier radio, address label and address error removed; the branch field always uses the branch label and error.
+- `src/components/account/profile-view.tsx`: labels fall back to Nova Poshta for anything that is not pickup, so old orders stored with method "courier" in localStorage render without a crash.
+- `src/store/location.ts`: removed `isFastDelivery` and the Kyiv special case; `DEFAULT_SLUG` stays "kyiv" (city list and default unchanged).
+- `src/components/layout/city-select.tsx`: every city shows the same "1–2 days" Nova Poshta term.
+
+Not touched: `src/data/info.ts`, `src/app/[locale]/info/`, `src/components/info/`, `globals.css`. `tools/shots/smoke.mjs` has no courier scenario, so it needed no change.
+
+Checks: `npx tsc --noEmit` clean; eslint on all changed files clean; grep for `Кирил|Кирилл|courier` in `src` finds nothing outside `src/data/info.ts`; `node tools/shots/smoke.mjs` 30/30 passed. Not verified by eye in Chrome: checkout with two delivery options, city dropdown.
+Open: house number for the address; the default city is still Kyiv (kept per instructions); `store/account.ts` Order type now cannot hold "courier" statically, old stored values are handled at render only.
+
+## 2026-10-17: delivery page, direction B
+
+Files: `src/components/info/delivery-calculator.tsx` (new, client), `src/data/info.ts` (exported `deliveryCalc`, ua/ru strings), `src/app/[locale]/info/[slug]/page.tsx` (slug "delivery" renders title t-h2 + calculator; other four pages unchanged), `src/app/globals.css` (`.delivery-range`, accent-color from tokens).
+
+Decisions:
+- Method toggle uses aria-pressed buttons; slider has a visible label; result column is aria-live="polite".
+- Initial sum is the cart subtotal after `useMounted` (0 before mount, so no hydration mismatch); the user's slider move overrides it.
+- Address, hours and phone come from the dictionary, so the house number is added in one place. Mini map is inline SVG with tokens only (ink-800, ink-900, bone).
+- Price is clamp(4rem, 9vw, 6.25rem) Unbounded 900; page padding and title reduced for this page only.
+
+Measurements (puppeteer, zoom 0.9): bottom of `[data-delivery-end]` is about 594 real px (rect 534.7 reported in zoomed units, read from the screenshot) vs viewport 800 at 1440x800 and vs 860 at 1512x860. No vertical scroll needed for content; the footer starts around 700. 390px: stacked, no horizontal overflow.
+Checks: `npx tsc --noEmit` clean; eslint clean on changed files. Screenshots in `shots/`: delivery-b-1512x860, -1440x800, -390, -1512-dark, -ru-1512x860.
+
+Defects left: keyboard/focus pass not done by hand; slider track is the native one (theme accent only); dark progress track is low contrast against black; address has no house number (owner to add); Playwright-less check of slider drag and pickup toggle not run.
+
+### Orchestrator review (2026-10-17)
+
+- Native range was a solid black bar in the light theme: custom `.delivery-range` track and thumb on tokens,
+  the passed part in `signal`, focus ring `signal-text`.
+- Empty cart opened the page on "0 ₴" with an empty bar: default sum 3 000 ₴ when the cart is empty.
+- Slider scale (0–10 000) and the progress bar (0–5 000) read differently: 5 000 ₴ label mid-scale.
+- Dark theme progress track was faint: `bg-ink-600` for both tracks.
+- Keyboard check (puppeteer): focus slider, 25 × ArrowRight from 3 000 → 5 500 ₴ gives "0 ₴ · Доставка
+  безкоштовна"; clicking "Самовивіз" gives "0 ₴ · Самовивіз завжди безкоштовний"; console errors: none.
+- Screens: delivery-b-1512x860, -1440x800, -1512-dark, -ru-1512, -390, -focus. Page area ends about 600 px,
+  footer starts near 700 px of an 800–860 px viewport. tsc, eslint clean, smoke 30/30.

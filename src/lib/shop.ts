@@ -76,7 +76,7 @@ export function categoryHref(locale: Locale, slug?: string): string {
 export const FREE_DELIVERY_FROM = 5000;
 export const DELIVERY_COST = 120;
 
-export type DeliveryMethod = "novapost" | "courier" | "pickup";
+export type DeliveryMethod = "novapost" | "pickup";
 
 /**
  * Единственный источник итогов заказа (proposal 013, workstream B) — шапка, мини-корзина,

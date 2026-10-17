@@ -109,12 +109,11 @@ function OrderRow({ order, open, onToggle }: { order: Order; open: boolean; onTo
     day: "numeric",
     month: "short",
   }).format(new Date(order.date));
+  // Старые заказы в localStorage могут хранить удалённый метод доставки: показываем их как Нову Пошту.
   const methodShort =
-    order.method === "novapost"
-      ? dict.account.profile.methodShort.novapost
-      : order.method === "courier"
-        ? dict.account.profile.methodShort.courier
-        : dict.account.profile.methodShort.pickup;
+    order.method === "pickup"
+      ? dict.account.profile.methodShort.pickup
+      : dict.account.profile.methodShort.novapost;
   const panelId = `order-${order.number}`;
 
   return (
@@ -178,11 +177,7 @@ function OrderLines({ lines }: { lines: OrderLine[] }) {
 function OrderTotals({ order }: { order: Order }) {
   const { dict } = useI18n();
   const deliveryLabel =
-    order.method === "novapost"
-      ? dict.checkout.methodNovaPost
-      : order.method === "courier"
-        ? dict.checkout.methodCourier
-        : dict.checkout.methodPickup;
+    order.method === "pickup" ? dict.checkout.methodPickup : dict.checkout.methodNovaPost;
   const paymentLabel =
     order.payment === "card"
       ? dict.checkout.payCard

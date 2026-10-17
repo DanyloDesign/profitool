@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDict, isLocale, locales, type Locale } from "@/i18n";
-import { infoBySlug, infoPages } from "@/data/info";
+import { deliveryCalc, infoBySlug, infoPages } from "@/data/info";
 import { href } from "@/lib/shop";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNav } from "@/components/info/info-nav";
+import { DeliveryCalculator } from "@/components/info/delivery-calculator";
 
 type Params = { params: Promise<{ locale: string; slug: string }> };
 
@@ -38,6 +39,24 @@ export default async function InfoPage({ params }: Params) {
   const fill = (text: string) => text.replace(/\{(phone|address|hours)\}/g, (token) => tokens[token]);
 
   const crumbs = [{ label: dict.common.home, href: href(locale) }, { label: page.title[locale] }];
+
+  if (slug === "delivery") {
+    return (
+      <div className="shell pb-6 pt-5">
+        <Breadcrumbs items={crumbs} label={dict.catalog.breadcrumbs} />
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-x-16 gap-y-5 lg:grid-cols-[180px_minmax(0,1fr)]">
+          <div className="min-w-0 lg:sticky lg:top-[calc(var(--header-h)+24px)] lg:self-start">
+            <InfoNav locale={locale} current={page.slug} label={dict.info.navLabel} />
+          </div>
+          <article className="min-w-0">
+            <h1 className="t-h2 text-bone break-words">{page.title[locale]}</h1>
+            <p className="mt-2 max-w-[640px] text-lg leading-snug text-bone-dim">{deliveryCalc.intro[locale]}</p>
+            <DeliveryCalculator />
+          </article>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="shell pb-8 pt-7">

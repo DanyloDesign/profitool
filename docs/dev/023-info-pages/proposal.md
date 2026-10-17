@@ -58,3 +58,36 @@ No new utilities, no new colors. Tokens and existing classes only (`t-h1`, `t-h3
   real company data.
 - A fifth footer column makes the footer denser at 1024–1280px. Checked in screenshots; fallback is to
   merge it into the "Profitool" column.
+
+## 2026-10-17 · Delivery page redesign
+
+Owner's words (verbatim):
+
+> Треба розібрптися з UI сторінок які ми створили. почнемо з сторінки доставки. Поперше внас немає
+> доставки по місту а Магазин наший знаходиться за адресою https://maps.app.goo.gl/4GPKpEsfU2VBjeDz8.
+> І зроби цю сторінку приємною до глаз. зараз сторінка виглядає дуже просто і не цікаво.
+
+Facts: the link resolves to 48.044502, 33.863312, Sofiivka (Kryvyi Rih district, Dnipropetrovsk oblast).
+Owner: write "смт Софіївка, вул. Лікарняна" for now, house number later. No courier anywhere. The address
+and the courier removal are applied site-wide (implementation.md, 2026-10-17).
+
+Three directions on one canvas: https://claude.ai/artifact/2W3SXQCZAd2P74huHV5snZ
+
+| | Direction | Weakness |
+|---|---|---|
+| A | Route: Sofiivka → Nova Poshta → your branch as a line, then two columns with huge prices (120 ₴ / 0 ₴) and a drawn map for pickup | The route says little the numbers do not; the map is a drawing, not a real map |
+| B | Calculator: pick method, drag the order sum, the price and the bar to free delivery change live | Needs client JS; a visitor with a cart already sees this in the cart |
+| C (risky) | Waybill: the page is a shipping label with sender, recipient, term, price and a tear-off pickup stub | Can read as a gimmick; the label border is a panel the design system avoids |
+
+```
+default: text page with sections            | chosen: price and term as the largest objects on the page | why: owner wants big objects and little text
+default: Google Maps iframe                  | chosen: drawn mini map + link to Google Maps              | why: no third-party load, matches both themes; a real map is one click away
+default: same fade-in on every block         | chosen: no entrance motion; B moves only on input          | why: motion should explain the price change, nothing else
+```
+
+References (domains the owner named or well-known pages; individual pages not re-opened this session):
+jabko.ua and answear.com (owner's tone: black and white, big objects, air), apple.com/shop/help/shipping_delivery
+(delivery terms split by method, short), novaposhta.ua (the carrier's own wording for branch and parcel locker).
+
+Decision (owner, 2026-10-17): direction B. Everything on the delivery page must fit one desktop screen
+("працюй з масштабом"). Header city stays Kyiv. The exact store address comes from the owner later.

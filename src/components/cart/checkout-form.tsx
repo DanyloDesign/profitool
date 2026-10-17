@@ -99,9 +99,8 @@ export function CheckoutForm() {
             if ((values.city ?? "").trim().length < 2) {
               ctx.addIssue({ code: "custom", path: ["city"], message: dict.checkout.errCity });
             }
-            const branchMessage = method === "novapost" ? dict.checkout.errBranch : dict.checkout.errAddress;
             if ((values.branch ?? "").trim().length < 1) {
-              ctx.addIssue({ code: "custom", path: ["branch"], message: branchMessage });
+              ctx.addIssue({ code: "custom", path: ["branch"], message: dict.checkout.errBranch });
             }
           }
           if (buyerType !== "person" && !/^\d{8}$|^\d{10}$/.test(values.edrpou ?? "")) {
@@ -171,11 +170,7 @@ export function CheckoutForm() {
 
   if (orderNumber && confirmedOrder) {
     const deliveryLabel =
-      confirmedOrder.method === "novapost"
-        ? dict.checkout.methodNovaPost
-        : confirmedOrder.method === "courier"
-          ? dict.checkout.methodCourier
-          : dict.checkout.methodPickup;
+      confirmedOrder.method === "pickup" ? dict.checkout.methodPickup : dict.checkout.methodNovaPost;
     const paymentLabel =
       confirmedOrder.payment === "card"
         ? dict.checkout.payCard
@@ -413,13 +408,6 @@ export function CheckoutForm() {
               />
               <Choice
                 name="method"
-                checked={method === "courier"}
-                onChange={() => setMethod("courier")}
-                label={dict.checkout.methodCourier}
-                aside={shipCost}
-              />
-              <Choice
-                name="method"
                 checked={method === "pickup"}
                 onChange={() => setMethod("pickup")}
                 label={dict.checkout.methodPickup}
@@ -442,7 +430,7 @@ export function CheckoutForm() {
                   />
                 </Field>
                 <Field
-                  label={`${method === "novapost" ? dict.checkout.branch : dict.checkout.address} *`}
+                  label={`${dict.checkout.branch} *`}
                   error={errors.branch?.message}
                   id="branch"
                 >

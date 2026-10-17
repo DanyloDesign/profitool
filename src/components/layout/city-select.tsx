@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMounted } from "@/lib/use-mounted";
 import { useI18n } from "@/i18n/context";
-import { CITIES, cityName, isFastDelivery, useLocation } from "@/store/location";
+import { CITIES, cityName, useLocation } from "@/store/location";
 import { usePopover } from "./use-popover";
 
 function IconMapPin({ className }: { className?: string }) {
@@ -89,7 +89,7 @@ export function CitySelect({ className = "", fullWidth = false }: { className?: 
                 >
                   <span>{city.name[locale]}</span>
                   <span className="shrink-0 text-sm text-bone-dim">
-                    {isFastDelivery(city.slug) ? dict.nav.cityDeliveryFast : dict.nav.cityDeliverySlow}
+                    {dict.nav.cityDeliverySlow}
                   </span>
                 </button>
               </li>

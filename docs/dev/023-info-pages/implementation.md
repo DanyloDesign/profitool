@@ -162,3 +162,27 @@ Defects left: in UA the two OK-state buttons wrap onto two rows at 1512 (RU fits
 - Screens returns-b-1512x860, -1440x800, -1512-dark checked. tsc, eslint clean, smoke 30/30.
 
 Warranty and privacy, direction B drafts: https://claude.ai/artifact/Bb37Gnz5KUKDn1MWBJssJ8
+
+## 2026-10-17: warranty and privacy, direction B
+
+Rebuilt `/ua|ru/info/warranty` and `/ua|ru/info/privacy` as single-screen interactive pages in the compact frame.
+
+Files:
+- `src/components/info/warranty-check.tsx`: term pills 12/24/36, months slider 0-48 (`.delivery-range` with `--fill`), issue pills, verdict column (`aria-live`), remaining-term progress bar, numbered steps when covered, catalog link for wear. Phone from `dict.common.phone`.
+- `src/components/info/privacy-view.tsx`: three multi-select toggles (`aria-pressed`), record count via `plural()`, list of stored items, demo line, working delete with inline confirm (idle, confirm, done). Delete empties all zustand stores via `setState` first (persist rewrites its key), then removes every `profitool-*` localStorage key except `profitool-theme`, inside try/catch.
+- `src/data/info.ts`: `warrantyCheck`, `privacyView`, `WARRANTY_TERMS` (ua + ru). Removed dead `InfoSection`, `figures`, `sections` from `InfoPage` and all page entries.
+- `src/app/[locale]/info/[slug]/page.tsx`: all five slugs use the compact frame via a `Record<InfoSlug, ...>` map; generic sections branch and token filler deleted.
+
+Measurements (puppeteer, `[data-warranty-end]` / `[data-privacy-end]` bottom x 0.9, zoom confirmed 0.9): warranty 490 at 1440x800 and 1512x860 in covered, damage, wear and expired states; privacy with all three toggles 664 (1512x860) and 662 (1440x800, also in confirm state). All above the fold. 390px: stacked, scrollWidth 390.
+
+Verified: all warranty verdicts walked (covered, damage, wear, expired by term, 12-month term); privacy toggles 0..3 on; RU view. Delete flow with seeded `profitool-cart`, `profitool-wishlist`, `profitool-junk`: cancel keeps 4 keys; confirm leaves only `profitool-theme`, "Дані видалено" shown, header cart label "Кошик" (was "Кошик, 2"), still empty after reload. No console errors. `npx tsc --noEmit` and eslint clean. Screenshots in `shots/`: warranty-b-1512x860, -1440x800-expired, -390, -1512-dark; privacy-b-1512x860, -1440x800-confirm, -390, -ru-1512 (all viewed).
+
+Defects left: no Chrome-extension pass; keyboard/focus checked only by markup (native buttons and range); the delete does not touch `sessionStorage`; not committed.
+
+### Orchestrator review, warranty and privacy (2026-10-17)
+
+- Screens warranty-b-1512x860 and privacy-b-1440x800-confirm checked: one screen each; privacy with all
+  toggles on and in the confirm state ends near 660 of 800 px, the tightest of the five pages.
+- `GITHUB_PAGES=true pnpm build` + postexport: exit 0, all five pages in out/{ua,ru}/info.
+- All five info pages now use the same compact interactive frame. Final returns and warranty wording waits
+  for the owner's research.

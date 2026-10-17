@@ -124,3 +124,12 @@ Three directions: https://claude.ai/artifact/LY49QxJohLvt9urvdVjuK3
 
 Rules B encodes (only what the site already states): 14 days, unused, packaging and receipt; a broken tool
 goes to warranty at any time. Refund term stays a placeholder.
+
+## 2026-10-17 · Warranty and privacy
+
+Direction B drafts: https://claude.ai/artifact/Bb37Gnz5KUKDn1MWBJssJ8
+
+Decision (owner, 2026-10-17): both drafts are fine for now and go to the site as drawn. The owner will
+research returns and warranty terms later and decide the final wording then. Open: warranty by Nova Poshta
+and who pays for it, what happens after the warranty ends, real company data for the privacy page.
+The privacy page's "delete my data" button works (clears profitool-* keys except the theme).

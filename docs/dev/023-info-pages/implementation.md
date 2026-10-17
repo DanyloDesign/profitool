@@ -111,3 +111,27 @@ Defects left: keyboard/focus pass not done by hand; slider track is the native o
   безкоштовна"; clicking "Самовивіз" gives "0 ₴ · Самовивіз завжди безкоштовний"; console errors: none.
 - Screens: delivery-b-1512x860, -1440x800, -1512-dark, -ru-1512, -390, -focus. Page area ends about 600 px,
   footer starts near 700 px of an 800–860 px viewport. tsc, eslint clean, smoke 30/30.
+
+## 2026-10-17: payment page, direction B
+
+Files: `src/components/info/payment-picker.tsx` (new, client), `src/data/info.ts` (exported `paymentPicker` and `PaymentMethodKey`; payment `sections` emptied, title and lead kept for nav, breadcrumbs, metadata), `src/app/[locale]/info/[slug]/page.tsx` (delivery and payment now share one compact frame via a `compact` intro + body pair; the other three pages unchanged).
+
+Decisions:
+- Three `aria-pressed` buttons (rounded-[22px], Unbounded title, one-line subtitle) on the left; the right column is `aria-live="polite"`: kicker, headline (Unbounded 900, clamp(1.75rem, 3.2vw, 2.75rem)), three steps with a 32px `--grad-brand` circle and black digit.
+- Card brands are non-interactive `<li class="chip">` with hover border neutralised. Demo line carries `data-payment-end`.
+- Tokens only, no caps, no text under 16px.
+
+Measurements (puppeteer, zoom 0.9, `[data-payment-end]` bottom, zoomed units, times 0.9 = real px): card 559 (503 real), cod 520 (468), invoice 505 (454). Viewports 1440x800 and 1512x860: content ends about 500 real px, footer starts about 613 to 667, so everything is above the fold for all three methods. 390px: stacked, scrollWidth 390, no horizontal scroll. Console errors: none in any run. Aria-live text read for each method in ua and ru.
+Checks: `npx tsc --noEmit` clean; eslint clean on the three changed files. Screenshots in `shots/`: payment-b-1512x860, -1440x800-invoice, -390, -1512-dark, -ru-1512 (all viewed).
+
+Defects left: keyboard and focus ring not checked by hand; no Chrome-extension pass; headline wraps to two lines at 1440 to 1512 (intended); the empty-looking strip between the demo line and the footer is the page bottom padding.
+
+### Orchestrator review, payment (2026-10-17)
+
+- Screens checked: payment-b-1512x860 (card), -1440x800-invoice, -1512-dark, -390, -ru-1512. All three
+  methods above the fold at 1440x800; footer starts near 610-670 px.
+- Keyboard: focus on the pressed button, Tab, Enter switches to "При отриманні"; aria-live text follows.
+  The focus shot caught the colour transition mid-way (grey buttons); the end state is the black/white pair.
+- smoke 30/30, tsc clean.
+- Known: brand chips look like buttons but do nothing. Copy that the owner has not confirmed was left out
+  ("за хвилину", "спершу дивишся"); the invoice flow says only that you receive and pay an invoice.

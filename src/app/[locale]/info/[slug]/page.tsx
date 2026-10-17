@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDict, isLocale, locales, type Locale } from "@/i18n";
-import { deliveryCalc, infoBySlug, infoPages } from "@/data/info";
+import { deliveryCalc, infoBySlug, infoPages, paymentPicker } from "@/data/info";
 import { href } from "@/lib/shop";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNav } from "@/components/info/info-nav";
 import { DeliveryCalculator } from "@/components/info/delivery-calculator";
+import { PaymentPicker } from "@/components/info/payment-picker";
 
 type Params = { params: Promise<{ locale: string; slug: string }> };
 
@@ -40,7 +41,15 @@ export default async function InfoPage({ params }: Params) {
 
   const crumbs = [{ label: dict.common.home, href: href(locale) }, { label: page.title[locale] }];
 
-  if (slug === "delivery") {
+  // Delivery and payment are single-screen interactive pages: same compact frame, own body.
+  const compact =
+    slug === "delivery"
+      ? { intro: deliveryCalc.intro[locale], body: <DeliveryCalculator /> }
+      : slug === "payment"
+        ? { intro: paymentPicker.intro[locale], body: <PaymentPicker /> }
+        : null;
+
+  if (compact) {
     return (
       <div className="shell pb-6 pt-5">
         <Breadcrumbs items={crumbs} label={dict.catalog.breadcrumbs} />
@@ -50,8 +59,8 @@ export default async function InfoPage({ params }: Params) {
           </div>
           <article className="min-w-0">
             <h1 className="t-h2 text-bone break-words">{page.title[locale]}</h1>
-            <p className="mt-2 max-w-[640px] text-lg leading-snug text-bone-dim">{deliveryCalc.intro[locale]}</p>
-            <DeliveryCalculator />
+            <p className="mt-2 max-w-[640px] text-lg leading-snug text-bone-dim">{compact.intro}</p>
+            {compact.body}
           </article>
         </div>
       </div>

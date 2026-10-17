@@ -91,3 +91,21 @@ jabko.ua and answear.com (owner's tone: black and white, big objects, air), appl
 
 Decision (owner, 2026-10-17): direction B. Everything on the delivery page must fit one desktop screen
 ("працюй з масштабом"). Header city stays Kyiv. The exact store address comes from the owner later.
+
+## 2026-10-17 · Payment page redesign
+
+Owner: "Давай далі сторінку оплати. робимо по тій самій схемі через артефакт". Same rule as delivery:
+the page fits one desktop screen.
+
+Three directions: https://claude.ai/artifact/6TwmD6EJWpzzZdYfGp5vdh
+
+| | Direction | Weakness |
+|---|---|---|
+| A | Three columns split by hairlines, a drawn object per method (cards, parcel, invoice), one line each, card brands as chips | Static; the drawings carry the page, the text is thin |
+| B | Picker, same family as the delivery calculator: three method buttons on the left, on the right a headline and three numbered steps for the chosen one | "Одразу, за хвилину" and "Спершу дивишся, потім платиш" are copy promises the owner has to confirm; invoice steps assume the store sends the invoice and ships after payment |
+| C (risky) | The page is a till receipt: three methods with dotted leaders, "Способів 3", a barcode, tilted 1.5° | Reads as a joke; tilt and zigzag edges are decoration only |
+
+```
+default: icon tile above each method        | chosen: drawn objects (A), live steps (B), receipt (C) | why: icon tiles are the stock AI pattern
+default: payment logos as images            | chosen: brand names as text chips                       | why: no third-party marks to license or load; the footer already shows the logos
+```

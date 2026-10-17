@@ -133,3 +133,20 @@ Decision (owner, 2026-10-17): both drafts are fine for now and go to the site as
 research returns and warranty terms later and decide the final wording then. Open: warranty by Nova Poshta
 and who pays for it, what happens after the warranty ends, real company data for the privacy page.
 The privacy page's "delete my data" button works (clears profitool-* keys except the theme).
+
+## 2026-10-17 · Returns and warranty rebuilt on returns-logic.md
+
+Owner: "візьми за основу логіки цей файл. і перероби сторінку повернення і гарантії. дай артефакт".
+
+Canvas: https://claude.ai/artifact/Ut8bCuxnZyw8y8wLZ7nJNi
+
+Returns: three steps (how bought, what happened, days from receipt or purchase), verdicts per the table in
+returns-logic.md section 9, a claim form (order number, phone, reason, card for COD refunds) and a "what next"
+screen. Warranty: term, months, issue; for a covered case three figures (14 days repair, 0 ₴ shipping,
+7 days refund for a substantial defect) and three routes (Nova Poshta at the store's cost, the Sofiivka
+service, the maker's service).
+
+Defaults used where the owner has not decided (returns-logic.md section 10): the store pays return shipping;
+refund "up to 7 days after we receive it, not later than 30 days from the claim"; traces of work lead to a
+refusal only after a manager looks at photos; pickup counts as an online order; the store pays warranty
+shipping for every item.

@@ -186,3 +186,23 @@ Defects left: no Chrome-extension pass; keyboard/focus checked only by markup (n
 - `GITHUB_PAGES=true pnpm build` + postexport: exit 0, all five pages in out/{ua,ru}/info.
 - All five info pages now use the same compact interactive frame. Final returns and warranty wording waits
   for the owner's research.
+
+## 2026-10-17: returns and warranty on returns-logic.md
+
+- Rewrote `returns-check.tsx` and `warranty-check.tsx`; copy (ua + ru) lives in `returnsCheck` / `warrantyCheck`
+  in `src/data/info.ts`, unused keys removed. The returns lead now says 14 days from receipt, without "unused".
+- Returns: three steps (channel, state, days 0-30 only for "Не підійшов"), six verdicts with fact lists.
+  "Заповнити заяву" (online, within 14 days) opens an inline form in the right column: order number (prefilled
+  from `useLastOrder` once mounted), phone (`normalizePhone`, same rule as checkout), reason, optional card
+  (16 digits). Errors use the checkout style (`role="alert"`, `aria-describedby`); focus goes to the first
+  invalid field, to the form heading on open and to the "Що далі" heading after submit.
+- Claims are saved to localStorage `profitool-return-claims` (array, try/catch). Only the last four card
+  digits are stored. The privacy delete flow already clears `profitool-*`. The "sent" screen states it is a demo.
+- Warranty: covered case shows three figures and three route pills (post, Sofiivka service, maker service)
+  with three steps each; address and hours come from `dict.common`.
+- Fit (rect.bottom of the end line, raw / x0.9, viewport 800 and 860): returns tallest state (form with errors)
+  669 / 602; warranty covered with steps 764 / 687. Both fit at 1440x800 and 1512x860. 390: no horizontal scroll.
+- Checks: tsc and eslint clean; puppeteer walked all six returns verdicts in both channels, empty submit
+  (errors, focus on phone), invalid card, valid submit (claim stored), prefill, back, all warranty verdicts and
+  routes, ru locale: 0 console errors; `tools/shots/smoke.mjs` 30/30. Screenshots in `shots/*-law-*.png`.
+- Known gaps: seller data are visible placeholders; legal text not reviewed by a lawyer; dark returns shot only.

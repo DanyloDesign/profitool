@@ -2,37 +2,46 @@
 
 import { useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { WARRANTY_TERMS, warrantyCheck as t, type WarrantyIssueKey } from "@/data/info";
+import { WARRANTY_TERMS, warrantyCheck as t, type WarrantyIssueKey, type WarrantyRouteKey } from "@/data/info";
 import { useI18n } from "@/i18n/context";
 import { href } from "@/lib/shop";
 
 const MAX_MONTHS = 48;
 
 /**
- * Warranty page, direction B: term pills, months slider and issue pills on the left, one large
- * verdict with the remaining-term bar on the right. Fits one desktop screen with the title.
+ * Warranty page, rebuilt on returns-logic.md: term pills, months slider and issue pills on the
+ * left; on the right a verdict with the remaining-term bar and, for a covered case, three
+ * figures and three ways to apply. Fits one desktop screen with the title.
  */
 export function WarrantyCheck() {
   const { locale, dict } = useI18n();
   const [term, setTerm] = useState<number>(36);
   const [months, setMonths] = useState(8);
   const [issue, setIssue] = useState<WarrantyIssueKey>("fault");
+  const [routeKey, setRouteKey] = useState<WarrantyRouteKey>("post");
 
   const phone = dict.common.phone;
+  const fill = (text: string) =>
+    text
+      .replace("{phone}", phone.replace(/ /g, " "))
+      .replace("{address}", dict.common.footerAddress)
+      .replace("{hours}", dict.common.footerHours);
   const left = term - months;
   const inTerm = left > 0;
   const covered = inTerm && issue === "fault";
   const v = t.verdicts;
+  const route = t.routes.find((r) => r.key === routeKey) ?? t.routes[0];
 
+  // Issue first: a damaged tool is not covered, in or out of term; then the term decides.
   let verdict: { title: string; detail: string };
-  if (!inTerm) {
-    verdict = { title: v.expired.title[locale], detail: v.expired.detail[locale].replace("{phone}", phone) };
-  } else if (issue === "damage") {
-    verdict = { title: v.damage.title[locale], detail: v.damage.detail[locale] };
+  if (issue === "damage") {
+    verdict = { title: v.damage.title[locale], detail: fill(v.damage.detail[locale]) };
   } else if (issue === "wear") {
-    verdict = { title: v.wear.title[locale], detail: v.wear.detail[locale] };
+    verdict = { title: v.wear.title[locale], detail: fill(v.wear.detail[locale]) };
+  } else if (!inTerm) {
+    verdict = { title: v.expired.title[locale], detail: fill(v.expired.detail[locale]) };
   } else {
-    verdict = { title: v.covered.title[locale], detail: v.covered.detail[locale] };
+    verdict = { title: v.covered.title[locale], detail: "" };
   }
   const kicker = inTerm
     ? t.kickerLeft[locale].replace("{left}", String(left))
@@ -123,23 +132,52 @@ export function WarrantyCheck() {
           >
             <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundImage: "var(--grad-brand)" }} />
           </div>
-          <p className="mt-3 max-w-[460px] text-lg leading-snug text-bone">{verdict.detail}</p>
-          {covered ? (
-            <ol className="mt-4 grid list-none gap-2.5 p-0">
-              {t.steps.map((step, i) => (
-                <li key={step.ua} className="flex items-baseline gap-3.5 text-base leading-snug text-bone">
-                  <span
-                    className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-base font-semibold text-black"
-                    style={{ backgroundImage: "var(--grad-brand)" }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span>{step[locale].replace("{phone}", phone)}</span>
-                </li>
-              ))}
-            </ol>
+          {verdict.detail ? (
+            <p className="mt-3 max-w-[480px] text-lg leading-snug text-bone">{verdict.detail}</p>
           ) : null}
-          {issue === "wear" && inTerm ? (
+          {covered ? (
+            <>
+              <dl className="mt-4 grid grid-cols-3 border-y border-[var(--hair)]">
+                {t.figures.map((figure, i) => (
+                  <div
+                    key={figure.label.ua}
+                    className={`flex min-w-0 flex-col py-2.5 ${i === 0 ? "pr-3" : i === 1 ? "border-x border-[var(--hair)] px-3" : "pl-3"}`}
+                  >
+                    <dt className="order-2 mt-1 text-sm leading-snug text-bone-dim">{figure.label[locale]}</dt>
+                    <dd className="font-display order-1 text-2xl font-black leading-none text-bone">{figure.value[locale]}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-3 text-base text-bone-dim">{t.routeLabel[locale]}</p>
+              <div role="group" aria-label={t.routeLabel[locale]} className="mt-2 flex flex-wrap gap-2">
+                {t.routes.map((r) => (
+                  <button
+                    key={r.key}
+                    type="button"
+                    aria-pressed={r.key === routeKey}
+                    onClick={() => setRouteKey(r.key)}
+                    className={pill(r.key === routeKey)}
+                  >
+                    {r.label[locale]}
+                  </button>
+                ))}
+              </div>
+              <ol className="mt-3 grid list-none gap-2 p-0">
+                {route.steps.map((step, i) => (
+                  <li key={step.ua} className="flex items-baseline gap-3.5 text-base leading-snug text-bone">
+                    <span
+                      className="inline-flex size-7 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-black"
+                      style={{ backgroundImage: "var(--grad-brand)" }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span>{fill(step[locale])}</span>
+                  </li>
+                ))}
+              </ol>
+            </>
+          ) : null}
+          {issue === "wear" ? (
             <Link href={href(locale, "/catalog")} className="ghost-btn mt-4">
               {t.catalogLink[locale]}
             </Link>
@@ -147,7 +185,7 @@ export function WarrantyCheck() {
         </div>
       </section>
       <p data-warranty-end className="mt-4 max-w-[860px] text-base leading-snug text-bone-dim">
-        {t.notCovered[locale]}
+        {t.footnote[locale]}
       </p>
     </div>
   );

@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDict, isLocale, locales, type Locale } from "@/i18n";
-import { deliveryCalc, infoBySlug, infoPages, paymentPicker } from "@/data/info";
+import { deliveryCalc, infoBySlug, infoPages, paymentPicker, returnsCheck } from "@/data/info";
 import { href } from "@/lib/shop";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNav } from "@/components/info/info-nav";
 import { DeliveryCalculator } from "@/components/info/delivery-calculator";
 import { PaymentPicker } from "@/components/info/payment-picker";
+import { ReturnsCheck } from "@/components/info/returns-check";
 
 type Params = { params: Promise<{ locale: string; slug: string }> };
 
@@ -47,7 +48,9 @@ export default async function InfoPage({ params }: Params) {
       ? { intro: deliveryCalc.intro[locale], body: <DeliveryCalculator /> }
       : slug === "payment"
         ? { intro: paymentPicker.intro[locale], body: <PaymentPicker /> }
-        : null;
+        : slug === "returns"
+          ? { intro: returnsCheck.intro[locale], body: <ReturnsCheck /> }
+          : null;
 
   if (compact) {
     return (

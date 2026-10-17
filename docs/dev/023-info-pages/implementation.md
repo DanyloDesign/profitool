@@ -135,3 +135,30 @@ Defects left: keyboard and focus ring not checked by hand; no Chrome-extension p
 - smoke 30/30, tsc clean.
 - Known: brand chips look like buttons but do nothing. Copy that the owner has not confirmed was left out
   ("за хвилину", "спершу дивишся"); the invoice flow says only that you receive and pay an invoice.
+
+## 2026-10-17: returns page, direction B
+
+Rebuilt `/ua|ru/info/returns` as "Check": days slider 0-30 (reuses `.delivery-range` with `--fill`), three yes/no pill pairs (`aria-pressed`), verdict column (`aria-live="polite"`).
+
+Files:
+- `src/components/info/returns-check.tsx` (new client component).
+- `src/data/info.ts`: `returnsCheck` (ua + ru, ти/ты, gender-neutral), `RETURN_DAYS = 14`; old returns sections removed (`sections: []`, nothing else used them).
+- `src/app/[locale]/info/[slug]/page.tsx`: slug `returns` uses the compact frame.
+
+Logic, first match wins: broken -> warranty; days > 14 -> expired (link to warranty); used -> no; no packaging/receipt -> need them; else OK with "Залишилось N дн." and two actions (tel: signal-btn, ghost-btn to /info/delivery). Non-OK verdicts use `text-signal-text`, OK uses `text-bone`.
+
+Owner facts (2026-10-17) applied: return by Nova Poshta or in store; refund no later than 7 days after the store receives the item for checking. The placeholders "[строк повернення коштів]" and "[срок возврата денег]" are gone from `src/`. Return shipping payer is not mentioned (unknown).
+
+Measurements (puppeteer, `[data-returns-end]` bottom x 0.9): 1440x800: OK 540, used/no packaging/expired/warranty 462 (viewport 800). 1512x860: OK 544 (viewport 860). All verdicts above the fold. 390px: stacked, scrollWidth 390, no horizontal scroll. Console errors: none. Aria-live text read for OK, used, no packaging, 15 days (ArrowRight x10), broken, and RU OK.
+Checks: `npx tsc --noEmit` clean; eslint clean on the three changed files. Screenshots in `shots/`: returns-b-1512x860, -1440x800-warranty, -390, -1512-dark, -ru-1512 (all viewed).
+
+Defects left: in UA the two OK-state buttons wrap onto two rows at 1512 (RU fits on one row), still above the fold; keyboard and focus pass done only on the slider; no Chrome-extension pass; not committed.
+
+### Orchestrator review, returns (2026-10-17)
+
+- Owner facts applied: return by Nova Poshta allowed; refund no later than 7 days after the store receives
+  the item for checking. Refund placeholders are gone from src/.
+- The two OK-state buttons wrapped in Ukrainian at btn-lg: default button size, one row at 1440x800.
+- Screens returns-b-1512x860, -1440x800, -1512-dark checked. tsc, eslint clean, smoke 30/30.
+
+Warranty and privacy, direction B drafts: https://claude.ai/artifact/Bb37Gnz5KUKDn1MWBJssJ8

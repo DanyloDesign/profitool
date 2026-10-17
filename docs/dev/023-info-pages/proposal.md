@@ -109,3 +109,18 @@ Three directions: https://claude.ai/artifact/6TwmD6EJWpzzZdYfGp5vdh
 default: icon tile above each method        | chosen: drawn objects (A), live steps (B), receipt (C) | why: icon tiles are the stock AI pattern
 default: payment logos as images            | chosen: brand names as text chips                       | why: no third-party marks to license or load; the footer already shows the logos
 ```
+
+## 2026-10-17 · Returns page redesign
+
+Owner: "Так давай далі" (returns next, same scheme, one screen).
+
+Three directions: https://claude.ai/artifact/LY49QxJohLvt9urvdVjuK3
+
+| | Direction | Weakness |
+|---|---|---|
+| A | A huge "14" with a strip of 14 day cells from the purchase day, then three columns: what you need, how to return, money | The day strip shows "day 4" as an example, which is not the visitor's real day |
+| B | Check, same family as delivery and payment: days slider plus three yes/no questions, a verdict ("Можна повернути", "Строк минув", "Не вийде", "Це гарантія") with next steps | It reads like a legal decision; the owner has to confirm the rules behind each verdict |
+| C (risky) | A drawn open box with the conditions as stickers on it | Playful; stickers overlap the drawing at narrow widths |
+
+Rules B encodes (only what the site already states): 14 days, unused, packaging and receipt; a broken tool
+goes to warranty at any time. Refund term stays a placeholder.

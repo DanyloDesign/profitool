@@ -16,7 +16,7 @@ export type InfoPage = {
   lead: Localized;
 };
 
-const both = (ua: string, ru: string): Localized => ({ ua, ru });
+const both = (ua: string, en: string): Localized => ({ ua, en });
 
 const cost = `${price(DELIVERY_COST)} ₴`;
 const threshold = `${price(FREE_DELIVERY_FROM)} ₴`;
@@ -24,42 +24,42 @@ const threshold = `${price(FREE_DELIVERY_FROM)} ₴`;
 export const infoPages: InfoPage[] = [
   {
     slug: "delivery",
-    title: both("Доставка", "Доставка"),
+    title: both("Доставка", "Delivery"),
     lead: both(
       "Відправляємо Новою поштою по всій Україні або віддаємо в магазині в Софіївці.",
-      "Отправляем Новой почтой по всей Украине или отдаём в магазине в Софиевке.",
+      "We ship with Nova Poshta across Ukraine or hand your order over at the store in Sofiivka.",
     ),
   },
   {
     slug: "payment",
-    title: both("Оплата", "Оплата"),
+    title: both("Оплата", "Payment"),
     lead: both(
       "Плати карткою на сайті, під час отримання або за рахунком для компанії.",
-      "Плати картой на сайте, при получении или по счёту для компании.",
+      "Pay by card on the site, on delivery, or by invoice for a company.",
     ),
   },
   {
     slug: "returns",
-    title: both("Повернення", "Возврат"),
+    title: both("Повернення", "Returns"),
     lead: both(
       "Справний товар можна повернути протягом 14 днів з дня отримання.",
-      "Исправный товар можно вернуть в течение 14 дней со дня получения.",
+      "A working item can be returned within 14 days of receiving it.",
     ),
   },
   {
     slug: "warranty",
-    title: both("Гарантія", "Гарантия"),
+    title: both("Гарантія", "Warranty"),
     lead: both(
       "На інструмент діє офіційна гарантія виробника.",
-      "На инструмент действует официальная гарантия производителя.",
+      "Every tool carries the manufacturer's official warranty.",
     ),
   },
   {
     slug: "privacy",
-    title: both("Особисті дані", "Личные данные"),
+    title: both("Особисті дані", "Personal data"),
     lead: both(
       "Збираємо тільки те, що потрібно для доставки замовлення.",
-      "Собираем только то, что нужно для доставки заказа.",
+      "We collect only what we need to deliver your order.",
     ),
   },
 ];
@@ -70,26 +70,26 @@ export const infoBySlug = new Map<string, InfoPage>(infoPages.map((page) => [pag
 export const deliveryCalc = {
   intro: both(
     "Порахуй свою доставку: обери спосіб і суму замовлення.",
-    "Посчитай свою доставку: выбери способ и сумму заказа.",
+    "Work out your delivery: pick a method and an order total.",
   ),
-  sectionLabel: both("Розрахунок доставки", "Расчёт доставки"),
-  methodLabel: both("Спосіб отримання", "Способ получения"),
-  novapost: both("Нова пошта", "Новая почта"),
-  pickup: both("Самовивіз", "Самовывоз"),
-  sumLabel: both("Сума замовлення", "Сумма заказа"),
-  resultNovapost: both("Доставка Новою поштою", "Доставка Новой почтой"),
-  resultPickup: both("Самовивіз у Софіївці", "Самовывоз в Софиевке"),
-  noteFree: both("Доставка безкоштовна", "Доставка бесплатна"),
-  notePickup: both("Самовивіз завжди безкоштовний", "Самовывоз всегда бесплатный"),
-  noteLeft: both("Ще {sum} до безкоштовної доставки", "Ещё {sum} до бесплатной доставки"),
-  termNovapost: both("1–2 дні у відділення або поштомат", "1–2 дня в отделение или почтомат"),
+  sectionLabel: both("Розрахунок доставки", "Delivery calculator"),
+  methodLabel: both("Спосіб отримання", "How you get it"),
+  novapost: both("Нова пошта", "Nova Poshta"),
+  pickup: both("Самовивіз", "Pickup"),
+  sumLabel: both("Сума замовлення", "Order total"),
+  resultNovapost: both("Доставка Новою поштою", "Delivery by Nova Poshta"),
+  resultPickup: both("Самовивіз у Софіївці", "Pickup in Sofiivka"),
+  noteFree: both("Доставка безкоштовна", "Delivery is free"),
+  notePickup: both("Самовивіз завжди безкоштовний", "Pickup is always free"),
+  noteLeft: both("Ще {sum} до безкоштовної доставки", "{sum} more for free delivery"),
+  termNovapost: both("1–2 дні у відділення або поштомат", "1–2 days to a branch or parcel locker"),
   novapostFacts: [
-    both("У відділення або поштомат у будь-якому місті.", "В отделение или почтомат в любом городе."),
-    both("1–2 дні після відправки.", "1–2 дня после отправки."),
-    both(`${cost}, від ${threshold} безкоштовно.`, `${cost}, от ${threshold} бесплатно.`),
+    both("У відділення або поштомат у будь-якому місті.", "To a branch or parcel locker in any city."),
+    both("1–2 дні після відправки.", "1–2 days after dispatch."),
+    both(`${cost}, від ${threshold} безкоштовно.`, `${cost}, free from ${threshold}.`),
   ],
-  mapLabel: both("Схема: магазин у Софіївці", "Схема: магазин в Софиевке"),
-  mapLink: both("Відкрити на карті", "Открыть на карте"),
+  mapLabel: both("Схема: магазин у Софіївці", "Map: the store in Sofiivka"),
+  mapLink: both("Відкрити на карті", "Open on the map"),
   mapUrl: "https://maps.app.goo.gl/4GPKpEsfU2VBjeDz8",
 };
 
@@ -102,149 +102,149 @@ export type ReturnVerdictKey = "okOnline" | "okStore" | "expiredOnline" | "expir
 
 /** Rules follow returns-logic.md (consumer law of 1991): window of 14 days, store pays shipping. */
 export const returnsCheck = {
-  intro: both("Три відповіді, і ти знатимеш, що робити.", "Три ответа, и ты будешь знать, что делать."),
-  sectionLabel: both("Перевірка повернення", "Проверка возврата"),
-  channelLabel: both("Як купили", "Как купили"),
+  intro: both("Три відповіді, і ти знатимеш, що робити.", "Three answers, and you will know what to do."),
+  sectionLabel: both("Перевірка повернення", "Returns check"),
+  channelLabel: both("Як купили", "How you bought it"),
   channels: [
-    { key: "online" as ReturnChannelKey, label: both("Онлайн: пошта або самовивіз", "Онлайн: почта или самовывоз") },
-    { key: "store" as ReturnChannelKey, label: both("У магазині на місці", "В магазине на месте") },
+    { key: "online" as ReturnChannelKey, label: both("Онлайн: пошта або самовивіз", "Online: post or pickup") },
+    { key: "store" as ReturnChannelKey, label: both("У магазині на місці", "In the store") },
   ],
-  stateLabel: both("Що з товаром", "Что с товаром"),
+  stateLabel: both("Що з товаром", "What is wrong with the item"),
   states: [
-    { key: "fine" as ReturnStateKey, label: both("Не підійшов", "Не подошёл") },
-    { key: "broken" as ReturnStateKey, label: both("Зламався або з браком", "Сломался или с браком") },
-    { key: "damaged" as ReturnStateKey, label: both("Пошкодили самі або знос", "Повредили сами или износ") },
+    { key: "fine" as ReturnStateKey, label: both("Не підійшов", "Does not suit me") },
+    { key: "broken" as ReturnStateKey, label: both("Зламався або з браком", "Broke or is defective") },
+    { key: "damaged" as ReturnStateKey, label: both("Пошкодили самі або знос", "Damaged by me or worn out") },
   ],
-  daysLabelOnline: both("Скільки днів минуло від отримання", "Сколько дней прошло с получения"),
-  daysLabelStore: both("Скільки днів минуло від покупки", "Сколько дней прошло с покупки"),
-  daysUnit: both("дн.", "дн."),
-  answerLabel: both("Відповідь", "Ответ"),
+  daysLabelOnline: both("Скільки днів минуло від отримання", "Days since you received it"),
+  daysLabelStore: both("Скільки днів минуло від покупки", "Days since you bought it"),
+  daysUnit: both("дн.", "days"),
+  answerLabel: both("Відповідь", "Answer"),
   verdicts: {
     okOnline: {
-      title: both("Можна повернути", "Можно вернуть"),
+      title: both("Можна повернути", "You can return it"),
       facts: [
         both(
           "Залишилось {left} дн. Встигни надіслати заяву, посилку можна відправити й пізніше.",
-          "Осталось {left} дн. Успей отправить заявление, посылку можно отправить и позже.",
+          "{left} days left. Send the claim in time; the parcel itself can go later.",
         ),
         both(
           "Розпакувати й перевірити товар можна. Відмовимо, лише якщо ним працювали або пошкодили.",
-          "Распаковать и проверить товар можно. Откажем, только если им работали или повредили.",
+          "You may unpack and check the item. We refuse only if it was used or damaged.",
         ),
-        both("Відправку Новою поштою оплачуємо ми.", "Отправку Новой почтой оплачиваем мы."),
+        both("Відправку Новою поштою оплачуємо ми.", "We pay for shipping with Nova Poshta."),
         both(
           "Гроші тим самим способом, що й оплата: до 7 днів після того, як отримаємо товар, і не пізніше 30 днів від заяви.",
-          "Деньги тем же способом, что и оплата: до 7 дней после того, как получим товар, и не позже 30 дней с заявления.",
+          "The money goes back the way you paid: within 7 days after we receive the item, and no later than 30 days after your claim.",
         ),
       ],
     },
     okStore: {
-      title: both("Можна обміняти", "Можно обменять"),
+      title: both("Можна обміняти", "You can exchange it"),
       facts: [
-        both("Залишилось {left} дн.", "Осталось {left} дн."),
+        both("Залишилось {left} дн.", "{left} days left."),
         both(
           "Принеси товар без слідів використання, з ярликами і чеком у магазин у Софіївці.",
-          "Принеси товар без следов использования, с ярлыками и чеком в магазин в Софиевке.",
+          "Bring the item to the store in Sofiivka, unused, with tags and the receipt.",
         ),
         both(
           "Немає такого ж товару на заміну: повернемо гроші в той самий день або протягом 7 днів.",
-          "Нет такого же товара на замену: вернём деньги в тот же день или в течение 7 дней.",
+          "If we have no identical item to swap in, we refund you the same day or within 7 days.",
         ),
       ],
     },
     expiredOnline: {
-      title: both("Строк минув", "Срок прошёл"),
+      title: both("Строк минув", "Time is up"),
       facts: [
-        both("14 днів рахуються від дня отримання посилки.", "14 дней считаются со дня получения посылки."),
-        both("Якщо інструмент зламається, діє гарантія.", "Если инструмент сломается, действует гарантия."),
+        both("14 днів рахуються від дня отримання посилки.", "The 14 days count from the day you received the parcel."),
+        both("Якщо інструмент зламається, діє гарантія.", "If the tool breaks, the warranty applies."),
       ],
     },
     expiredStore: {
-      title: both("Строк минув", "Срок прошёл"),
+      title: both("Строк минув", "Time is up"),
       facts: [
         both(
           "14 днів рахуються від покупки, день покупки не враховуємо.",
-          "14 дней считаются с покупки, день покупки не учитываем.",
+          "The 14 days count from the purchase; the day of purchase is not included.",
         ),
-        both("Якщо інструмент зламається, діє гарантія.", "Если инструмент сломается, действует гарантия."),
+        both("Якщо інструмент зламається, діє гарантія.", "If the tool breaks, the warranty applies."),
       ],
     },
     broken: {
-      title: both("Це гарантія", "Это гарантия"),
+      title: both("Це гарантія", "This is a warranty case"),
       facts: [
         both(
           "Строки не залежать від того, скільки днів минуло.",
-          "Сроки не зависят от того, сколько дней прошло.",
+          "The terms do not depend on how many days have passed.",
         ),
         both(
           "Ремонт до 14 днів. Пересилку в сервіс і назад оплачуємо ми.",
-          "Ремонт до 14 дней. Пересылку в сервис и обратно оплачиваем мы.",
+          "Repair takes up to 14 days. We pay shipping to the service center and back.",
         ),
         both(
           "Якщо поломка істотна, можна вимагати заміну або гроші.",
-          "Если поломка существенна, можно требовать замену или деньги.",
+          "If the defect is substantial, you can demand a replacement or a refund.",
         ),
       ],
     },
     damaged: {
-      title: both("Не гарантійний випадок", "Не гарантийный случай"),
+      title: both("Не гарантійний випадок", "Not a warranty case"),
       facts: [
         both(
           "Удар, падіння, вода і знос щіток, дисків, оснастки гарантія не покриває.",
-          "Удар, падение, вода и износ щёток, дисков, оснастки гарантия не покрывает.",
+          "The warranty does not cover impact, drops, water, or wear of brushes, discs and accessories.",
         ),
         both(
           "Можемо полагодити платно або підібрати витратні частини в каталозі.",
-          "Можем починить платно или подобрать расходные части в каталоге.",
+          "We can repair it for a fee, or you can pick consumables in the catalog.",
         ),
       ],
     },
   },
-  claim: both("Заповнити заяву", "Заполнить заявление"),
-  warrantyLink: both("Перейти до гарантії", "Перейти к гарантии"),
+  claim: both("Заповнити заяву", "Fill in the claim"),
+  warrantyLink: both("Перейти до гарантії", "Go to the warranty"),
   form: {
-    title: both("Заява на повернення", "Заявление на возврат"),
-    order: both("Номер замовлення", "Номер заказа"),
+    title: both("Заява на повернення", "Return claim"),
+    order: both("Номер замовлення", "Order number"),
     orderPlaceholder: "PT-10482",
-    phone: both("Телефон *", "Телефон *"),
-    reason: both("Що повертаєш і чому *", "Что возвращаешь и почему *"),
-    reasonPlaceholder: both("Наприклад: дриль не підійшла за вагою", "Например: дрель не подошла по весу"),
+    phone: both("Телефон *", "Phone *"),
+    reason: both("Що повертаєш і чому *", "What you are returning and why *"),
+    reasonPlaceholder: both("Наприклад: дриль не підійшла за вагою", "For example: the drill is too heavy for me"),
     card: both(
       "Картка для повернення, якщо платили при отриманні",
-      "Карта для возврата, если платили при получении",
+      "Card for the refund, if you paid on delivery",
     ),
     cardPlaceholder: "0000 0000 0000 0000",
-    send: both("Надіслати заяву", "Отправить заявление"),
-    back: both("Назад", "Назад"),
-    errReason: both("Напиши, що повертаєш і чому", "Напиши, что возвращаешь и почему"),
-    errCard: both("Картка: 16 цифр", "Карта: 16 цифр"),
+    send: both("Надіслати заяву", "Send the claim"),
+    back: both("Назад", "Back"),
+    errReason: both("Напиши, що повертаєш і чому", "Tell us what you are returning and why"),
+    errCard: both("Картка: 16 цифр", "Card: 16 digits"),
   },
   sent: {
-    kicker: both("Заяву отримали", "Заявление получили"),
-    title: both("Що далі", "Что дальше"),
+    kicker: both("Заяву отримали", "Claim received"),
+    title: both("Що далі", "What happens next"),
     steps: [
       both(
         "Сьогодні або наступного робочого дня підтвердимо заяву і надішлемо номер для відправки за наш рахунок.",
-        "Сегодня или в следующий рабочий день подтвердим заявление и пришлём номер для отправки за наш счёт.",
+        "Today or the next working day we confirm the claim and send you a number for shipping at our expense.",
       ),
       both(
         "Запакуй товар і віддай у будь-якому відділенні Нової пошти.",
-        "Упакуй товар и отдай в любом отделении Новой почты.",
+        "Pack the item and hand it in at any Nova Poshta branch.",
       ),
-      both("Отримаємо посилку і перевіримо комплект.", "Получим посылку и проверим комплект."),
+      both("Отримаємо посилку і перевіримо комплект.", "We receive the parcel and check the contents."),
       both(
         "Повернемо гроші до 7 днів після отримання, не пізніше 30 днів від заяви.",
-        "Вернём деньги в течение 7 дней после получения, не позже 30 дней с заявления.",
+        "We refund you within 7 days after receipt, no later than 30 days after your claim.",
       ),
     ],
     demo: both(
       "Сайт демонстраційний: заява лежить тільки в цьому браузері й нікуди не йде.",
-      "Сайт демонстрационный: заявление лежит только в этом браузере и никуда не уходит.",
+      "This site is a demo: the claim stays in this browser only and goes nowhere.",
     ),
   },
   seller: both(
     "Продавець: [назва ФОП або ТОВ], [ЄДРПОУ], [юридична адреса]. Претензії: [пошта для звернень] або {phone}.",
-    "Продавец: [название ФОП или ТОВ], [ЕГРПОУ], [юридический адрес]. Претензии: [почта для обращений] или {phone}.",
+    "Seller: [sole proprietor (FOP) or LLC name], [EDRPOU code], [legal address]. Complaints: [contact email] or {phone}.",
   ),
 };
 
@@ -259,109 +259,109 @@ export type WarrantyRouteKey = "post" | "store" | "maker";
 export const warrantyCheck = {
   intro: both(
     "Офіційна гарантія виробника. Перевір свій випадок і обери, як звернутись.",
-    "Официальная гарантия производителя. Проверь свой случай и выбери, как обратиться.",
+    "The manufacturer's official warranty. Check your case and choose how to apply.",
   ),
-  sectionLabel: both("Перевірка гарантії", "Проверка гарантии"),
-  termLabel: both("Строк гарантії, вказаний на сторінці товару", "Срок гарантии, указанный на странице товара"),
-  monthsLabel: both("Скільки місяців тому купили", "Сколько месяцев назад купили"),
-  monthsUnit: both("міс.", "мес."),
-  issueLabel: both("Що сталося", "Что случилось"),
+  sectionLabel: both("Перевірка гарантії", "Warranty check"),
+  termLabel: both("Строк гарантії, вказаний на сторінці товару", "Warranty term shown on the product page"),
+  monthsLabel: both("Скільки місяців тому купили", "Months since you bought it"),
+  monthsUnit: both("міс.", "mo."),
+  issueLabel: both("Що сталося", "What happened"),
   issues: [
-    { key: "fault" as WarrantyIssueKey, label: both("Перестав працювати", "Перестал работать") },
-    { key: "damage" as WarrantyIssueKey, label: both("Впав або розбився", "Упал или разбился") },
-    { key: "wear" as WarrantyIssueKey, label: both("Зносились щітки чи диск", "Износились щётки или диск") },
+    { key: "fault" as WarrantyIssueKey, label: both("Перестав працювати", "Stopped working") },
+    { key: "damage" as WarrantyIssueKey, label: both("Впав або розбився", "Dropped or broken") },
+    { key: "wear" as WarrantyIssueKey, label: both("Зносились щітки чи диск", "Brushes or disc worn out") },
   ],
-  kickerExpired: both("Строк {term} міс. минув", "Срок {term} мес. прошёл"),
-  kickerLeft: both("Ще {left} міс. гарантії", "Ещё {left} мес. гарантии"),
+  kickerExpired: both("Строк {term} міс. минув", "The {term}-month term has ended"),
+  kickerLeft: both("Ще {left} міс. гарантії", "{left} months of warranty left"),
   verdicts: {
     expired: {
-      title: both("Гарантія закінчилась", "Гарантия закончилась"),
+      title: both("Гарантія закінчилась", "The warranty has ended"),
       detail: both(
         "Якщо поломка з вини виробника, безкоштовний ремонт можливий і після гарантії, протягом строку служби інструмента. Зателефонуй {phone}, перевіримо.",
-        "Если поломка по вине производителя, бесплатный ремонт возможен и после гарантии, в течение срока службы инструмента. Позвони {phone}, проверим.",
+        "If the fault is the manufacturer's, a free repair is possible even after the warranty, within the tool's service life. Call {phone} and we will check.",
       ),
     },
     damage: {
-      title: both("Не гарантійний випадок", "Не гарантийный случай"),
+      title: both("Не гарантійний випадок", "Not a warranty case"),
       detail: both(
         "Удари, падіння і вода гарантією не покриваються. Можемо полагодити платно: зателефонуй {phone}.",
-        "Удары, падения и вода гарантией не покрываются. Можем починить платно: позвони {phone}.",
+        "Impact, drops and water are not covered by the warranty. We can repair it for a fee: call {phone}.",
       ),
     },
     wear: {
-      title: both("Це витратні частини", "Это расходные части"),
+      title: both("Це витратні частини", "These are consumables"),
       detail: both(
         "Щітки, диски й оснастку міняють за свій рахунок. Підбери їх у каталозі.",
-        "Щётки, диски и оснастку меняют за свой счёт. Подбери их в каталоге.",
+        "Brushes, discs and accessories are replaced at your own cost. Pick them in the catalog.",
       ),
     },
     covered: {
-      title: both("Гарантія діє", "Гарантия действует"),
+      title: both("Гарантія діє", "The warranty applies"),
     },
   },
-  catalogLink: both("Перейти до каталогу", "Перейти в каталог"),
+  catalogLink: both("Перейти до каталогу", "Go to the catalog"),
   figures: [
-    { value: both("14 дн.", "14 дн."), label: both("ремонт", "ремонт") },
-    { value: both("0 ₴", "0 ₴"), label: both("пересилка туди й назад", "пересылка туда и обратно") },
-    { value: both("7 дн.", "7 дн."), label: both("гроші, якщо поломка істотна", "деньги, если поломка существенна") },
+    { value: both("14 дн.", "14 days"), label: both("ремонт", "repair") },
+    { value: both("0 ₴", "0 ₴"), label: both("пересилка туди й назад", "shipping there and back") },
+    { value: both("7 дн.", "7 days"), label: both("гроші, якщо поломка істотна", "refund if the defect is substantial") },
   ],
-  routeLabel: both("Як звернутись", "Как обратиться"),
+  routeLabel: both("Як звернутись", "How to apply"),
   routes: [
     {
       key: "post" as WarrantyRouteKey,
-      label: both("Новою поштою", "Новой почтой"),
+      label: both("Новою поштою", "By Nova Poshta"),
       steps: [
         both(
           "Надішли заяву з номером замовлення і фото або відео поломки.",
-          "Отправь заявление с номером заказа и фото или видео поломки.",
+          "Send a claim with your order number and a photo or video of the fault.",
         ),
         both(
           "Ми дамо номер для відправки Новою поштою за наш рахунок.",
-          "Мы дадим номер для отправки Новой почтой за наш счёт.",
+          "We give you a number to ship with Nova Poshta at our expense.",
         ),
         both(
           "Ремонт до 14 днів, інструмент повернемо так само безкоштовно.",
-          "Ремонт до 14 дней, инструмент вернём так же бесплатно.",
+          "Repair takes up to 14 days; we return the tool free of charge too.",
         ),
       ],
     },
     {
       key: "store" as WarrantyRouteKey,
-      label: both("У сервіс у Софіївці", "В сервис в Софиевке"),
+      label: both("У сервіс у Софіївці", "To the service center in Sofiivka"),
       steps: [
         both(
           "Привези інструмент, чек і гарантійний талон у сервіс: {address}, {hours}.",
-          "Привези инструмент, чек и гарантийный талон в сервис: {address}, {hours}.",
+          "Bring the tool, the receipt and the warranty card to the service center: {address}, {hours}.",
         ),
-        both("Оформимо прийом і дамо квитанцію.", "Оформим приём и дадим квитанцию."),
+        both("Оформимо прийом і дамо квитанцію.", "We register it and give you a receipt."),
         both(
           "Ремонт до 14 днів, повідомимо, коли можна забрати.",
-          "Ремонт до 14 дней, сообщим, когда можно забрать.",
+          "Repair takes up to 14 days; we will tell you when to pick it up.",
         ),
       ],
     },
     {
       key: "maker" as WarrantyRouteKey,
-      label: both("У сервіс виробника", "В сервис производителя"),
+      label: both("У сервіс виробника", "To the manufacturer's service center"),
       steps: [
         both(
           "Звернись в авторизований сервіс виробника поруч з тобою.",
-          "Обратись в авторизованный сервис производителя рядом с тобой.",
+          "Go to an authorized manufacturer service center near you.",
         ),
         both(
           "Візьми чек або номер замовлення і гарантійний талон.",
-          "Возьми чек или номер заказа и гарантийный талон.",
+          "Take the receipt or order number and the warranty card.",
         ),
         both(
           "Сервіс ремонтує за правилами виробника. Не допомогли, звертайся до нас.",
-          "Сервис ремонтирует по правилам производителя. Не помогли, обращайся к нам.",
+          "The service center repairs by the manufacturer's rules. If that does not help, contact us.",
         ),
       ],
     },
   ],
   footnote: both(
     "Знадобиться номер замовлення або чек і гарантійний талон. Не покривається: удари, падіння, вода, знос щіток, дисків і оснастки.",
-    "Понадобится номер заказа или чек и гарантийный талон. Не покрывается: удары, падения, вода, износ щёток, дисков и оснастки.",
+    "You will need the order number or receipt and the warranty card. Not covered: impact, drops, water, wear of brushes, discs and accessories.",
   ),
 };
 
@@ -371,59 +371,59 @@ export type PrivacyUseKey = "browse" | "order" | "account";
 export const privacyView = {
   intro: both(
     "Познач, чим ти користуєшся на сайті, і подивись, що ми про тебе зберігаємо.",
-    "Отметь, чем ты пользуешься на сайте, и посмотри, что мы о тебе храним.",
+    "Mark what you use on the site and see what we store about you.",
   ),
-  groupLabel: both("Чим ти користуєшся", "Чем ты пользуешься"),
-  storedLabel: both("Що зберігається", "Что хранится"),
-  nothing: both("Нічого", "Ничего"),
-  nothingLine: both("Ми нічого про тебе не знаємо.", "Мы ничего о тебе не знаем."),
+  groupLabel: both("Чим ти користуєшся", "What you use"),
+  storedLabel: both("Що зберігається", "What is stored"),
+  nothing: both("Нічого", "Nothing"),
+  nothingLine: both("Ми нічого про тебе не знаємо.", "We know nothing about you."),
   recordForms: [
     ["запис", "записи", "записів"],
-    ["запись", "записи", "записей"],
+    ["record", "records", "records"],
   ] as [[string, string, string], [string, string, string]],
   uses: [
     {
       key: "browse" as PrivacyUseKey,
-      title: both("Перегляд товарів", "Просмотр товаров"),
-      sub: both("кошик, обране, порівняння", "корзина, избранное, сравнение"),
+      title: both("Перегляд товарів", "Browsing products"),
+      sub: both("кошик, обране, порівняння", "cart, wishlist, comparison"),
       items: [
-        both("Товари в кошику, обраному і порівнянні.", "Товары в корзине, избранном и сравнении."),
-        both("Тема сайту і твоя батарея.", "Тема сайта и твоя батарея."),
+        both("Товари в кошику, обраному і порівнянні.", "Items in your cart, wishlist and comparison."),
+        both("Тема сайту і твоя батарея.", "Site theme and your battery platform."),
       ],
     },
     {
       key: "order" as PrivacyUseKey,
-      title: both("Замовлення", "Заказы"),
-      sub: both("контакти і доставка", "контакты и доставка"),
+      title: both("Замовлення", "Orders"),
+      sub: both("контакти і доставка", "contacts and delivery"),
       items: [
-        both("Ім’я, телефон і пошта.", "Имя, телефон и почта."),
-        both("Місто і відділення Нової пошти.", "Город и отделение Новой почты."),
-        both("Коментар до замовлення.", "Комментарий к заказу."),
-        both("ЄДРПОУ, якщо замовляла компанія.", "ЕГРПОУ, если заказывала компания."),
+        both("Ім’я, телефон і пошта.", "Name, phone and email."),
+        both("Місто і відділення Нової пошти.", "City and Nova Poshta branch."),
+        both("Коментар до замовлення.", "Order comment."),
+        both("ЄДРПОУ, якщо замовляла компанія.", "EDRPOU code, if a company placed the order."),
       ],
     },
     {
       key: "account" as PrivacyUseKey,
-      title: both("Кабінет", "Кабинет"),
-      sub: both("пошта і пароль", "почта и пароль"),
-      items: [both("Пошта і телефон для входу.", "Почта и телефон для входа.")],
+      title: both("Кабінет", "Account"),
+      sub: both("пошта і пароль", "email and password"),
+      items: [both("Пошта і телефон для входу.", "Email and phone for signing in.")],
     },
   ],
   demo: both(
     "Зараз сайт демонстраційний: усе це лежить тільки в твоєму браузері й нікуди не відправляється.",
-    "Сейчас сайт демонстрационный: всё это лежит только в твоём браузере и никуда не отправляется.",
+    "The site is a demo for now: all of this stays in your browser only and is sent nowhere.",
   ),
-  delete: both("Видалити мої дані з цього браузера", "Удалить мои данные из этого браузера"),
+  delete: both("Видалити мої дані з цього браузера", "Delete my data from this browser"),
   confirmText: both(
     "Точно видалити? Кошик, обране і форми зникнуть.",
-    "Точно удалить? Корзина, избранное и формы исчезнут.",
+    "Delete for sure? Your cart, wishlist and forms will disappear.",
   ),
-  confirmYes: both("Видалити", "Удалить"),
-  confirmNo: both("Скасувати", "Отмена"),
-  deleted: both("Дані видалено", "Данные удалены"),
+  confirmYes: both("Видалити", "Delete"),
+  confirmNo: both("Скасувати", "Cancel"),
+  deleted: both("Дані видалено", "Data deleted"),
   contact: both(
     "Хочеш дізнатись, виправити чи видалити дані: [пошта для звернень]. Відповідає за дані [назва ФОП або ТОВ], [ЄДРПОУ].",
-    "Хочешь узнать, исправить или удалить данные: [почта для обращений]. За данные отвечает [название ФОП или ТОВ], [ЕГРПОУ].",
+    "Want to find out, correct or delete your data: [contact email]. The data controller is [sole proprietor (FOP) or LLC name], [EDRPOU code].",
   ),
 };
 
@@ -431,60 +431,60 @@ export const privacyView = {
 export type PaymentMethodKey = "card" | "cod" | "invoice";
 
 export const paymentPicker = {
-  intro: both("Обери спосіб і подивись, як це відбувається.", "Выбери способ и посмотри, как это происходит."),
-  groupLabel: both("Спосіб оплати", "Способ оплаты"),
-  brandsLabel: both("Приймаємо", "Принимаем"),
+  intro: both("Обери спосіб і подивись, як це відбувається.", "Pick a method and see how it works."),
+  groupLabel: both("Спосіб оплати", "Payment method"),
+  brandsLabel: both("Приймаємо", "We accept"),
   demo: both(
     "Сайт демонстраційний: онлайн-оплата ще не підключена.",
-    "Сайт демонстрационный: онлайн-оплата ещё не подключена.",
+    "This site is a demo: online payment is not connected yet.",
   ),
   brands: ["Visa", "Mastercard", "Apple Pay", "Google Pay"],
   methods: [
     {
       key: "card" as PaymentMethodKey,
-      title: both("Карткою онлайн", "Картой онлайн"),
+      title: both("Карткою онлайн", "Card online"),
       sub: both("Visa, Mastercard, Apple Pay, Google Pay", "Visa, Mastercard, Apple Pay, Google Pay"),
-      kicker: both("Оплата на сайті", "Оплата на сайте"),
-      headline: both("Онлайн, під час оформлення", "Онлайн, при оформлении"),
+      kicker: both("Оплата на сайті", "Pay on the site"),
+      headline: both("Онлайн, під час оформлення", "Online, at checkout"),
       steps: [
-        both("Оформлюєш замовлення і обираєш «Карткою онлайн».", "Оформляешь заказ и выбираешь «Картой онлайн»."),
+        both("Оформлюєш замовлення і обираєш «Карткою онлайн».", "You place the order and choose \"Card online\"."),
         both(
           "Вводиш дані картки або платиш через Apple Pay чи Google Pay.",
-          "Вводишь данные карты или платишь через Apple Pay или Google Pay.",
+          "You enter your card details or pay with Apple Pay or Google Pay.",
         ),
-        both("Ми відправляємо замовлення.", "Мы отправляем заказ."),
+        both("Ми відправляємо замовлення.", "We ship the order."),
       ],
     },
     {
       key: "cod" as PaymentMethodKey,
-      title: both("При отриманні", "При получении"),
-      sub: both("у відділенні або в магазині", "в отделении или в магазине"),
-      kicker: both("Оплата при отриманні", "Оплата при получении"),
-      headline: both("Платиш, коли забираєш", "Платишь, когда забираешь"),
+      title: both("При отриманні", "On delivery"),
+      sub: both("у відділенні або в магазині", "at a branch or in the store"),
+      kicker: both("Оплата при отриманні", "Pay on delivery"),
+      headline: both("Платиш, коли забираєш", "You pay when you pick it up"),
       steps: [
-        both("Оформлюєш замовлення і обираєш «При отриманні».", "Оформляешь заказ и выбираешь «При получении»."),
+        both("Оформлюєш замовлення і обираєш «При отриманні».", "You place the order and choose \"On delivery\"."),
         both(
           "Забираєш його у відділенні Нової пошти або в магазині в Софіївці.",
-          "Забираешь его в отделении Новой почты или в магазине в Софиевке.",
+          "You pick it up at a Nova Poshta branch or at the store in Sofiivka.",
         ),
-        both("Платиш на місці.", "Платишь на месте."),
+        both("Платиш на місці.", "You pay on the spot."),
       ],
     },
     {
       key: "invoice" as PaymentMethodKey,
-      title: both("Рахунок", "Счёт"),
-      sub: both("для ФОП і компаній", "для ФОП и компаний"),
-      kicker: both("Безготівкова оплата", "Безналичная оплата"),
-      headline: both("Рахунок на ФОП або компанію", "Счёт на ФОП или компанию"),
+      title: both("Рахунок", "Invoice"),
+      sub: both("для ФОП і компаній", "for sole proprietors (FOP) and companies"),
+      kicker: both("Безготівкова оплата", "Cashless payment"),
+      headline: both("Рахунок на ФОП або компанію", "Invoice for a sole proprietor (FOP) or a company"),
       steps: [
         both(
           "В оформленні обираєш тип покупця: ФОП або компанія.",
-          "В оформлении выбираешь тип покупателя: ФОП или компания.",
+          "At checkout you choose the buyer type: sole proprietor (FOP) or company.",
         ),
-        both("Вказуєш ЄДРПОУ або ІПН.", "Указываешь ЕГРПОУ или ИНН."),
+        both("Вказуєш ЄДРПОУ або ІПН.", "You enter the EDRPOU code or tax ID."),
         both(
           "Отримуєш рахунок і оплачуєш його з рахунку ФОП або компанії.",
-          "Получаешь счёт и оплачиваешь его со счёта ФОП или компании.",
+          "You receive the invoice and pay it from the FOP or company account.",
         ),
       ],
     },

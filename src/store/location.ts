@@ -9,14 +9,14 @@ import type { Localized } from "@/data/types";
  * плюс свободный ввод через customCity, когда покупатель выбирает «Інше місто».
  */
 export const CITIES: { slug: string; name: Localized }[] = [
-  { slug: "kyiv", name: { ua: "Київ", ru: "Киев" } },
-  { slug: "lviv", name: { ua: "Львів", ru: "Львов" } },
-  { slug: "odesa", name: { ua: "Одеса", ru: "Одесса" } },
-  { slug: "dnipro", name: { ua: "Дніпро", ru: "Днепр" } },
-  { slug: "kharkiv", name: { ua: "Харків", ru: "Харьков" } },
-  { slug: "zaporizhzhia", name: { ua: "Запоріжжя", ru: "Запорожье" } },
-  { slug: "vinnytsia", name: { ua: "Вінниця", ru: "Винница" } },
-  { slug: "poltava", name: { ua: "Полтава", ru: "Полтава" } },
+  { slug: "kyiv", name: { ua: "Київ", en: "Kyiv" } },
+  { slug: "lviv", name: { ua: "Львів", en: "Lviv" } },
+  { slug: "odesa", name: { ua: "Одеса", en: "Odesa" } },
+  { slug: "dnipro", name: { ua: "Дніпро", en: "Dnipro" } },
+  { slug: "kharkiv", name: { ua: "Харків", en: "Kharkiv" } },
+  { slug: "zaporizhzhia", name: { ua: "Запоріжжя", en: "Zaporizhzhia" } },
+  { slug: "vinnytsia", name: { ua: "Вінниця", en: "Vinnytsia" } },
+  { slug: "poltava", name: { ua: "Полтава", en: "Poltava" } },
 ];
 
 export const CUSTOM_CITY_SLUG = "custom";
@@ -44,7 +44,7 @@ export const useLocation = create<LocationState>()(
 );
 
 /** Имя текущего города на нужном языке; для «іншого міста» — то, что ввёл покупатель. */
-export function cityName(locale: "ua" | "ru", state: { citySlug: string; customCity: string }): string {
+export function cityName(locale: "ua" | "en", state: { citySlug: string; customCity: string }): string {
   if (state.citySlug === CUSTOM_CITY_SLUG) return state.customCity;
   return CITIES.find((city) => city.slug === state.citySlug)?.name[locale] ?? state.customCity;
 }

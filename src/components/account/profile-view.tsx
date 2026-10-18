@@ -105,7 +105,7 @@ function OrdersSection({ orders }: { orders: Order[] }) {
 
 function OrderRow({ order, open, onToggle }: { order: Order; open: boolean; onToggle: () => void }) {
   const { locale, dict } = useI18n();
-  const date = new Intl.DateTimeFormat(locale === "ua" ? "uk-UA" : "ru-RU", {
+  const date = new Intl.DateTimeFormat(locale === "ua" ? "uk-UA" : "en-GB", {
     day: "numeric",
     month: "short",
   }).format(new Date(order.date));

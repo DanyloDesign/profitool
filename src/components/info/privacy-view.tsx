@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { privacyView as t, type PrivacyUseKey } from "@/data/info";
 import { useI18n } from "@/i18n/context";
-import { plural } from "@/i18n/plural";
+import { plural, pluralEn } from "@/i18n/plural";
 import { useAccount, useOrders } from "@/store/account";
 import { useLocation } from "@/store/location";
 import { useCart, useCompare, useLastOrder, usePlatform, useWishlist } from "@/store/shop";
@@ -47,7 +47,7 @@ export function PrivacyView() {
   const items = t.uses.filter((u) => on[u.key]).flatMap((u) => u.items);
   const n = items.length;
   const forms = t.recordForms[locale === "ua" ? 0 : 1];
-  const headline = n === 0 ? t.nothing[locale] : `${n} ${plural(n, forms)}`;
+  const headline = n === 0 ? t.nothing[locale] : `${n} ${locale === "ua" ? plural(n, forms) : pluralEn(n, [forms[0], forms[1]])}`;
 
   const toggle = (active: boolean) =>
     `block w-full rounded-[22px] border px-5 py-3.5 text-left transition-colors ${

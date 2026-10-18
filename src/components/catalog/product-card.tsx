@@ -60,7 +60,7 @@ function kitLine(product: Product, locale: Locale): { kind: KitKind; text: strin
   const items = product.kit.filter((item) => item.ua !== MANUAL_UA);
   const shown = (items.length ? items : product.kit).slice(0, 2).map((item, index) => {
     const text = item[locale];
-    return index === 0 ? text : text.charAt(0).toLocaleLowerCase(locale === "ua" ? "uk" : "ru") + text.slice(1);
+    return index === 0 ? text : text.charAt(0).toLocaleLowerCase(locale === "ua" ? "uk" : "en") + text.slice(1);
   });
   return shown.length ? { kind, text: shown.join(" · ") } : null;
 }

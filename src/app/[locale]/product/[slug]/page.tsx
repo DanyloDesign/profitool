@@ -55,7 +55,7 @@ function figuresOf(product: Product, locale: Locale, dict: Dict): { label: strin
   const source = platform
     ? {
         label: dict.pdp.figurePlatform(platform.name),
-        value: voltage ? localize(voltage[1], locale) : `${platform.voltage} В`,
+        value: voltage ? localize(voltage[1], locale) : `${platform.voltage} ${locale === "ua" ? "В" : "V"}`,
       }
     : rest.find((spec) => spec.key === "power");
   const other = rest.find(

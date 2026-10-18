@@ -96,9 +96,9 @@ async function clickByText(page, selector, text) {
   await sleep(300);
   check("кабінет: слабый пароль отклонён", (await page.$$('[role="alert"]')).length >= 1);
 
-  await page.goto(`${base}/ru`, { waitUntil: "networkidle0" });
-  const ru = await page.evaluate(() => document.body.textContent);
-  check("RU: главная переведена", ru.includes("Хит недели") && ru.includes("Распродажа") && ru.includes("Новинки"));
+  await page.goto(`${base}/en`, { waitUntil: "networkidle0" });
+  const en = await page.evaluate(() => document.body.textContent);
+  check("EN: главная переведена", en.includes("Pick of the week") && en.includes("Sale") && en.includes("New arrivals"));
 
   check("нет ошибок в консоли", errors.length === 0, errors.slice(0, 2).join(" | "));
 

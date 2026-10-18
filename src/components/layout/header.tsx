@@ -270,20 +270,20 @@ function IconLink({
 }
 
 /**
- * Language in the utility cluster: shows the CURRENT locale ("Укр"/"Рус"), a click switches to
+ * Language in the utility cluster: shows the CURRENT locale ("Укр"/"Eng"), a click switches to
  * the other one. A plain link, not <Link>: switching the locale changes the root layout, and a
  * client re-render would touch the theme <script> in <head> (a React 19 console error). A full
  * load is cheaper.
  */
 function LangSwitch({ locale, pathname }: { locale: Locale; pathname: string }) {
   const { dict } = useI18n();
-  const other: Locale = locale === "ua" ? "ru" : "ua";
-  const currentLabel = locale === "ua" ? "Укр" : "Рус";
+  const other: Locale = locale === "ua" ? "en" : "ua";
+  const currentLabel = locale === "ua" ? "Укр" : "Eng";
 
   return (
     <a
       href={asset(swapLocale(pathname, other))}
-      hrefLang={other === "ua" ? "uk" : "ru"}
+      hrefLang={other === "ua" ? "uk" : "en"}
       aria-label={`${dict.nav.language}: ${currentLabel}`}
       className="bar-btn shrink-0"
     >
@@ -294,7 +294,7 @@ function LangSwitch({ locale, pathname }: { locale: Locale; pathname: string }) 
 
 function MobileMenu({ pathname }: { pathname: string }) {
   const { locale, dict } = useI18n();
-  const other: Locale = locale === "ua" ? "ru" : "ua";
+  const other: Locale = locale === "ua" ? "en" : "ua";
 
   return (
     <div className="fixed inset-x-0 bottom-0 top-[var(--header-h)] overflow-y-auto bg-ink-900 lg:hidden">
@@ -333,8 +333,8 @@ function MobileMenu({ pathname }: { pathname: string }) {
         <div className="mt-6 flex items-center gap-3 md:hidden">
           <span className="text-[15px] text-bone-dim">{dict.nav.language}</span>
           {/* Full load, as in LangSwitch. */}
-          <a href={asset(swapLocale(pathname, other))} hrefLang={other === "ua" ? "uk" : "ru"} className="chip">
-            {other === "ua" ? "Українська" : "Русский"}
+          <a href={asset(swapLocale(pathname, other))} hrefLang={other === "ua" ? "uk" : "en"} className="chip">
+            {other === "ua" ? "Українська" : "English"}
           </a>
         </div>
       </div>

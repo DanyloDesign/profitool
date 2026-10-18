@@ -83,5 +83,29 @@ export type Product = {
 };
 
 export function localize(value: SpecValue, locale: Locale): string {
-  return typeof value === "string" ? value : value[locale];
+  if (typeof value !== "string") return value[locale];
+  return locale === "en" ? unitsToEn(value) : value;
+}
+
+/** Plain spec strings are written in Ukrainian units ("2,4 Дж", "18 В"); English gets SI symbols and a decimal point. */
+const EN_UNITS: [string, string][] = [
+  ["Н·м", "Nm"],
+  ["мм/м", "mm/m"],
+  ["об/хв", "rpm"],
+  ["уд/хв", "bpm"],
+  ["Вт", "W"],
+  ["Дж", "J"],
+  ["кг", "kg"],
+  ["мм", "mm"],
+  ["см", "cm"],
+  ["м", "m"],
+  ["В", "V"],
+];
+
+function unitsToEn(value: string): string {
+  let out = value.replace(/(\d),(\d)/g, "$1.$2");
+  for (const [ua, en] of EN_UNITS) {
+    out = out.replace(new RegExp(`(?<![\\u0400-\\u04FF])${ua}(?![\\u0400-\\u04FF])`, "g"), en);
+  }
+  return out;
 }

@@ -17,14 +17,14 @@ export function normalize(text: string): string {
 
 /** Word stems people type for a section, Ukrainian and Russian together. */
 const CATEGORY_WORDS: Record<string, string[]> = {
-  "rotary-hammers": ["перфор", "sds", "бетон", "штроб", "hammer"],
+  "rotary-hammers": ["перфор", "sds", "бетон", "штроб", "hammer", "rotary", "concrete"],
   drills: ["шуруп", "шурупокрут", "шуруповерт", "дриль", "дрел", "викрутк", "отвертк", "drill", "driver"],
   grinders: ["болгар", "кшм", "ушм", "кутов", "углов", "grinder"],
-  saws: ["пил", "циркуляр", "дисковапил", "дисковаяпил", "saw"],
-  sanders: ["шліф", "шлиф", "ексцентр", "эксцентр", "орбітал", "орбитал", "sander"],
-  measuring: ["лазер", "рівен", "рівень", "уровен", "нівел", "нивел", "далеком", "дальном", "laser", "level"],
-  accessories: ["біт", "бит", "свердл", "сверл", "оснаст", "коронк", "бур", "диск", "bit"],
-  safety: ["каск", "захист", "защит", "шолом", "helmet"],
+  saws: ["пил", "циркуляр", "дисковапил", "дисковаяпил", "saw", "circular"],
+  sanders: ["шліф", "шлиф", "ексцентр", "эксцентр", "орбітал", "орбитал", "sander", "orbital", "random"],
+  measuring: ["лазер", "рівен", "рівень", "уровен", "нівел", "нивел", "далеком", "дальном", "laser", "level", "rangefinder", "measure"],
+  accessories: ["біт", "бит", "свердл", "сверл", "оснаст", "коронк", "бур", "диск", "bit", "accessor"],
+  safety: ["каск", "захист", "защит", "шолом", "helmet", "safety", "hardhat"],
 };
 
 /** Brand names as people write them in Cyrillic. */
@@ -38,8 +38,8 @@ const BRAND_WORDS: Record<string, string[]> = {
 };
 
 const POWER_WORDS: Record<Product["power"], string[]> = {
-  cordless: ["акум", "аккум", "безпров", "беспров"],
-  corded: ["мереж", "сетев", "провод"],
+  cordless: ["акум", "аккум", "безпров", "беспров", "cordless", "battery"],
+  corded: ["мереж", "сетев", "провод", "corded", "mains"],
   none: [],
 };
 
@@ -50,35 +50,35 @@ const STOP_WORDS = new Set(["з", "с", "і", "и", "й", "в", "у", "на", "�
 const COMPLETIONS: Record<string, Record<Locale, string[]>> = {
   "rotary-hammers": {
     ua: ["перфоратор SDS-Plus", "перфоратор акумуляторний", "перфоратор Makita"],
-    ru: ["перфоратор SDS-Plus", "перфоратор аккумуляторный", "перфоратор Makita"],
+    en: ["SDS-Plus rotary hammer", "cordless rotary hammer", "Makita rotary hammer"],
   },
   drills: {
     ua: ["шурупокрут акумуляторний", "шурупокрут DeWalt", "шурупокрут Makita"],
-    ru: ["шуруповёрт аккумуляторный", "шуруповёрт DeWalt", "шуруповёрт Makita"],
+    en: ["cordless drill driver", "DeWalt drill driver", "Makita drill driver"],
   },
   grinders: {
     ua: ["болгарка 125 мм", "болгарка акумуляторна", "болгарка Bosch"],
-    ru: ["болгарка 125 мм", "болгарка аккумуляторная", "болгарка Bosch"],
+    en: ["125 mm angle grinder", "cordless angle grinder", "Bosch angle grinder"],
   },
   saws: {
     ua: ["пила дискова", "пила акумуляторна", "пила 184 мм"],
-    ru: ["пила дисковая", "пила аккумуляторная", "пила 184 мм"],
+    en: ["circular saw", "cordless saw", "184 mm saw"],
   },
   sanders: {
     ua: ["шліфмашина ексцентрикова", "шліфмашина 125 мм", "шліфмашина Metabo"],
-    ru: ["шлифмашина эксцентриковая", "шлифмашина 125 мм", "шлифмашина Metabo"],
+    en: ["random orbital sander", "125 mm sander", "Metabo sander"],
   },
   measuring: {
     ua: ["лазерний рівень 360°", "лазерний рівень Bosch", "далекомір"],
-    ru: ["лазерный уровень 360°", "лазерный уровень Bosch", "дальномер"],
+    en: ["360° laser level", "Bosch laser level", "laser rangefinder"],
   },
   accessories: {
     ua: ["біти 1/4″", "свердла HSS-Co", "бури SDS-Plus"],
-    ru: ["биты 1/4″", "свёрла HSS-Co", "буры SDS-Plus"],
+    en: ["1/4″ bits", "HSS-Co drill bits", "SDS-Plus drill bits"],
   },
   safety: {
     ua: ["каска EN 397", "каска Milwaukee", "каска Metabo"],
-    ru: ["каска EN 397", "каска Milwaukee", "каска Metabo"],
+    en: ["EN 397 safety helmet", "Milwaukee safety helmet", "Metabo safety helmet"],
   },
 };
 
@@ -98,7 +98,7 @@ function hitsStems(token: string, stems: string[] | undefined): boolean {
 
 function categoryMatches(category: Category, token: string): boolean {
   if (hitsStems(token, CATEGORY_WORDS[category.slug])) return true;
-  return [category.name.ua, category.name.ru].some((name) => normalize(name).startsWith(token));
+  return [category.name.ua, category.name.en].some((name) => normalize(name).startsWith(token));
 }
 
 /** 3 = model or SKU, 2 = brand, 1 = section, platform, power or spec; 0 = no match. */
@@ -113,7 +113,7 @@ function tokenScore(product: Product, token: string): number {
   if (hitsStems(token, POWER_WORDS[product.power])) return 1;
   if (
     token.length >= 2 &&
-    product.specs.some(([, value]) => normalize(localize(value, "ua")).includes(token) || normalize(localize(value, "ru")).includes(token))
+    product.specs.some(([, value]) => normalize(localize(value, "ua")).includes(token) || normalize(localize(value, "en")).includes(token))
   )
     return 1;
   return 0;

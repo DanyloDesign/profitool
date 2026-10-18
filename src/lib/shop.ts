@@ -3,7 +3,7 @@ import { asset } from "@/lib/asset";
 import { categoryBySlug, platformBySlug } from "@/data/taxonomy";
 import { productBySlug, products } from "@/data/products";
 import { localize, type Localized, type Product, type SpecKey, type SpecValue } from "@/data/types";
-import { plural } from "@/i18n/plural";
+import { plural, pluralEn } from "@/i18n/plural";
 import { matchesQuery } from "@/lib/search";
 
 /** Неразрывный пробел как разделитель разрядов: 12 490, а не 12490. */
@@ -18,13 +18,13 @@ export function discountPercent(product: Product): number | null {
 
 const PIECES: Record<Locale, [string, string, string]> = {
   ua: ["предмет", "предмети", "предметів"],
-  ru: ["предмет", "предмета", "предметов"],
+  en: ["piece", "pieces", "pieces"],
 };
 
 /** Ключевой параметр с единицей. Почти везде она уже в значении, у наборов дописываем. */
 export function keyValue(product: Product, locale: Locale): string {
   const raw = localize(product.key.value, locale);
-  if (product.key.spec === "pieces") return `${raw} ${plural(Number(raw), PIECES[locale])}`;
+  if (product.key.spec === "pieces") return `${raw} ${locale === "en" ? pluralEn(Number(raw), ["piece", "pieces"]) : plural(Number(raw), PIECES[locale])}`;
   return raw;
 }
 
@@ -269,17 +269,17 @@ export const CATEGORICAL_SPEC_KEYS: SpecKey[] = [
 export const NUMERIC_SPEC_KEYS: SpecKey[] = ["impact", "power", "torque", "depth", "orbit", "range"];
 
 const NUMERIC_UNITS: Partial<Record<SpecKey, Localized>> = {
-  impact: { ua: "Дж", ru: "Дж" },
-  power: { ua: "Вт", ru: "Вт" },
-  torque: { ua: "Н·м", ru: "Н·м" },
-  depth: { ua: "мм", ru: "мм" },
-  orbit: { ua: "мм", ru: "мм" },
-  range: { ua: "м", ru: "м" },
+  impact: { ua: "Дж", en: "J" },
+  power: { ua: "Вт", en: "W" },
+  torque: { ua: "Н·м", en: "Nm" },
+  depth: { ua: "мм", en: "mm" },
+  orbit: { ua: "мм", en: "mm" },
+  range: { ua: "м", en: "m" },
 };
 
 const RANGE_WORDS: Record<Locale, { to: string; over: string }> = {
   ua: { to: "до", over: "понад" },
-  ru: { to: "до", over: "свыше" },
+  en: { to: "up to", over: "over" },
 };
 
 /**

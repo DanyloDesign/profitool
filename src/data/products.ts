@@ -3,26 +3,26 @@ import type { Localized, Product } from "./types";
 
 /** Комплектация повторяется от модели к модели, поэтому собрана в один словарь. */
 const K = {
-  case: { ua: "Кейс", ru: "Кейс" },
-  bag: { ua: "Сумка", ru: "Сумка" },
-  carton: { ua: "Картонна коробка", ru: "Картонная коробка" },
-  sideHandle: { ua: "Бічна рукоятка", ru: "Боковая рукоятка" },
-  depthStop: { ua: "Обмежувач глибини", ru: "Ограничитель глубины" },
-  guard: { ua: "Захисний кожух", ru: "Защитный кожух" },
-  wrench: { ua: "Ключ", ru: "Ключ" },
-  disc: { ua: "Відрізний диск", ru: "Отрезной диск" },
-  blade: { ua: "Пиляльний диск", ru: "Пильный диск" },
-  battery2: { ua: "Два акумулятори 2,0 А·год", ru: "Два аккумулятора 2,0 А·ч" },
-  battery1: { ua: "Акумулятор 4,0 А·год", ru: "Аккумулятор 4,0 А·ч" },
-  charger: { ua: "Зарядний пристрій", ru: "Зарядное устройство" },
-  noBattery: { ua: "Без акумулятора і зарядного", ru: "Без аккумулятора и зарядного" },
-  bitHolder: { ua: "Тримач біт", ru: "Держатель бит" },
-  dustBag: { ua: "Пилозбірник", ru: "Пылесборник" },
-  paper: { ua: "Комплект шліфпаперу", ru: "Комплект шлифбумаги" },
-  tripod: { ua: "Штатив", ru: "Штатив" },
-  target: { ua: "Мішень", ru: "Мишень" },
-  strap: { ua: "Ремінь", ru: "Ремень" },
-  manual: { ua: "Інструкція та гарантійний талон", ru: "Инструкция и гарантийный талон" },
+  case: { ua: "Кейс", en: "Case" },
+  bag: { ua: "Сумка", en: "Bag" },
+  carton: { ua: "Картонна коробка", en: "Cardboard box" },
+  sideHandle: { ua: "Бічна рукоятка", en: "Side handle" },
+  depthStop: { ua: "Обмежувач глибини", en: "Depth stop" },
+  guard: { ua: "Захисний кожух", en: "Guard" },
+  wrench: { ua: "Ключ", en: "Wrench" },
+  disc: { ua: "Відрізний диск", en: "Cutting disc" },
+  blade: { ua: "Пиляльний диск", en: "Saw blade" },
+  battery2: { ua: "Два акумулятори 2,0 А·год", en: "Two 2.0 Ah batteries" },
+  battery1: { ua: "Акумулятор 4,0 А·год", en: "4.0 Ah battery" },
+  charger: { ua: "Зарядний пристрій", en: "Charger" },
+  noBattery: { ua: "Без акумулятора і зарядного", en: "No battery or charger" },
+  bitHolder: { ua: "Тримач біт", en: "Bit holder" },
+  dustBag: { ua: "Пилозбірник", en: "Dust bag" },
+  paper: { ua: "Комплект шліфпаперу", en: "Sandpaper set" },
+  tripod: { ua: "Штатив", en: "Tripod" },
+  target: { ua: "Мішень", en: "Target" },
+  strap: { ua: "Ремінь", en: "Strap" },
+  manual: { ua: "Інструкція та гарантійний талон", en: "Manual and warranty card" },
 } satisfies Record<string, Localized>;
 
 /** Метка «без аккумулятора»: по ней карточка товара показывает предупреждение. */
@@ -65,8 +65,8 @@ const allProducts: Product[] = [
       ["power", "780 Вт"],
       ["impact", "2,4 Дж"],
       ["chuck", "SDS-Plus"],
-      ["rpm", { ua: "0–1100 об/хв", ru: "0–1100 об/мин" }],
-      ["bpm", { ua: "0–4500 уд/хв", ru: "0–4500 уд/мин" }],
+      ["rpm", { ua: "0–1100 об/хв", en: "0–1100 rpm" }],
+      ["bpm", { ua: "0–4500 уд/хв", en: "0–4500 bpm" }],
       ["weight", "2,9 кг"],
     ],
     kit: [K.case, K.sideHandle, K.depthStop, K.manual],
@@ -74,7 +74,7 @@ const allProducts: Product[] = [
     sold: 412,
     description: {
       ua: "Робоча конячка на об'єкті: три режими, реверс, запас по ресурсу. Бере бетон під анкер і штробить без надриву.",
-      ru: "Рабочая лошадка на объекте: три режима, реверс, запас по ресурсу. Берёт бетон под анкер и штробит без надрыва.",
+      en: "A job-site workhorse: three modes, reverse, plenty of service life. Drills concrete for anchors and chases walls without straining.",
     },
   },
   {
@@ -91,9 +91,9 @@ const allProducts: Product[] = [
     specs: [
       ["power", "800 Вт"],
       ["impact", "2,7 Дж"],
-      ["chuck", { ua: "SDS-Plus зі змінним патроном", ru: "SDS-Plus со сменным патроном" }],
-      ["rpm", { ua: "0–900 об/хв", ru: "0–900 об/мин" }],
-      ["bpm", { ua: "0–4000 уд/хв", ru: "0–4000 уд/мин" }],
+      ["chuck", { ua: "SDS-Plus зі змінним патроном", en: "SDS-Plus with changeable chuck" }],
+      ["rpm", { ua: "0–900 об/хв", en: "0–900 rpm" }],
+      ["bpm", { ua: "0–4000 уд/хв", en: "0–4000 bpm" }],
       ["weight", "2,9 кг"],
     ],
     kit: [K.case, K.sideHandle, K.depthStop, K.manual],
@@ -101,7 +101,7 @@ const allProducts: Product[] = [
     sold: 268,
     description: {
       ua: "Швидкознімний патрон міняється за секунду: бетон і дерево без перекладання інструменту.",
-      ru: "Быстросъёмный патрон меняется за секунду: бетон и дерево без перекладывания инструмента.",
+      en: "The quick-release chuck swaps in a second: concrete and wood without changing tools.",
     },
   },
   {
@@ -120,7 +120,7 @@ const allProducts: Product[] = [
       ["power", "800 Вт"],
       ["impact", "2,6 Дж"],
       ["chuck", "SDS-Plus"],
-      ["rpm", { ua: "0–1500 об/хв", ru: "0–1500 об/мин" }],
+      ["rpm", { ua: "0–1500 об/хв", en: "0–1500 rpm" }],
       ["weight", "2,6 кг"],
     ],
     kit: [K.case, K.sideHandle, K.depthStop],
@@ -128,7 +128,7 @@ const allProducts: Product[] = [
     sold: 191,
     description: {
       ua: "Легший за конкурентів на триста грамів — відчувається до кінця зміни, коли свердлиш стелю.",
-      ru: "Легче конкурентов на триста граммов — чувствуется к концу смены, когда сверлишь потолок.",
+      en: "300 g lighter than rivals. You feel it by the end of a shift of drilling ceilings.",
     },
   },
   {
@@ -145,8 +145,8 @@ const allProducts: Product[] = [
     specs: [
       ["power", "850 Вт"],
       ["impact", "3,0 Дж"],
-      ["chuck", { ua: "SDS-Plus Quick", ru: "SDS-Plus Quick" }],
-      ["rpm", { ua: "0–1200 об/хв", ru: "0–1200 об/мин" }],
+      ["chuck", { ua: "SDS-Plus Quick", en: "SDS-Plus Quick" }],
+      ["rpm", { ua: "0–1200 об/хв", en: "0–1200 rpm" }],
       ["weight", "3,0 кг"],
     ],
     kit: [K.case, K.sideHandle, K.depthStop, K.manual],
@@ -154,7 +154,7 @@ const allProducts: Product[] = [
     sold: 143,
     description: {
       ua: "Запобіжна муфта зупиняє корпус, коли бур закусує в арматурі. Зап'ястю це рятує день.",
-      ru: "Предохранительная муфта останавливает корпус, когда бур закусывает в арматуре. Запястью это спасает день.",
+      en: "The safety clutch stops the body when the bit jams in rebar. Your wrist will thank you.",
     },
   },
   {
@@ -173,8 +173,8 @@ const allProducts: Product[] = [
       ["voltage", "18 В"],
       ["impact", "3,6 Дж"],
       ["chuck", "SDS-Plus"],
-      ["rpm", { ua: "0–1350 об/хв", ru: "0–1350 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "0–1350 об/хв", en: "0–1350 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "3,6 кг"],
     ],
     kit: [K.case, K.sideHandle, K.noBattery],
@@ -182,7 +182,7 @@ const allProducts: Product[] = [
     sold: 87,
     description: {
       ua: "Безщітковий мотор і автовимкнення при закусі. Б'є як мережевий, тільки шнур не плутається під ногами.",
-      ru: "Бесщёточный мотор и автоотключение при закусе. Бьёт как сетевой, только шнур не путается под ногами.",
+      en: "Brushless motor with auto-shutoff on bind-up. Hits like a corded tool, minus the cable under your feet.",
     },
   },
   {
@@ -201,8 +201,8 @@ const allProducts: Product[] = [
       ["voltage", "18 В"],
       ["impact", "2,0 Дж"],
       ["chuck", "SDS-Plus"],
-      ["rpm", { ua: "0–1200 об/хв", ru: "0–1200 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "0–1200 об/хв", en: "0–1200 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "2,8 кг"],
     ],
     kit: [K.carton, K.sideHandle, K.depthStop, K.noBattery],
@@ -210,7 +210,7 @@ const allProducts: Product[] = [
     sold: 324,
     description: {
       ua: "Той самий LXT, що й у решти твого цеху. Дістав батарею з шурупокрута — і працюєш далі.",
-      ru: "Тот самый LXT, что и у остального твоего цеха. Достал батарею из шуруповёрта — и работаешь дальше.",
+      en: "The same LXT as the rest of your kit. Pull the battery from the drill driver and keep working.",
     },
   },
 
@@ -230,8 +230,8 @@ const allProducts: Product[] = [
       ["voltage", "40 В"],
       ["impact", "3,4 Дж"],
       ["chuck", "SDS-Plus"],
-      ["rpm", { ua: "0–980 об/хв", ru: "0–980 об/мин" }],
-      ["battery", { ua: "XGT, не входить", ru: "XGT, не входит" }],
+      ["rpm", { ua: "0–980 об/хв", en: "0–980 rpm" }],
+      ["battery", { ua: "XGT, не входить", en: "XGT, not included" }],
       ["weight", "4,4 кг"],
     ],
     kit: [K.case, K.sideHandle, K.depthStop, K.noBattery],
@@ -239,7 +239,7 @@ const allProducts: Product[] = [
     sold: 41,
     description: {
       ua: "Сорок вольт замість вісімнадцяти: довбає бетон нарівні з мережевим і не просідає під навантаженням.",
-      ru: "Сорок вольт вместо восемнадцати: долбит бетон наравне с сетевым и не проседает под нагрузкой.",
+      en: "Forty volts instead of eighteen: breaks concrete like a corded tool and holds power under load.",
     },
   },
 
@@ -260,9 +260,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "54 Н·м"],
-      ["chuck", { ua: "Швидкозатискний, 13 мм", ru: "Быстрозажимной, 13 мм" }],
-      ["rpm", { ua: "0–500 / 0–2000 об/хв", ru: "0–500 / 0–2000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["chuck", { ua: "Швидкозатискний, 13 мм", en: "Keyless, 13 mm" }],
+      ["rpm", { ua: "0–500 / 0–2000 об/хв", en: "0–500 / 0–2000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,5 кг"],
     ],
     kit: [K.carton, K.bitHolder, K.noBattery],
@@ -270,7 +270,7 @@ const allProducts: Product[] = [
     sold: 688,
     description: {
       ua: "Безщітковий, компактний, 21 ступінь моменту. Найчастіша перша покупка в платформі LXT.",
-      ru: "Бесщёточный, компактный, 21 ступень момента. Самая частая первая покупка в платформе LXT.",
+      en: "Brushless, compact, 21 torque settings. The most common first buy on the LXT platform.",
     },
   },
   {
@@ -288,9 +288,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "70 Н·м"],
-      ["chuck", { ua: "Швидкозатискний, 13 мм", ru: "Быстрозажимной, 13 мм" }],
-      ["rpm", { ua: "0–550 / 0–2000 об/хв", ru: "0–550 / 0–2000 об/мин" }],
-      ["battery", { ua: "Два по 2,0 А·год", ru: "Два по 2,0 А·ч" }],
+      ["chuck", { ua: "Швидкозатискний, 13 мм", en: "Keyless, 13 mm" }],
+      ["rpm", { ua: "0–550 / 0–2000 об/хв", en: "0–550 / 0–2000 rpm" }],
+      ["battery", { ua: "Два по 2,0 А·год", en: "Two 2.0 Ah" }],
       ["weight", "1,6 кг"],
     ],
     kit: [K.case, K.battery2, K.charger, K.bitHolder],
@@ -298,7 +298,7 @@ const allProducts: Product[] = [
     sold: 402,
     description: {
       ua: "Повний комплект з двома батареями: розпакував і поїхав. Підсвітка з затримкою не сліпить у шафі.",
-      ru: "Полный комплект с двумя батареями: распаковал и поехал. Подсветка с задержкой не слепит в шкафу.",
+      en: "A full kit with two batteries: unbox it and go. The delayed light won't blind you in a cupboard.",
     },
   },
   {
@@ -316,9 +316,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "55 Н·м"],
-      ["chuck", { ua: "Швидкозатискний, 13 мм", ru: "Быстрозажимной, 13 мм" }],
-      ["rpm", { ua: "0–480 / 0–1800 об/хв", ru: "0–480 / 0–1800 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["chuck", { ua: "Швидкозатискний, 13 мм", en: "Keyless, 13 mm" }],
+      ["rpm", { ua: "0–480 / 0–1800 об/хв", en: "0–480 / 0–1800 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,0 кг"],
     ],
     kit: [K.carton, K.bitHolder, K.noBattery],
@@ -326,7 +326,7 @@ const allProducts: Product[] = [
     sold: 355,
     description: {
       ua: "Кілограм разом з батареєю. Найлегший у підбірці — для стелі й гіпсокартону різниця величезна.",
-      ru: "Килограмм вместе с батареей. Самый лёгкий в подборке — для потолка и гипсокартона разница огромная.",
+      en: "One kilogram with the battery. The lightest in the range, and a big difference for ceilings and drywall.",
     },
   },
   {
@@ -345,9 +345,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "135 Н·м"],
-      ["chuck", { ua: "Металевий, 13 мм", ru: "Металлический, 13 мм" }],
-      ["rpm", { ua: "0–550 / 0–2000 об/хв", ru: "0–550 / 0–2000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["chuck", { ua: "Металевий, 13 мм", en: "Metal, 13 mm" }],
+      ["rpm", { ua: "0–550 / 0–2000 об/хв", en: "0–550 / 0–2000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,9 кг"],
     ],
     kit: [K.case, K.sideHandle, K.noBattery],
@@ -355,7 +355,7 @@ const allProducts: Product[] = [
     sold: 219,
     description: {
       ua: "135 ньютон-метрів: крутить коронку по дереву 100 мм і перемішує клей без стогону.",
-      ru: "135 ньютон-метров: крутит коронку по дереву 100 мм и перемешивает клей без стона.",
+      en: "135 newton-metres: turns a 100 mm wood hole saw and mixes adhesive without a groan.",
     },
   },
   {
@@ -373,9 +373,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "75 Н·м"],
-      ["chuck", { ua: "Швидкозатискний, 13 мм", ru: "Быстрозажимной, 13 мм" }],
-      ["rpm", { ua: "0–600 / 0–2100 об/хв", ru: "0–600 / 0–2100 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["chuck", { ua: "Швидкозатискний, 13 мм", en: "Keyless, 13 mm" }],
+      ["rpm", { ua: "0–600 / 0–2100 об/хв", en: "0–600 / 0–2100 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,4 кг"],
     ],
     kit: [K.carton, K.bitHolder, K.noBattery],
@@ -383,7 +383,7 @@ const allProducts: Product[] = [
     sold: 128,
     description: {
       ua: "Платформа CAS — це батарея, яка підходить до інструментів тридцяти брендів, не тільки Metabo.",
-      ru: "Платформа CAS — это батарея, которая подходит к инструментам тридцати брендов, не только Metabo.",
+      en: "The CAS platform is one battery that fits tools from thirty brands, not only Metabo.",
     },
   },
   {
@@ -401,9 +401,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["torque", "50 Н·м"],
-      ["chuck", { ua: "Швидкозатискний, 13 мм", ru: "Быстрозажимной, 13 мм" }],
-      ["rpm", { ua: "0–500 / 0–1800 об/хв", ru: "0–500 / 0–1800 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["chuck", { ua: "Швидкозатискний, 13 мм", en: "Keyless, 13 mm" }],
+      ["rpm", { ua: "0–500 / 0–1800 об/хв", en: "0–500 / 0–1800 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,2 кг"],
     ],
     kit: [K.carton, K.noBattery],
@@ -411,7 +411,7 @@ const allProducts: Product[] = [
     sold: 517,
     description: {
       ua: "Для дому й дачі: полиці, меблі, гіпсокартон. Платформа ONE+ найдешевша на вході.",
-      ru: "Для дома и дачи: полки, мебель, гипсокартон. Платформа ONE+ самая дешёвая на входе.",
+      en: "For home and garden: shelves, furniture, drywall. ONE+ is the cheapest platform to start with.",
     },
   },
 
@@ -431,7 +431,7 @@ const allProducts: Product[] = [
     specs: [
       ["power", "720 Вт"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "11 000 об/хв", ru: "11 000 об/мин" }],
+      ["rpm", { ua: "11 000 об/хв", en: "11,000 rpm" }],
       ["weight", "1,8 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.wrench],
@@ -439,7 +439,7 @@ const allProducts: Product[] = [
     sold: 903,
     description: {
       ua: "Найпродаваніша болгарка в магазині. Вузький корпус лягає в долоню, редуктор витримує різання арматури.",
-      ru: "Самая продаваемая болгарка в магазине. Узкий корпус ложится в ладонь, редуктор выдерживает резку арматуры.",
+      en: "The best-selling angle grinder in the shop. The slim body fits your palm, and the gearbox handles cutting rebar.",
     },
   },
   {
@@ -456,7 +456,7 @@ const allProducts: Product[] = [
     specs: [
       ["power", "750 Вт"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "11 000 об/хв", ru: "11 000 об/мин" }],
+      ["rpm", { ua: "11 000 об/хв", en: "11,000 rpm" }],
       ["weight", "1,9 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.wrench],
@@ -464,7 +464,7 @@ const allProducts: Product[] = [
     sold: 471,
     description: {
       ua: "Захист від повторного пуску: після зникнення напруги сама не заведеться в руці.",
-      ru: "Защита от повторного пуска: после исчезновения напряжения сама не заведётся в руке.",
+      en: "Restart protection: after a power cut it won't spin up on its own in your hand.",
     },
   },
   {
@@ -481,7 +481,7 @@ const allProducts: Product[] = [
     specs: [
       ["power", "900 Вт"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "11 500 об/хв", ru: "11 500 об/мин" }],
+      ["rpm", { ua: "11 500 об/хв", en: "11,500 rpm" }],
       ["weight", "2,2 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.wrench],
@@ -489,7 +489,7 @@ const allProducts: Product[] = [
     sold: 208,
     description: {
       ua: "Кожух перекидається без ключа. Дрібниця, поки не міняєш його по десять разів на день.",
-      ru: "Кожух перекидывается без ключа. Мелочь, пока не меняешь его по десять раз на день.",
+      en: "The guard repositions without a wrench. A small thing, until you do it ten times a day.",
     },
   },
   {
@@ -506,7 +506,7 @@ const allProducts: Product[] = [
     specs: [
       ["power", "1550 Вт"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "2800–11 000 об/хв", ru: "2800–11 000 об/мин" }],
+      ["rpm", { ua: "2800–11 000 об/хв", en: "2800–11,000 rpm" }],
       ["weight", "2,4 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.wrench],
@@ -514,7 +514,7 @@ const allProducts: Product[] = [
     sold: 96,
     description: {
       ua: "Регулювання обертів під матеріал: нержавійка на низьких не синіє, камінь не палить диск.",
-      ru: "Регулировка оборотов под материал: нержавейка на низких не синеет, камень не жжёт диск.",
+      en: "Speed control for the material: stainless doesn't blue at low speed, and stone doesn't burn the disc.",
     },
   },
   {
@@ -532,8 +532,8 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "9000 об/хв", ru: "9000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "9000 об/хв", en: "9000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "2,5 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.noBattery],
@@ -541,7 +541,7 @@ const allProducts: Product[] = [
     sold: 74,
     description: {
       ua: "Гальмо зупиняє диск за дві секунди. На висоті це різниця між «упустив» і «встиг».",
-      ru: "Тормоз останавливает диск за две секунды. На высоте это разница между «уронил» и «успел».",
+      en: "The brake stops the disc in two seconds. At height, that is the difference between dropping it and catching it.",
     },
   },
   {
@@ -559,8 +559,8 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["disc", "125 мм"],
-      ["rpm", { ua: "8500 об/хв", ru: "8500 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "8500 об/хв", en: "8500 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "2,3 кг"],
     ],
     kit: [K.carton, K.guard, K.sideHandle, K.noBattery],
@@ -568,7 +568,7 @@ const allProducts: Product[] = [
     sold: 187,
     description: {
       ua: "Різати на даху чи в підвалі, де розетки немає взагалі. Батарея LXT спільна з рештою серії.",
-      ru: "Резать на крыше или в подвале, где розетки нет вообще. Батарея LXT общая с остальной серией.",
+      en: "Cut on a roof or in a basement with no outlet at all. The LXT battery is shared with the rest of the range.",
     },
   },
 
@@ -587,8 +587,8 @@ const allProducts: Product[] = [
     specs: [
       ["power", "1200 Вт"],
       ["disc", "190 мм"],
-      ["depth", { ua: "66 мм під 90°", ru: "66 мм под 90°" }],
-      ["rpm", { ua: "5200 об/хв", ru: "5200 об/мин" }],
+      ["depth", { ua: "66 мм під 90°", en: "66 mm at 90°" }],
+      ["rpm", { ua: "5200 об/хв", en: "5200 rpm" }],
       ["weight", "4,0 кг"],
     ],
     kit: [K.carton, K.blade, K.wrench],
@@ -596,7 +596,7 @@ const allProducts: Product[] = [
     sold: 341,
     description: {
       ua: "Ріже брус 50×100 за один прохід. Підошва зі штампованої сталі не веде від удару об кут.",
-      ru: "Режет брус 50×100 за один проход. Подошва из штампованной стали не ведёт от удара об угол.",
+      en: "Cuts 50×100 timber in one pass. The stamped steel base doesn't warp when it hits a corner.",
     },
   },
   {
@@ -614,8 +614,8 @@ const allProducts: Product[] = [
     specs: [
       ["power", "1400 Вт"],
       ["disc", "190 мм"],
-      ["depth", { ua: "70 мм під 90°", ru: "70 мм под 90°" }],
-      ["rpm", { ua: "5500 об/хв", ru: "5500 об/мин" }],
+      ["depth", { ua: "70 мм під 90°", en: "70 mm at 90°" }],
+      ["rpm", { ua: "5500 об/хв", en: "5500 rpm" }],
       ["weight", "4,2 кг"],
     ],
     kit: [K.carton, K.blade, K.wrench],
@@ -623,7 +623,7 @@ const allProducts: Product[] = [
     sold: 256,
     description: {
       ua: "Сімдесят міліметрів глибини: колода-кругляк і клеєний брус проходять без перевороту заготовки.",
-      ru: "Семьдесят миллиметров глубины: кругляк и клеёный брус проходят без переворота заготовки.",
+      en: "Seventy millimetres of cutting depth: round and glulam timber go through without flipping the workpiece.",
     },
   },
   {
@@ -640,8 +640,8 @@ const allProducts: Product[] = [
     specs: [
       ["power", "1350 Вт"],
       ["disc", "184 мм"],
-      ["depth", { ua: "65 мм під 90°", ru: "65 мм под 90°" }],
-      ["rpm", { ua: "5500 об/хв", ru: "5500 об/мин" }],
+      ["depth", { ua: "65 мм під 90°", en: "65 mm at 90°" }],
+      ["rpm", { ua: "5500 об/хв", en: "5500 rpm" }],
       ["weight", "3,7 кг"],
     ],
     kit: [K.carton, K.blade, K.wrench],
@@ -649,7 +649,7 @@ const allProducts: Product[] = [
     sold: 174,
     description: {
       ua: "Найлегша мережева в підбірці. Косий рез до 50° із фіксацією на 22,5° і 45°.",
-      ru: "Самая лёгкая сетевая в подборке. Косой рез до 50° с фиксацией на 22,5° и 45°.",
+      en: "The lightest corded saw in the range. Bevel cuts up to 50° with stops at 22.5° and 45°.",
     },
   },
   {
@@ -667,9 +667,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["disc", "190 мм"],
-      ["depth", { ua: "66 мм під 90°", ru: "66 мм под 90°" }],
-      ["rpm", { ua: "5000 об/хв", ru: "5000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["depth", { ua: "66 мм під 90°", en: "66 mm at 90°" }],
+      ["rpm", { ua: "5000 об/хв", en: "5000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "4,3 кг"],
     ],
     kit: [K.carton, K.blade, K.noBattery],
@@ -677,7 +677,7 @@ const allProducts: Product[] = [
     sold: 52,
     description: {
       ua: "Акумуляторна пила з дискoм 190 мм — рідкість. На каркасних роботах замінює мережеву повністю.",
-      ru: "Аккумуляторная пила с диском 190 мм — редкость. На каркасных работах заменяет сетевую полностью.",
+      en: "A cordless saw with a 190 mm blade is rare. On frame work it fully replaces a corded one.",
     },
   },
   {
@@ -695,9 +695,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["disc", "165 мм"],
-      ["depth", { ua: "57 мм під 90°", ru: "57 мм под 90°" }],
-      ["rpm", { ua: "3800 об/хв", ru: "3800 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["depth", { ua: "57 мм під 90°", en: "57 mm at 90°" }],
+      ["rpm", { ua: "3800 об/хв", en: "3800 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "3,3 кг"],
     ],
     kit: [K.carton, K.blade, K.noBattery],
@@ -705,7 +705,7 @@ const allProducts: Product[] = [
     sold: 88,
     description: {
       ua: "Компактна для обрізки вагонки й підлогової дошки. Пиляє по напрямній рейці.",
-      ru: "Компактная для обрезки вагонки и половой доски. Пилит по направляющей шине.",
+      en: "Compact, for trimming tongue-and-groove boards and flooring. Cuts along a guide rail.",
     },
   },
   {
@@ -723,9 +723,9 @@ const allProducts: Product[] = [
     specs: [
       ["voltage", "18 В"],
       ["disc", "184 мм"],
-      ["depth", { ua: "60 мм під 90°", ru: "60 мм под 90°" }],
-      ["rpm", { ua: "4700 об/хв", ru: "4700 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["depth", { ua: "60 мм під 90°", en: "60 mm at 90°" }],
+      ["rpm", { ua: "4700 об/хв", en: "4700 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "3,1 кг"],
     ],
     kit: [K.carton, K.blade, K.noBattery],
@@ -733,7 +733,7 @@ const allProducts: Product[] = [
     sold: 203,
     description: {
       ua: "Для ремонту своїми руками: підрізати ламінат, розкроїти фанеру, зробити полиці.",
-      ru: "Для ремонта своими руками: подрезать ламинат, раскроить фанеру, сделать полки.",
+      en: "For DIY repairs: trim laminate, cut plywood, build shelves.",
     },
   },
 
@@ -754,7 +754,7 @@ const allProducts: Product[] = [
       ["power", "300 Вт"],
       ["pad", "125 мм"],
       ["orbit", "2,8 мм"],
-      ["rpm", { ua: "4000–12 000 об/хв", ru: "4000–12 000 об/мин" }],
+      ["rpm", { ua: "4000–12 000 об/хв", en: "4000–12,000 rpm" }],
       ["weight", "1,4 кг"],
     ],
     kit: [K.carton, K.dustBag, K.paper],
@@ -762,7 +762,7 @@ const allProducts: Product[] = [
     sold: 297,
     description: {
       ua: "Ексцентрик 2,8 мм знімає шар швидко, а фініш залишає без кругових слідів під лак.",
-      ru: "Эксцентрик 2,8 мм снимает слой быстро, а финиш оставляет без круговых следов под лак.",
+      en: "The 2.8 mm orbit removes material fast and leaves a swirl-free finish for varnish.",
     },
   },
   {
@@ -780,7 +780,7 @@ const allProducts: Product[] = [
       ["power", "250 Вт"],
       ["pad", "125 мм"],
       ["orbit", "2,5 мм"],
-      ["rpm", { ua: "7500–12 000 об/хв", ru: "7500–12 000 об/мин" }],
+      ["rpm", { ua: "7500–12 000 об/хв", en: "7500–12,000 rpm" }],
       ["weight", "1,3 кг"],
     ],
     kit: [K.carton, K.dustBag, K.paper],
@@ -788,7 +788,7 @@ const allProducts: Product[] = [
     sold: 184,
     description: {
       ua: "Мікрофільтр ловить пил до того, як він осяде на свіжій шпаклівці. Дихати в кімнаті можна.",
-      ru: "Микрофильтр ловит пыль до того, как она осядет на свежей шпаклёвке. Дышать в комнате можно.",
+      en: "The micro filter catches dust before it settles on fresh filler. The room stays breathable.",
     },
   },
   {
@@ -806,7 +806,7 @@ const allProducts: Product[] = [
       ["power", "280 Вт"],
       ["pad", "125 мм"],
       ["orbit", "2,6 мм"],
-      ["rpm", { ua: "8000–12 000 об/хв", ru: "8000–12 000 об/мин" }],
+      ["rpm", { ua: "8000–12 000 об/хв", en: "8000–12,000 rpm" }],
       ["weight", "1,3 кг"],
     ],
     kit: [K.carton, K.dustBag],
@@ -814,7 +814,7 @@ const allProducts: Product[] = [
     sold: 156,
     description: {
       ua: "Низький центр ваги: машинка не гуляє по площині, коли ведеш її однією рукою.",
-      ru: "Низкий центр тяжести: машинка не гуляет по плоскости, когда ведёшь её одной рукой.",
+      en: "Low centre of gravity: the sander stays flat on the surface when you guide it with one hand.",
     },
   },
   {
@@ -831,8 +831,8 @@ const allProducts: Product[] = [
     specs: [
       ["power", "310 Вт"],
       ["pad", "125 мм"],
-      ["orbit", { ua: "2,5 / 5,0 мм", ru: "2,5 / 5,0 мм" }],
-      ["rpm", { ua: "4000–11 000 об/хв", ru: "4000–11 000 об/мин" }],
+      ["orbit", { ua: "2,5 / 5,0 мм", en: "2.5 / 5.0 mm" }],
+      ["rpm", { ua: "4000–11 000 об/хв", en: "4000–11,000 rpm" }],
       ["weight", "1,3 кг"],
     ],
     kit: [K.case, K.dustBag, K.paper],
@@ -840,7 +840,7 @@ const allProducts: Product[] = [
     sold: 79,
     description: {
       ua: "Два ходи ексцентрика перемикаються важелем: груба обдирка і фініш однією машинкою.",
-      ru: "Два хода эксцентрика переключаются рычагом: грубая обдирка и финиш одной машинкой.",
+      en: "Two orbit settings switch with a lever: rough stripping and finishing with one machine.",
     },
   },
   {
@@ -859,8 +859,8 @@ const allProducts: Product[] = [
       ["voltage", "18 В"],
       ["pad", "125 мм"],
       ["orbit", "2,8 мм"],
-      ["rpm", { ua: "7000–11 000 об/хв", ru: "7000–11 000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "7000–11 000 об/хв", en: "7000–11,000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,6 кг"],
     ],
     kit: [K.carton, K.dustBag, K.noBattery],
@@ -868,7 +868,7 @@ const allProducts: Product[] = [
     sold: 112,
     description: {
       ua: "Шліфувати фасад чи паркан без подовжувача на сто метрів. Пилозбірник на місці.",
-      ru: "Шлифовать фасад или забор без удлинителя на сто метров. Пылесборник на месте.",
+      en: "Sand a facade or fence without a hundred-metre extension cord. Dust bag included.",
     },
   },
   {
@@ -887,8 +887,8 @@ const allProducts: Product[] = [
       ["voltage", "18 В"],
       ["pad", "125 мм"],
       ["orbit", "2,4 мм"],
-      ["rpm", { ua: "7000–12 000 об/хв", ru: "7000–12 000 об/мин" }],
-      ["battery", { ua: "Не входить", ru: "Не входит" }],
+      ["rpm", { ua: "7000–12 000 об/хв", en: "7000–12,000 rpm" }],
+      ["battery", { ua: "Не входить", en: "Not included" }],
       ["weight", "1,5 кг"],
     ],
     kit: [K.carton, K.dustBag, K.noBattery],
@@ -896,7 +896,7 @@ const allProducts: Product[] = [
     sold: 64,
     description: {
       ua: "Гумова обгортка корпусу гасить вібрацію: руки після години роботи ще слухаються.",
-      ru: "Резиновая обёртка корпуса гасит вибрацию: руки после часа работы ещё слушаются.",
+      en: "The rubber body wrap absorbs vibration, so your hands still obey after an hour of work.",
     },
   },
 
@@ -914,10 +914,10 @@ const allProducts: Product[] = [
     badges: ["hit"],
     key: { spec: "lines", value: "3 × 360°" },
     specs: [
-      ["lines", { ua: "Три площини 360°", ru: "Три плоскости 360°" }],
-      ["range", { ua: "30 м, з приймачем 80 м", ru: "30 м, с приёмником 80 м" }],
+      ["lines", { ua: "Три площини 360°", en: "Three planes 360°" }],
+      ["range", { ua: "30 м, з приймачем 80 м", en: "30 m, 80 m with receiver" }],
       ["accuracy", "±0,2 мм/м"],
-      ["battery", { ua: "4 × AA", ru: "4 × AA" }],
+      ["battery", { ua: "4 × AA", en: "4 × AA" }],
       ["weight", "0,9 кг"],
     ],
     kit: [K.case, K.target, K.strap, K.manual],
@@ -925,7 +925,7 @@ const allProducts: Product[] = [
     sold: 143,
     description: {
       ua: "Три площини навколо себе: розмітити стіни, стелю й підлогу з однієї точки, без переставлянь.",
-      ru: "Три плоскости вокруг себя: разметить стены, потолок и пол с одной точки, без перестановок.",
+      en: "Three planes around you: mark walls, ceiling and floor from one spot, no repositioning.",
     },
   },
   {
@@ -940,10 +940,10 @@ const allProducts: Product[] = [
     badges: [],
     key: { spec: "lines", value: "3 × 360°" },
     specs: [
-      ["lines", { ua: "Три площини", ru: "Три плоскости" }],
-      ["range", { ua: "20 м, з приймачем 50 м", ru: "20 м, с приёмником 50 м" }],
+      ["lines", { ua: "Три площини", en: "Three planes" }],
+      ["range", { ua: "20 м, з приймачем 50 м", en: "20 m, 50 m with receiver" }],
       ["accuracy", "±0,3 мм/м"],
-      ["battery", { ua: "3 × AA", ru: "3 × AA" }],
+      ["battery", { ua: "3 × AA", en: "3 × AA" }],
       ["weight", "1,1 кг"],
     ],
     kit: [K.case, K.target, K.manual],
@@ -951,7 +951,7 @@ const allProducts: Product[] = [
     sold: 71,
     description: {
       ua: "Витримує падіння з метра на бетон — заявлено виробником і підтверджено нашим сервісом.",
-      ru: "Выдерживает падение с метра на бетон — заявлено производителем и подтверждено нашим сервисом.",
+      en: "Survives a one-metre drop onto concrete, as the manufacturer states and our service has confirmed.",
     },
   },
   {
@@ -965,12 +965,12 @@ const allProducts: Product[] = [
     price: 10400,
     stock: 3,
     badges: ["new"],
-    key: { spec: "lines", value: { ua: "Зелений промінь", ru: "Зелёный луч" } },
+    key: { spec: "lines", value: { ua: "Зелений промінь", en: "Green beam" } },
     specs: [
-      ["lines", { ua: "Дві площини 360°, зелений", ru: "Две плоскости 360°, зелёный" }],
+      ["lines", { ua: "Дві площини 360°, зелений", en: "Two planes 360°, green" }],
       ["range", "30 м"],
       ["accuracy", "±0,3 мм/м"],
-      ["battery", { ua: "LXT 10,8–18 В або AA", ru: "LXT 10,8–18 В или AA" }],
+      ["battery", { ua: "LXT 10,8–18 В або AA", en: "LXT 10.8–18 V or AA" }],
       ["weight", "0,8 кг"],
     ],
     kit: [K.case, K.target, K.noBattery],
@@ -978,7 +978,7 @@ const allProducts: Product[] = [
     sold: 38,
     description: {
       ua: "Зелений промінь видно вдень на вулиці, де червоний губиться вже за три метри.",
-      ru: "Зелёный луч виден днём на улице, где красный теряется уже за три метра.",
+      en: "The green beam is visible outdoors in daylight, where red fades within three metres.",
     },
   },
   {
@@ -995,7 +995,7 @@ const allProducts: Product[] = [
     specs: [
       ["range", "50 м"],
       ["accuracy", "±1,5 мм"],
-      ["battery", { ua: "Вбудований, USB-C", ru: "Встроенный, USB-C" }],
+      ["battery", { ua: "Вбудований, USB-C", en: "Built-in, USB-C" }],
       ["weight", "0,1 кг"],
     ],
     kit: [K.bag, K.strap, K.manual],
@@ -1003,7 +1003,7 @@ const allProducts: Product[] = [
     sold: 392,
     description: {
       ua: "Заміри летять у телефон через Bluetooth: кошторис збирається прямо на об'єкті, без блокнота.",
-      ru: "Замеры улетают в телефон по Bluetooth: смета собирается прямо на объекте, без блокнота.",
+      en: "Measurements go to your phone over Bluetooth: build the estimate on site, no notebook.",
     },
   },
   {
@@ -1020,7 +1020,7 @@ const allProducts: Product[] = [
     specs: [
       ["range", "30 м"],
       ["accuracy", "±2,0 мм"],
-      ["battery", { ua: "2 × AAA", ru: "2 × AAA" }],
+      ["battery", { ua: "2 × AAA", en: "2 × AAA" }],
       ["weight", "0,09 кг"],
     ],
     kit: [K.bag, K.manual],
@@ -1028,7 +1028,7 @@ const allProducts: Product[] = [
     sold: 214,
     description: {
       ua: "Проста лінійка на тридцять метрів: площа, об'єм, додавання. Нічого зайвого і не ламається.",
-      ru: "Простая линейка на тридцать метров: площадь, объём, сложение. Ничего лишнего и не ломается.",
+      en: "A simple 30 m measure: area, volume, addition. Nothing extra, and it doesn't break.",
     },
   },
   {
@@ -1043,10 +1043,10 @@ const allProducts: Product[] = [
     badges: [],
     key: { spec: "lines", value: "3 × 360°" },
     specs: [
-      ["lines", { ua: "Три площини 360°, зелений", ru: "Три плоскости 360°, зелёный" }],
-      ["range", { ua: "35 м, з приймачем 60 м", ru: "35 м, с приёмником 60 м" }],
+      ["lines", { ua: "Три площини 360°, зелений", en: "Three planes 360°, green" }],
+      ["range", { ua: "35 м, з приймачем 60 м", en: "35 m, 60 m with receiver" }],
       ["accuracy", "±0,2 мм/м"],
-      ["battery", { ua: "M12, не входить", ru: "M12, не входит" }],
+      ["battery", { ua: "M12, не входить", en: "M12, not included" }],
       ["weight", "1,0 кг"],
     ],
     kit: [K.case, K.target, K.noBattery],
@@ -1054,7 +1054,7 @@ const allProducts: Product[] = [
     sold: 29,
     description: {
       ua: "Працює від тієї ж M12, що й ліхтар з шуруповертом. Заряджати окремі батарейки не треба.",
-      ru: "Работает от той же M12, что фонарь с шуруповёртом. Заряжать отдельные батарейки не надо.",
+      en: "Runs on the same M12 as your flashlight and drill driver. No separate batteries to charge.",
     },
   },
 
@@ -1073,8 +1073,8 @@ const allProducts: Product[] = [
     key: { spec: "pieces", value: "43" },
     specs: [
       ["pieces", "43"],
-      ["material", { ua: "Сталь S2", ru: "Сталь S2" }],
-      ["standard", { ua: "Хвостовик 1/4″", ru: "Хвостовик 1/4″" }],
+      ["material", { ua: "Сталь S2", en: "S2 steel" }],
+      ["standard", { ua: "Хвостовик 1/4″", en: "1/4″ shank" }],
       ["weight", "0,4 кг"],
     ],
     kit: [K.case, K.bitHolder],
@@ -1082,7 +1082,7 @@ const allProducts: Product[] = [
     sold: 1204,
     description: {
       ua: "PH, PZ, Torx, шестигранник і головки в одному кейсі. Закриває дев'яносто відсотків кріплення на об'єкті.",
-      ru: "PH, PZ, Torx, шестигранник и головки в одном кейсе. Закрывает девяносто процентов крепежа на объекте.",
+      en: "PH, PZ, Torx, hex and socket bits in one case. Covers ninety percent of fasteners on site.",
     },
   },
   {
@@ -1098,8 +1098,8 @@ const allProducts: Product[] = [
     key: { spec: "pieces", value: "19" },
     specs: [
       ["pieces", "19"],
-      ["material", { ua: "HSS-Co, 5% кобальту", ru: "HSS-Co, 5% кобальта" }],
-      ["size", { ua: "1,0–10,0 мм", ru: "1,0–10,0 мм" }],
+      ["material", { ua: "HSS-Co, 5% кобальту", en: "HSS-Co, 5% cobalt" }],
+      ["size", { ua: "1,0–10,0 мм", en: "1.0–10.0 mm" }],
       ["weight", "0,5 кг"],
     ],
     kit: [K.case],
@@ -1107,7 +1107,7 @@ const allProducts: Product[] = [
     sold: 486,
     description: {
       ua: "Кобальтові свердла беруть нержавійку й інструментальну сталь, де звичайні HSS сідають за два отвори.",
-      ru: "Кобальтовые свёрла берут нержавейку и инструментальную сталь, где обычные HSS садятся за два отверстия.",
+      en: "Cobalt drill bits cut stainless and tool steel, where ordinary HSS dulls after two holes.",
     },
   },
   {
@@ -1124,7 +1124,7 @@ const allProducts: Product[] = [
     specs: [
       ["pieces", "5"],
       ["standard", "SDS-Plus"],
-      ["size", { ua: "6, 8, 10, 12, 14 мм", ru: "6, 8, 10, 12, 14 мм" }],
+      ["size", { ua: "6, 8, 10, 12, 14 мм", en: "6, 8, 10, 12, 14 mm" }],
       ["weight", "0,4 кг"],
     ],
     kit: [K.bag],
@@ -1132,7 +1132,7 @@ const allProducts: Product[] = [
     sold: 372,
     description: {
       ua: "Чотиригранна твердосплавна пластина не збиває кромку об арматуру і йде рівно, не гуляючи в отворі.",
-      ru: "Четырёхгранная твердосплавная пластина не сбивает кромку об арматуру и идёт ровно, не гуляя в отверстии.",
+      en: "The four-edge carbide tip doesn't chip on rebar and runs straight without wandering in the hole.",
     },
   },
   {
@@ -1148,8 +1148,8 @@ const allProducts: Product[] = [
     key: { spec: "pieces", value: "56" },
     specs: [
       ["pieces", "56"],
-      ["material", { ua: "Сталь з зоною кручення", ru: "Сталь с зоной кручения" }],
-      ["standard", { ua: "Хвостовик 1/4″", ru: "Хвостовик 1/4″" }],
+      ["material", { ua: "Сталь з зоною кручення", en: "Steel with torsion zone" }],
+      ["standard", { ua: "Хвостовик 1/4″", en: "1/4″ shank" }],
       ["weight", "0,7 кг"],
     ],
     kit: [K.case, K.bitHolder],
@@ -1157,7 +1157,7 @@ const allProducts: Product[] = [
     sold: 298,
     description: {
       ua: "Зона кручення на хвостовику гасить удар: біти живуть удесятеро довше на ударному шурупокруті.",
-      ru: "Зона кручения на хвостовике гасит удар: биты живут вдесятеро дольше на ударном шуруповёрте.",
+      en: "The torsion zone on the shank absorbs impact: bits last ten times longer in an impact driver.",
     },
   },
   {
@@ -1173,8 +1173,8 @@ const allProducts: Product[] = [
     key: { spec: "pieces", value: "8" },
     specs: [
       ["pieces", "8"],
-      ["material", { ua: "Біметал HSS", ru: "Биметалл HSS" }],
-      ["size", { ua: "22–68 мм", ru: "22–68 мм" }],
+      ["material", { ua: "Біметал HSS", en: "Bi-metal HSS" }],
+      ["size", { ua: "22–68 мм", en: "22–68 mm" }],
       ["weight", "0,9 кг"],
     ],
     kit: [K.case],
@@ -1182,7 +1182,7 @@ const allProducts: Product[] = [
     sold: 134,
     description: {
       ua: "Коронки під підрозетники й труби: дерево, гіпсокартон, тонкий метал одним набором.",
-      ru: "Коронки под подрозетники и трубы: дерево, гипсокартон, тонкий металл одним набором.",
+      en: "Hole saws for junction boxes and pipes: wood, drywall and thin metal in one set.",
     },
   },
   {
@@ -1198,8 +1198,8 @@ const allProducts: Product[] = [
     key: { spec: "pieces", value: "10" },
     specs: [
       ["pieces", "10"],
-      ["disc", { ua: "125 × 1,0 мм", ru: "125 × 1,0 мм" }],
-      ["material", { ua: "Для металу й нержавійки", ru: "Для металла и нержавейки" }],
+      ["disc", { ua: "125 × 1,0 мм", en: "125 × 1.0 mm" }],
+      ["material", { ua: "Для металу й нержавійки", en: "For metal and stainless steel" }],
       ["weight", "0,3 кг"],
     ],
     kit: [K.carton],
@@ -1207,7 +1207,7 @@ const allProducts: Product[] = [
     sold: 1841,
     description: {
       ua: "Тонкий міліметровий диск: ріже профтрубу швидко й майже не залишає задирки.",
-      ru: "Тонкий миллиметровый диск: режет профтрубу быстро и почти не оставляет заусенца.",
+      en: "A thin 1 mm disc: cuts steel tube fast and leaves almost no burr.",
     },
   },
 
@@ -1225,8 +1225,8 @@ const allProducts: Product[] = [
     key: { spec: "standard", value: "EN 397" },
     specs: [
       ["standard", "EN 397"],
-      ["material", { ua: "ABS-пластик", ru: "ABS-пластик" }],
-      ["size", { ua: "53–62 см", ru: "53–62 см" }],
+      ["material", { ua: "ABS-пластик", en: "ABS plastic" }],
+      ["size", { ua: "53–62 см", en: "53–62 cm" }],
       ["weight", "0,36 кг"],
     ],
     kit: [K.strap, K.manual],
@@ -1234,7 +1234,7 @@ const allProducts: Product[] = [
     sold: 217,
     description: {
       ua: "Вентиляційні прорізи із заслінками: влітку голова дихає, взимку закриваєш і не дує.",
-      ru: "Вентиляционные прорези с заслонками: летом голова дышит, зимой закрываешь и не дует.",
+      en: "Vents with shutters: open them in summer, close them in winter to keep the draught out.",
     },
   },
   {
@@ -1249,9 +1249,9 @@ const allProducts: Product[] = [
     badges: [],
     key: { spec: "standard", value: "EN 397" },
     specs: [
-      ["standard", { ua: "EN 397, EN 50365", ru: "EN 397, EN 50365" }],
-      ["material", { ua: "ABS з UV-стабілізацією", ru: "ABS с UV-стабилизацией" }],
-      ["size", { ua: "52–61 см", ru: "52–61 см" }],
+      ["standard", { ua: "EN 397, EN 50365", en: "EN 397, EN 50365" }],
+      ["material", { ua: "ABS з UV-стабілізацією", en: "ABS with UV stabilization" }],
+      ["size", { ua: "52–61 см", en: "52–61 cm" }],
       ["weight", "0,39 кг"],
     ],
     kit: [K.strap, K.manual],
@@ -1259,7 +1259,7 @@ const allProducts: Product[] = [
     sold: 98,
     description: {
       ua: "Діелектрична до 1000 В: допуск на електромонтажні роботи закриває без окремої каски.",
-      ru: "Диэлектрическая до 1000 В: допуск на электромонтажные работы закрывает без отдельной каски.",
+      en: "Dielectric up to 1000 V: covers electrical work clearance without a separate helmet.",
     },
   },
   {
@@ -1275,9 +1275,9 @@ const allProducts: Product[] = [
     badges: ["hit"],
     key: { spec: "standard", value: "EN 397" },
     specs: [
-      ["standard", { ua: "EN 397 + EN 166", ru: "EN 397 + EN 166" }],
-      ["material", { ua: "ABS, щиток полікарбонат", ru: "ABS, щиток поликарбонат" }],
-      ["size", { ua: "54–62 см", ru: "54–62 см" }],
+      ["standard", { ua: "EN 397 + EN 166", en: "EN 397 + EN 166" }],
+      ["material", { ua: "ABS, щиток полікарбонат", en: "ABS, polycarbonate visor" }],
+      ["size", { ua: "54–62 см", en: "54–62 cm" }],
       ["weight", "0,52 кг"],
     ],
     kit: [K.strap, K.manual],
@@ -1285,7 +1285,7 @@ const allProducts: Product[] = [
     sold: 156,
     description: {
       ua: "Щиток відкидається одним рухом: різати болгаркою і розмічати, не знімаючи каску.",
-      ru: "Щиток откидывается одним движением: резать болгаркой и размечать, не снимая каску.",
+      en: "The visor flips up in one move: cut with a grinder and mark up without taking the helmet off.",
     },
   },
   {
@@ -1301,8 +1301,8 @@ const allProducts: Product[] = [
     key: { spec: "standard", value: "EN 12492" },
     specs: [
       ["standard", "EN 12492"],
-      ["material", { ua: "ABS, внутрішній EPS", ru: "ABS, внутренний EPS" }],
-      ["size", { ua: "54–61 см", ru: "54–61 см" }],
+      ["material", { ua: "ABS, внутрішній EPS", en: "ABS, inner EPS" }],
+      ["size", { ua: "54–61 см", en: "54–61 cm" }],
       ["weight", "0,45 кг"],
     ],
     kit: [K.strap, K.manual],
@@ -1310,7 +1310,7 @@ const allProducts: Product[] = [
     sold: 61,
     description: {
       ua: "Альпіністський стандарт із підборідним ременем: не злітає, коли працюєш на висоті чи нахиляєшся.",
-      ru: "Альпинистский стандарт с подбородочным ремнём: не слетает, когда работаешь на высоте или наклоняешься.",
+      en: "Climbing-grade standard with a chin strap: stays on when you work at height or bend over.",
     },
   },
   {
@@ -1326,8 +1326,8 @@ const allProducts: Product[] = [
     key: { spec: "standard", value: "EN 397" },
     specs: [
       ["standard", "EN 397"],
-      ["material", { ua: "HDPE", ru: "HDPE" }],
-      ["size", { ua: "53–62 см", ru: "53–62 см" }],
+      ["material", { ua: "HDPE", en: "HDPE" }],
+      ["size", { ua: "53–62 см", en: "53–62 cm" }],
       ["weight", "0,31 кг"],
     ],
     kit: [K.manual],
@@ -1335,7 +1335,7 @@ const allProducts: Product[] = [
     sold: 341,
     description: {
       ua: "Базова каска для бригади: дешево, сертифіковано, не шкода загубити на об'єкті.",
-      ru: "Базовая каска для бригады: дёшево, сертифицировано, не жалко потерять на объекте.",
+      en: "A basic crew helmet: cheap, certified, no great loss if it goes missing on site.",
     },
   },
   {
@@ -1351,8 +1351,8 @@ const allProducts: Product[] = [
     key: { spec: "standard", value: "EN 397" },
     specs: [
       ["standard", "EN 397"],
-      ["material", { ua: "HDPE", ru: "HDPE" }],
-      ["size", { ua: "54–60 см", ru: "54–60 см" }],
+      ["material", { ua: "HDPE", en: "HDPE" }],
+      ["size", { ua: "54–60 см", en: "54–60 cm" }],
       ["weight", "0,29 кг"],
     ],
     kit: [K.manual],
@@ -1360,7 +1360,7 @@ const allProducts: Product[] = [
     sold: 402,
     description: {
       ua: "Для домашнього ремонту, коли зверху сиплеться штукатурка, а каски в господарстві немає.",
-      ru: "Для домашнего ремонта, когда сверху сыплется штукатурка, а каски в хозяйстве нет.",
+      en: "For home repairs when plaster is falling on you and you have no helmet.",
     },
   },
 ];
@@ -1408,35 +1408,35 @@ const OWN_PHOTO = new Set<string>([
 const SHORT: Record<string, Localized> = {
   "metabo-khe-2660": {
     ua: "Запобіжна муфта зупиняє корпус, коли бур закусує в арматурі.",
-    ru: "Предохранительная муфта останавливает корпус, когда бур закусывает.",
+    en: "The safety clutch stops the body when the bit jams.",
   },
   "milwaukee-m18-fpd2": {
     ua: "135 Н·м: крутить коронку 100 мм по дереву.",
-    ru: "135 Н·м: крутит коронку 100 мм по дереву.",
+    en: "135 Nm: turns a 100 mm wood hole saw.",
   },
   "metabo-bs-18-lt-bl": {
     ua: "Батарея CAS підходить до інструментів тридцяти брендів.",
-    ru: "Батарея CAS подходит к инструментам тридцати брендов.",
+    en: "The CAS battery fits tools from thirty brands.",
   },
   "makita-bo5041": {
     ua: "Швидко знімає шар і не лишає кругових слідів під лак.",
-    ru: "Быстро снимает слой и не оставляет круговых следов под лак.",
+    en: "Removes material fast and leaves no swirl marks for varnish.",
   },
   "makita-sk209gdz": {
     ua: "Зелений промінь видно вдень на вулиці.",
-    ru: "Зелёный луч видно днём на улице.",
+    en: "The green beam is visible outdoors in daylight.",
   },
   "makita-hss-19": {
     ua: "Кобальтові свердла беруть нержавійку й інструментальну сталь.",
-    ru: "Кобальтовые свёрла берут нержавейку и инструментальную сталь.",
+    en: "Cobalt drill bits cut stainless and tool steel.",
   },
   "dewalt-extreme-sds-5": {
     ua: "Чотиригранна пластина не збиває кромку об арматуру.",
-    ru: "Четырёхгранная пластина не сбивает кромку об арматуру.",
+    en: "The four-edge tip doesn't chip on rebar.",
   },
   "ryobi-helmet-home": {
     ua: "Для домашнього ремонту, коли зверху сиплеться штукатурка.",
-    ru: "Для домашнего ремонта, когда сверху сыплется штукатурка.",
+    en: "For home repairs when plaster is falling on you.",
   },
 };
 

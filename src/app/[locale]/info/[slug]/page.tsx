@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getDict, isLocale, locales, type Locale } from "@/i18n";
 import type { ReactNode } from "react";
 import {
-  deliveryCalc,
+  deliveryOptions,
   infoBySlug,
   infoPages,
   paymentPicker,
@@ -15,7 +15,7 @@ import {
 import { href } from "@/lib/shop";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNav } from "@/components/info/info-nav";
-import { DeliveryCalculator } from "@/components/info/delivery-calculator";
+import { DeliveryOptions } from "@/components/info/delivery-options";
 import { PaymentPicker } from "@/components/info/payment-picker";
 import { ReturnsCheck } from "@/components/info/returns-check";
 import { WarrantyCheck } from "@/components/info/warranty-check";
@@ -49,7 +49,7 @@ export default async function InfoPage({ params }: Params) {
 
   // Every info page is a single-screen interactive page: same compact frame, own body.
   const bodies: Record<InfoSlug, { intro: string; body: ReactNode }> = {
-    delivery: { intro: deliveryCalc.intro[locale], body: <DeliveryCalculator /> },
+    delivery: { intro: deliveryOptions.intro[locale], body: <DeliveryOptions /> },
     payment: { intro: paymentPicker.intro[locale], body: <PaymentPicker /> },
     returns: { intro: returnsCheck.intro[locale], body: <ReturnsCheck /> },
     warranty: { intro: warrantyCheck.intro[locale], body: <WarrantyCheck /> },

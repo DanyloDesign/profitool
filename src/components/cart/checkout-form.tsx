@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useI18n } from "@/i18n/context";
 import { brandBySlug } from "@/data/taxonomy";
-import { DELIVERY_COST, FREE_DELIVERY_FROM, href, imageOf, orderTotals, price, type DeliveryMethod } from "@/lib/shop";
+import { FREE_DELIVERY_FROM, href, imageOf, orderTotals, price, type DeliveryMethod } from "@/lib/shop";
 import { formatPhone, normalizePhone } from "@/lib/phone";
 import { useCart, useLastOrder } from "@/store/shop";
 import { useAccount, useOrders, type OrderLine, type Payment } from "@/store/account";
@@ -27,7 +27,7 @@ type BuyerType = "person" | "fop" | "company";
 /** Снимок заказа на экране «Замовлення прийнято»: корзину уже очистили, строки берём из этого. */
 type ConfirmedOrder = {
   lines: ReturnType<typeof orderTotals>["lines"];
-  delivery: number;
+  delivery: number | null;
   total: number;
   method: Method;
   payment: Payment;
@@ -57,6 +57,15 @@ export function CheckoutForm() {
   const citySlug = useLocation((state) => state.citySlug);
   const customCity = useLocation((state) => state.customCity);
   const locationCity = mounted ? cityName(locale, { citySlug, customCity }) : "";
+
+  const methodLabel: Record<Method, string> = {
+    novapost: dict.checkout.methodNovaPost,
+    ukrpost: dict.checkout.methodUkrPost,
+    pickup: dict.checkout.methodPickup,
+  };
+  // null: нижче порогу доставку оплачують перевізнику за його тарифом, суми ми не знаємо.
+  const deliveryText = (cost: number | null) =>
+    cost === null ? dict.cart.deliveryTariff : cost === 0 ? dict.cart.deliveryFree : `${price(cost)} ₴`;
 
   // Підпис рахунку залежить від типу покупця (review round 2, #18) — рахуємо тут, до ранніх
   // return'ів, бо цей лейбл потрібен і на екрані підтвердження (обраний спосіб оплати).
@@ -169,8 +178,7 @@ export function CheckoutForm() {
   }
 
   if (orderNumber && confirmedOrder) {
-    const deliveryLabel =
-      confirmedOrder.method === "pickup" ? dict.checkout.methodPickup : dict.checkout.methodNovaPost;
+    const deliveryLabel = methodLabel[confirmedOrder.method];
     const paymentLabel =
       confirmedOrder.payment === "card"
         ? dict.checkout.payCard
@@ -209,7 +217,7 @@ export function CheckoutForm() {
               <dt className="shrink-0 text-bone-dim">{dict.cart.delivery}</dt>
               <dd className="text-right text-bone">
                 {deliveryLabel}
-                {confirmedOrder.delivery > 0 ? ` · ${price(confirmedOrder.delivery)} ₴` : ` · ${dict.cart.deliveryFree}`}
+                {` · ${deliveryText(confirmedOrder.delivery)}`}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
@@ -270,7 +278,7 @@ export function CheckoutForm() {
     setOrderNumber(number);
   });
 
-  const shipCost = subtotal >= FREE_DELIVERY_FROM ? dict.cart.deliveryFree : `${dict.common.from} ${price(DELIVERY_COST)} ₴`;
+  const shipCost = subtotal >= FREE_DELIVERY_FROM ? dict.cart.deliveryFree : dict.cart.deliveryTariff;
 
   return (
     <>
@@ -408,6 +416,13 @@ export function CheckoutForm() {
               />
               <Choice
                 name="method"
+                checked={method === "ukrpost"}
+                onChange={() => setMethod("ukrpost")}
+                label={dict.checkout.methodUkrPost}
+                aside={shipCost}
+              />
+              <Choice
+                name="method"
                 checked={method === "pickup"}
                 onChange={() => setMethod("pickup")}
                 label={dict.checkout.methodPickup}
@@ -430,7 +445,7 @@ export function CheckoutForm() {
                   />
                 </Field>
                 <Field
-                  label={`${dict.checkout.branch} *`}
+                  label={`${method === "ukrpost" ? dict.checkout.branchUkrPost : dict.checkout.branch} *`}
                   error={errors.branch?.message}
                   id="branch"
                 >
@@ -528,9 +543,7 @@ export function CheckoutForm() {
             ) : null}
             <div className="flex justify-between border-b border-[var(--hair)] py-3.5">
               <dt className="text-base text-bone-dim">{dict.cart.delivery}</dt>
-              <dd className={`text-base ${delivery === 0 ? "text-stock" : "text-bone"}`}>
-                {delivery === 0 ? dict.cart.deliveryFree : `${price(delivery)} ₴`}
-              </dd>
+              <dd className={`text-base ${delivery === 0 ? "text-stock" : "text-bone"}`}>{deliveryText(delivery)}</dd>
             </div>
           </dl>
 

@@ -5,7 +5,7 @@ import { useMounted } from "@/lib/use-mounted";
 import Link from "next/link";
 import { useI18n } from "@/i18n/context";
 import { brandBySlug } from "@/data/taxonomy";
-import { DELIVERY_COST, FREE_DELIVERY_FROM, href, imageOf, keyValue, orderTotals, price, productHref } from "@/lib/shop";
+import { FREE_DELIVERY_FROM, href, imageOf, keyValue, orderTotals, price, productHref } from "@/lib/shop";
 import { useCart, useLastOrder } from "@/store/shop";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconCart, IconMinus, IconPlus, IconTrash } from "@/components/ui/icons";
@@ -151,7 +151,7 @@ export function CartView() {
           <p className="mt-4 text-sm text-bone-dim">
             {subtotal >= FREE_DELIVERY_FROM
               ? dict.cart.deliveryNoteFree(price(FREE_DELIVERY_FROM))
-              : dict.cart.deliveryNoteFrom(price(DELIVERY_COST))}
+              : dict.cart.deliveryNoteTariff(price(FREE_DELIVERY_FROM))}
           </p>
 
           {left > 0 ? (

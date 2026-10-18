@@ -45,7 +45,8 @@ export type Order = {
   date: string;
   lines: OrderLine[];
   total: number;
-  delivery: number;
+  /** null: доставку оплачують перевізнику за його тарифом при отриманні. */
+  delivery: number | null;
   method: DeliveryMethod;
   payment: Payment;
 };

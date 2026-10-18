@@ -74,16 +74,16 @@ export function categoryHref(locale: Locale, slug?: string): string {
 }
 
 export const FREE_DELIVERY_FROM = 5000;
-export const DELIVERY_COST = 120;
-
-export type DeliveryMethod = "novapost" | "pickup";
+export type DeliveryMethod = "novapost" | "ukrpost" | "pickup";
 
 /**
  * Единственный источник итогов заказа (proposal 013, workstream B) — шапка, мини-корзина,
  * страница корзины и чекаут вызывают только эту функцию, чтобы сумма нигде не расходилась.
  * Без `method` доставка в итог не входит (метод ещё не выбран): шапка и мини-корзина показывают
  * сумму товаров, страница корзины — её же, а доставку выносит отдельной строкой-подсказкой.
- * Чекаут передаёт выбранный метод, и тогда доставка прибавляется к сумме («pickup» — бесплатно).
+ * Чекаут передаёт выбранный метод. Самовывоз и заказ от FREE_DELIVERY_FROM бесплатны (0), иначе
+ * доставку оплачивают перевозчику по его тарифу при получении: сумму магазин не знает, поэтому
+ * `delivery` равно null и в итог не входит.
  */
 export function orderTotals(items: { slug: string; qty: number }[], method?: DeliveryMethod) {
   const lines = items
@@ -96,15 +96,15 @@ export function orderTotals(items: { slug: string; qty: number }[], method?: Del
   const subtotal = lines.reduce((acc, line) => acc + line.sum, 0);
   // «Товары» считаем по старым ценам, разницу показываем строкой «Скидка».
   const gross = lines.reduce((acc, line) => acc + (line.product.oldPrice ?? line.product.price) * line.qty, 0);
-  const delivery =
-    !method || method === "pickup" || subtotal === 0 || subtotal >= FREE_DELIVERY_FROM ? 0 : DELIVERY_COST;
+  const delivery: number | null =
+    !method || method === "pickup" || subtotal === 0 || subtotal >= FREE_DELIVERY_FROM ? 0 : null;
   return {
     lines,
     gross,
     discount: gross - subtotal,
     subtotal,
     delivery,
-    total: subtotal + delivery,
+    total: subtotal + (delivery ?? 0),
     count: lines.length,
     pieces: lines.reduce((acc, line) => acc + line.qty, 0),
   };

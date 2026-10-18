@@ -1,5 +1,5 @@
 import type { Localized } from "@/data/types";
-import { DELIVERY_COST, FREE_DELIVERY_FROM, price } from "@/lib/shop";
+import { FREE_DELIVERY_FROM, price } from "@/lib/shop";
 
 /**
  * Information pages (023): delivery, payment, returns, warranty, privacy.
@@ -18,7 +18,6 @@ export type InfoPage = {
 
 const both = (ua: string, en: string): Localized => ({ ua, en });
 
-const cost = `${price(DELIVERY_COST)} ₴`;
 const threshold = `${price(FREE_DELIVERY_FROM)} ₴`;
 
 export const infoPages: InfoPage[] = [
@@ -26,8 +25,8 @@ export const infoPages: InfoPage[] = [
     slug: "delivery",
     title: both("Доставка", "Delivery"),
     lead: both(
-      "Відправляємо Новою поштою по всій Україні або віддаємо в магазині в Софіївці.",
-      "We ship with Nova Poshta across Ukraine or hand your order over at the store in Sofiivka.",
+      "Відправляємо Новою поштою й Укрпоштою по всій Україні або віддаємо в магазині в Софіївці.",
+      "We ship with Nova Poshta and Ukrposhta across Ukraine or hand your order over at the store in Sofiivka.",
     ),
   },
   {
@@ -66,28 +65,40 @@ export const infoPages: InfoPage[] = [
 
 export const infoBySlug = new Map<string, InfoPage>(infoPages.map((page) => [page.slug, page]));
 
-/** Delivery page, direction B (calculator). Contacts come from the dictionary, numbers from shop.ts. */
-export const deliveryCalc = {
-  intro: both(
-    "Порахуй свою доставку: обери спосіб і суму замовлення.",
-    "Work out your delivery: pick a method and an order total.",
+/** Delivery page (025): three methods side by side. Prices follow the carriers; the shop pays from FREE_DELIVERY_FROM. */
+export type DeliveryOptionKey = "novapost" | "ukrpost" | "pickup";
+
+export const deliveryOptions = {
+  intro: both("Нова пошта, Укрпошта або самовивіз у Софіївці.", "Nova Poshta, Ukrposhta or pickup in Sofiivka."),
+  freeRule: both(`Від ${threshold} доставляємо безкоштовно`, `Free delivery from ${threshold}`),
+  freeRuleNote: both(
+    "Нижче цієї суми доставку оплачуєш перевізнику за його тарифом, коли отримуєш посилку.",
+    "Below that, you pay the carrier's rate when you collect the parcel.",
   ),
-  sectionLabel: both("Розрахунок доставки", "Delivery calculator"),
-  methodLabel: both("Спосіб отримання", "How you get it"),
-  novapost: both("Нова пошта", "Nova Poshta"),
-  pickup: both("Самовивіз", "Pickup"),
-  sumLabel: both("Сума замовлення", "Order total"),
-  resultNovapost: both("Доставка Новою поштою", "Delivery by Nova Poshta"),
-  resultPickup: both("Самовивіз у Софіївці", "Pickup in Sofiivka"),
-  noteFree: both("Доставка безкоштовна", "Delivery is free"),
-  notePickup: both("Самовивіз завжди безкоштовний", "Pickup is always free"),
-  noteLeft: both("Ще {sum} до безкоштовної доставки", "{sum} more for free delivery"),
-  termNovapost: both("1–2 дні у відділення або поштомат", "1–2 days to a branch or parcel locker"),
-  novapostFacts: [
-    both("У відділення або поштомат у будь-якому місті.", "To a branch or parcel locker in any city."),
-    both("1–2 дні після відправки.", "1–2 days after dispatch."),
-    both(`${cost}, від ${threshold} безкоштовно.`, `${cost}, free from ${threshold}.`),
+  cartLeft: both("У кошику {sum}, до безкоштовної доставки ще {left}", "{sum} in your cart, {left} more for free delivery"),
+  cartFree: both("Твоє замовлення доставимо безкоштовно", "Your order ships free"),
+  methods: [
+    {
+      key: "novapost" as DeliveryOptionKey,
+      name: both("Нова пошта", "Nova Poshta"),
+      term: both("1–2 дні", "1–2 days"),
+      where: both("У відділення або поштомат у будь-якому місті.", "To a branch or parcel locker in any city."),
+      price: both(`За тарифом Нової пошти, від ${threshold} безкоштовно.`, `Nova Poshta rate, free from ${threshold}.`),
+      link: both("Тарифи Нової пошти", "Nova Poshta rates"),
+      url: "https://novaposhta.ua/shipping-cost/",
+    },
+    {
+      key: "ukrpost" as DeliveryOptionKey,
+      name: both("Укрпошта", "Ukrposhta"),
+      term: both("3–5 днів", "3–5 days"),
+      where: both("У відділення Укрпошти, також у селах.", "To a Ukrposhta branch, villages included."),
+      price: both(`За тарифом Укрпошти, від ${threshold} безкоштовно.`, `Ukrposhta rate, free from ${threshold}.`),
+      link: both("Тарифи Укрпошти", "Ukrposhta rates"),
+      url: "https://www.ukrposhta.ua/ua/taryfy",
+    },
   ],
+  pickup: both("Самовивіз", "Pickup"),
+  pickupPrice: both("Безкоштовно.", "Free."),
   mapLabel: both("Схема: магазин у Софіївці", "Map: the store in Sofiivka"),
   mapLink: both("Відкрити на карті", "Open on the map"),
   mapUrl: "https://maps.app.goo.gl/4GPKpEsfU2VBjeDz8",
@@ -397,7 +408,7 @@ export const privacyView = {
       sub: both("контакти і доставка", "contacts and delivery"),
       items: [
         both("Ім’я, телефон і пошта.", "Name, phone and email."),
-        both("Місто і відділення Нової пошти.", "City and Nova Poshta branch."),
+        both("Місто і відділення пошти.", "City and post office branch."),
         both("Коментар до замовлення.", "Order comment."),
         both("ЄДРПОУ, якщо замовляла компанія.", "EDRPOU code, if a company placed the order."),
       ],
@@ -464,8 +475,8 @@ export const paymentPicker = {
       steps: [
         both("Оформлюєш замовлення і обираєш «При отриманні».", "You place the order and choose \"On delivery\"."),
         both(
-          "Забираєш його у відділенні Нової пошти або в магазині в Софіївці.",
-          "You pick it up at a Nova Poshta branch or at the store in Sofiivka.",
+          "Забираєш його на пошті або в магазині в Софіївці.",
+          "You pick it up at the post office or at the store in Sofiivka.",
         ),
         both("Платиш на місці.", "You pay on the spot."),
       ],

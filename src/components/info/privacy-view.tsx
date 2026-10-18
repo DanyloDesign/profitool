@@ -5,7 +5,6 @@ import { privacyView as t, type PrivacyUseKey } from "@/data/info";
 import { useI18n } from "@/i18n/context";
 import { plural, pluralEn } from "@/i18n/plural";
 import { useAccount, useOrders } from "@/store/account";
-import { useLocation } from "@/store/location";
 import { useCart, useCompare, useLastOrder, usePlatform, useWishlist } from "@/store/shop";
 
 const KEY_PREFIX = "profitool-";
@@ -20,7 +19,6 @@ function deleteBrowserData() {
   usePlatform.setState({ slug: null });
   useAccount.setState({ session: null });
   useOrders.setState({ orders: [] });
-  useLocation.setState({ citySlug: useLocation.getInitialState().citySlug, customCity: "" });
   try {
     const keys: string[] = [];
     for (let i = 0; i < localStorage.length; i += 1) {

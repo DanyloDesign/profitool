@@ -13,7 +13,6 @@ import { FREE_DELIVERY_FROM, href, imageOf, orderTotals, price, type DeliveryMet
 import { formatPhone, normalizePhone } from "@/lib/phone";
 import { useCart, useLastOrder } from "@/store/shop";
 import { useAccount, useOrders, type OrderLine, type Payment } from "@/store/account";
-import { cityName, useLocation } from "@/store/location";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconCart, IconCheck } from "@/components/ui/icons";
 
@@ -53,10 +52,6 @@ export function CheckoutForm() {
   const session = useAccount((state) => state.session);
   const addOrder = useOrders((state) => state.add);
   const updateSession = useAccount((state) => state.update);
-
-  const citySlug = useLocation((state) => state.citySlug);
-  const customCity = useLocation((state) => state.customCity);
-  const locationCity = mounted ? cityName(locale, { citySlug, customCity }) : "";
 
   const methodLabel: Record<Method, string> = {
     novapost: dict.checkout.methodNovaPost,
@@ -136,14 +131,6 @@ export function CheckoutForm() {
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema), mode: "onBlur" });
 
-  // Подставляем город из шапки один раз, когда стор гидратировался: дальше покупатель волен его сменить.
-  const cityPreset = useRef(false);
-  useEffect(() => {
-    if (mounted && !cityPreset.current && locationCity) {
-      setValue("city", locationCity);
-      cityPreset.current = true;
-    }
-  }, [mounted, locationCity, setValue]);
 
   // Те саме для контактів із демо-сесії: підставляємо один раз, покупець може змінити перед відправкою.
   const contactPreset = useRef(false);

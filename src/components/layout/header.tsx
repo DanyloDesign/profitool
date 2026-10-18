@@ -14,7 +14,6 @@ import { useCompare, useWishlist } from "@/store/shop";
 import { Logo } from "@/components/layout/logo";
 import { CartButton } from "@/components/cart/cart-button";
 import { ThemeRow, ThemeToggle } from "@/components/layout/theme-toggle";
-import { CitySelect } from "@/components/layout/city-select";
 import { SupportMenu } from "@/components/layout/support-menu";
 import { PlatformChip } from "@/components/layout/platform-chip";
 import { MegaMenu } from "@/components/layout/mega-menu";
@@ -135,7 +134,6 @@ export function Header() {
           />
 
           <div className="hdr-util flex shrink-0 items-center justify-self-end [grid-area:util] lg:ml-auto">
-            <CitySelect />
             <SupportMenu />
             <LangSwitch locale={locale} pathname={pathname} />
             <ThemeToggle />
@@ -313,10 +311,9 @@ function MobileMenu({ pathname }: { pathname: string }) {
           </Link>
         ))}
 
-        {/* City, support, wishlist, compare, theme and language repeat the header from 768px, so
+        {/* Support, wishlist, compare, theme and language repeat the header from 768px, so
             they stay here for phones only. Account is always in the phone header. */}
         <div className="mt-6 grid gap-2 md:hidden">
-          <CitySelect fullWidth />
           <SupportMenu variant="full" />
         </div>
 

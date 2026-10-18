@@ -9,7 +9,6 @@ import { formatPhone, normalizePhone } from "@/lib/phone";
 import { productBySlug } from "@/data/products";
 import { brandBySlug } from "@/data/taxonomy";
 import { useAccount, useOrders, type Order, type OrderLine, type Session } from "@/store/account";
-import { cityName, useLocation } from "@/store/location";
 import { useMounted } from "@/lib/use-mounted";
 import { EmptyState } from "@/components/ui/empty-state";
 import { IconCart, IconChevron } from "@/components/ui/icons";
@@ -215,11 +214,8 @@ function OrderTotals({ order }: { order: Order }) {
 }
 
 function ProfileSection({ session }: { session: Session }) {
-  const { locale, dict } = useI18n();
+  const { dict } = useI18n();
   const update = useAccount((state) => state.update);
-  const citySlug = useLocation((state) => state.citySlug);
-  const customCity = useLocation((state) => state.customCity);
-  const city = cityName(locale, { citySlug, customCity }) || dict.account.profile.notSpecified;
 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(session.name);
@@ -312,8 +308,7 @@ function ProfileSection({ session }: { session: Session }) {
         <dl className="mt-6">
           <Row label={dict.account.profile.fieldName} value={session.name} />
           <Row label={dict.account.profile.fieldPhone} value={session.phone ? formatPhone(session.phone) : dict.account.profile.notSpecified} />
-          <Row label={dict.account.email} value={session.email} />
-          <Row label={dict.account.profile.fieldCity} value={city} last />
+          <Row label={dict.account.email} value={session.email} last />
         </dl>
       )}
     </section>

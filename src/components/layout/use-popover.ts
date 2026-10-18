@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Общее поведение поповера в шапке: закрытие по Escape и клику снаружи,
- * фокус возвращается на кнопку-триггер. Используют CitySelect и SupportMenu.
+ * фокус возвращается на кнопку-триггер. Использует SupportMenu.
  */
 export function usePopover() {
   const [open, setOpen] = useState(false);
